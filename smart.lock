@@ -1,0 +1,15 @@
+{
+  "meteor": {},
+  "dependencies": {
+    "basePackages": {
+      "krstffr:reactive-constructor": {
+        "path": "../.."
+      }
+    },
+    "packages": {
+      "krstffr:reactive-constructor": {
+        "path": "../.."
+      }
+    }
+  }
+}

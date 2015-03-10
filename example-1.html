@@ -1,0 +1,138 @@
+<head>
+  <title>testing</title>
+</head>
+
+<body>
+
+  {{> invoiceTestTemplate }}
+
+</body>
+
+<template name="editTemplate__String">
+	
+	<label>
+		{{ key }}
+		<input type="text" value="{{ value }}">
+	</label>
+	
+</template>
+
+<template name="editTemplate__Boolean">
+
+	<label>
+		BOOL: {{ key }}
+		<select class="TEMP-bool-select">
+				<option value="true" selected="{{#if equals value true }}selected{{/if}}">True</option>
+				<option value="false" selected="{{#if equals value false }}selected{{/if}}">False</option>
+		</select>
+	</label>
+
+</template>
+
+<template name="editTemplate__Collection">
+
+	{{#each value }}
+
+		{{> Template.dynamic template=getTemplateFromType }}
+
+	{{/each}}
+
+	<button class="temp-add-new-coll-item">
+		Add 1: {{ key }}
+	</button>
+
+</template>
+
+<template name="editTemplate">
+
+	<div class="wrap">
+
+		<h2>
+			{{ className }}{{#if type }},
+				type: <em>{{ type }}</em>
+			{{/if}}
+		</h2>
+
+		{{! Iterate over all the fields, get the corresponding field }}
+		{{#each getReactiveValuesAsArray }}
+
+			<div class="wrap">
+
+				<h4>{{ key }} &lt;{{ type }}&gt;</h4>
+
+				{{> Template.dynamic template=getTemplateFromType data=data }}
+
+			</div>
+
+		{{/each }}
+
+		<button class="save">Save!</button>
+
+	</div>
+	
+</template>
+
+<template name="invoiceTestTemplate">
+
+	{{! > editTemplate invoice }}
+
+	{{! > editTemplate client }}
+
+	{{! > editTemplate person }}
+
+	<hr>
+
+	{{#each invoices }}
+
+	  <button class="edit-invoice">Edit invoice</button>
+
+  	<h1>Invoice {{ getReactiveValue 'invoiceName' }}</h1>
+
+  	<ul>
+
+	  	{{#each getReactiveValue 'items' }}
+
+	  		<li>
+	  			<span class="change-val">{{ getReactiveValue 'itemName' }}, </span>
+	  			{{ getReactiveValue 'units' }} {{ getReactiveValue 'unitDescription' }} 
+	  			@ {{ getReactiveValue 'unitPrice' }} {{ ../getReactiveValue 'currency' }}
+	  			= {{ endPrice }} 
+	  			({{ priceAfterTax }} after {{ getReactiveValue 'tax' }}% 
+	  			{{ getReactiveValue 'taxDescription' }})
+	  		</li>
+
+	  	{{/each}}
+
+	  	<p>
+	  		Total price: {{ items.getTotal 'endPrice' }} 
+	  		{{ getReactiveValue 'currency' }}
+	  	</p>
+	  	<p>
+	  		Total with taxes: {{ items.getTotal 'priceAfterTax' }} 
+	  		{{ getReactiveValue 'currency' }}
+	  	</p>
+	  	<p>
+	  		Taxes only: {{ items.getTotal 'tax' }} 
+	  		{{ getReactiveValue 'currency' }} (@ {{ items.getTaxPercentage }}%)
+	  	</p>
+
+		</ul>
+
+		{{#with getReactiveValue 'client' }}
+
+			<p><em>This is the client object from the invoice…</em></p>
+
+			<h1>{{ getReactiveValue 'clientName' }}</h1>
+			<p>{{ getReactiveValue 'adressStreet' }}</p>
+
+		{{/with}}
+
+		{{#if getReactiveValue 'superCool' }}
+			<p>Super cool!! C O N F I R M E D</p>
+		{{/if}}
+
+		<hr>
+
+  {{/each}}
+
+</template>

@@ -1,0 +1,7 @@
+{
+	"packages": {
+		"krstffr:reactive-constructor": {
+			"path": "../.."
+		}
+	}
+}
