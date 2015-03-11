@@ -56,7 +56,6 @@ console.log( ' and he/she will be: ' + person2.getAgePlus( 3 ) + ' in three year
 console.log( 'Person2 is a teenager: ' + person2.isTeenager() );
 console.log( 'Person2 ages six years and is now: ' + person2.addYears( 6 ) );
 console.log( 'Person2 is a teenager after the six years? ' + person2.isTeenager() );
-
 console.log( 'Person1 should not have a isTeenager method!');
 console.log( 'typeof is: ' + typeof person.isTeenager );
 
