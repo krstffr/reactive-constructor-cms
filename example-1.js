@@ -89,6 +89,8 @@ InvoiceListItem = new ReactiveConstructor(function InvoiceListItem ( initData ) 
 
   var that = this;
 
+  that.initData = initData;
+
   that.typeStructure = [{
     type: 'invoiceListItem',
     fields: {
