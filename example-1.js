@@ -3,7 +3,7 @@ Invoices = new Meteor.Collection('invoices');
 if (Meteor.isServer)
   return false;
 
-Person = ReactiveConstructor(function Person( initData ) {
+Person = new ReactiveConstructor(function Person( initData ) {
 
   var that = this;
 
@@ -56,7 +56,7 @@ console.log( 'Person1 should not have a isTeenager method! typeof is: ' + typeof
 person3 = new Person({ age: 50, rcType: 'child' });
 person4 = new Person();
 
-Client = ReactiveConstructor( function Client( initData ) {
+Client = new ReactiveConstructor( function Client( initData ) {
 
   var that = this;
   
@@ -79,7 +79,7 @@ client = new Client();
 
 client.setReactiveValue('staff', [ person ] );
 
-InvoiceListItem = ReactiveConstructor(function InvoiceListItem ( initData ) {
+InvoiceListItem = new ReactiveConstructor(function InvoiceListItem ( initData ) {
 
   var that = this;
 
@@ -121,7 +121,7 @@ InvoiceListItem = ReactiveConstructor(function InvoiceListItem ( initData ) {
 
 var testInvoiceListItem = new InvoiceListItem({ tax: 30 });
 
-Invoice = ReactiveConstructor(function Invoice ( initData ) {
+Invoice = new ReactiveConstructor(function Invoice ( initData ) {
 
   var that = this;
 
