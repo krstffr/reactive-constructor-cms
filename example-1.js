@@ -8,6 +8,7 @@ Invoices = new Meteor.Collection('invoices');
 if (Meteor.isServer)
   return false;
 
+// Create a reactive constructor which can be used in tests.
 Person = new ReactiveConstructor(function Person( initData ) {
 
   var that = this;
@@ -19,13 +20,38 @@ Person = new ReactiveConstructor(function Person( initData ) {
     fields: {
       name: String,
       title: String,
-      children: ['self']
+      age: Number,
+      children: [ Person ]
+    },
+    defaultData: {
+      name: 'Kristoffer Klintberg',
+      title: 'Designer',
+      age: 30,
+      children: []
+    }
+  }, {
+    type: 'husband',
+    fields: {
+      age: Number,
+      wife: Person
+    },
+    defaultData: {
+      age: 49
+    }
+  }, {
+    type: 'wife',
+    fields: {
+      age: Number,
+      happy: Boolean
+    },
+    defaultData: {
+      age: 54
     }
   }, {
     type: 'child',
     fields: {
       age: Number,
-      parents: ['self']
+      parents: [ Person ]
     },
     methods: {
       isTeenager: function () {
@@ -48,6 +74,7 @@ Person = new ReactiveConstructor(function Person( initData ) {
 
 });
 
+
 person = new Person({ name: 'Stoffe K' });
 
 person2 = new Person({ age: 17, rcType: 'child' });
@@ -60,7 +87,7 @@ console.log( 'Person1 should not have a isTeenager method!');
 console.log( 'typeof is: ' + typeof person.isTeenager );
 
 person3 = new Person({ age: 50, rcType: 'child' });
-person4 = new Person();
+// person4 = new Person();
 
 Client = new ReactiveConstructor( function Client( initData ) {
 
@@ -73,7 +100,9 @@ Client = new ReactiveConstructor( function Client( initData ) {
     fields: {
       clientName: String,
       adressStreet: String,
-      staff: [Person]
+      staff: [ Person ],
+      mainClient: Client,
+      otherClients: [ Client ]
     }
   }];
 
@@ -82,6 +111,9 @@ Client = new ReactiveConstructor( function Client( initData ) {
 });
 
 client = new Client();
+
+client.setReactiveValue('mainClient', new Client() );
+client.setReactiveValue('otherClients', [ new Client(), new Client() ] );
 
 client.setReactiveValue('staff', [ person ] );
 
@@ -141,18 +173,13 @@ Invoice = new ReactiveConstructor(function Invoice ( initData ) {
       _id: String,
       invoiceName: String,
       currency: String,
-      items: [InvoiceListItem],
+      items: [ InvoiceListItem ],
       client: Client,
-      invoices: ['self'],
-      // TODO: Make this work!
-      childInvoice: 'self',
+      invoices: [ Invoice ],
       superCool: Boolean
     },
     defaultData: {
       invoiceName: 'KK000',
-      items: [],
-      client: new Client(),
-      invoices: [],
       superCool: false
     }
   }];
@@ -223,6 +250,9 @@ Handlebars.registerHelper('getTemplateFromType', function () {
   // Is it a collection of items?
   if (this.type.search(/Collection_/g) > -1)
     return 'editTemplate__Collection';
+
+  if (!this.value)
+    return false;
 
   return 'editTemplate';
 
