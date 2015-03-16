@@ -1,0 +1,98 @@
+<template name="editTemplate__noReactiveInstanceSet">
+	<label>
+		{{> editTemplate__labelString }}
+		<button class="temp-cms-create-new-instance">Create new {{ key }}</button>
+	</label>
+</template>
+
+<template name="editTemplate__labelString">
+	<span class="">
+		{{ key }} &lt;{{ type }}&gt;
+	</span>
+</template>
+
+<template name="editTemplate__String">
+	
+	<label>
+		{{> editTemplate__labelString }}
+		<input type="text" value="{{ value }}">
+	</label>
+	
+</template>
+
+<template name="editTemplate__Boolean">
+
+	<label>
+		{{> editTemplate__labelString }}
+		<select class="TEMP-bool-select">
+				<option value="true" selected="{{#if equals value true }}selected{{/if}}">True</option>
+				<option value="false" selected="{{#if equals value false }}selected{{/if}}">False</option>
+		</select>
+	</label>
+
+</template>
+
+<template name="editTemplate__Collection">
+
+	<div class="collection">
+
+		<h3>
+			{{ key }}
+		</h3>
+
+		{{#each value }}
+
+			{{> Template.dynamic template=getTemplateFromType }}
+
+		{{/each}}
+
+		<button class="temp-add-new-coll-item">
+			Add new {{ key }}
+		</button>
+
+	</div>
+
+</template>
+
+<template name="editTemplate">
+
+	<div class="wrap">
+
+		<h2>
+			{{ className }}{{#if type }},
+				type: <em>{{ type }}</em>
+			{{/if}}
+		</h2>
+
+		{{! Iterate over all the fields, get the corresponding field }}
+		{{#each getReactiveValuesAsArray }}
+
+			{{> Template.dynamic template=getTemplateFromType data=data }}
+
+		{{/each }}
+
+		<!-- <button class="save">Save!</button> -->
+
+	</div>
+	
+</template>
+
+<template name="editTemplate__wrapper">
+
+	<div class="wrapper">
+
+		{{> editTemplate }}
+
+		<div class="wrapper__buttons">
+
+			<button>Save</button>
+
+			<button>Duplicate</button>
+
+			<button class="temp-cms-close-button">Close</button>
+
+		</div>
+
+	</div>
+
+</template>

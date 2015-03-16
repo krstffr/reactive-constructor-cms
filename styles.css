@@ -1,5 +1,106 @@
-.wrap {
-	border: 1px solid #fcc;
-	margin: 0.5em 0;
-	padding: 0.2em 0.8em 0.5em;
+/* apply a natural box layout model to all elements, but allowing components to change */
+.wrap  {
+	box-sizing: border-box;
+}
+.wrap *, .wrap *:before, .wrap *:after {
+	box-sizing: inherit;
+}
+
+.wrapper {
+
+	font-family: sans-serif;
+	font-size: 13px;
+	position: fixed;
+	width: 50%;
+	/*max-height: 70%;*/
+	bottom: 2em;
+	top: 2em;
+	left: 2em;
+	overflow: auto;
+
+	background: #112;
+	color: white;
+
+}
+
+.wrap {
+	padding: 1.5em 1.2em;
+	width: 100%;
+	overflow: hidden;
+}
+
+.wrap .collection,
+.wrap > .wrap {
+	background: rgba(220, 220, 255, 0.1);
+	padding: 1em 0.5em 0.5em;
+	margin: 0.7em 0;
+}
+
+.wrap .collection > .wrap {
+	background: #112;
+	padding: 1.2em 0.7em 0.7em;
+	margin: 0;
+}
+.wrap .collection > .wrap + .wrap {
+	border-top: 1px dashed #333;
+}
+
+.wrap .collection button {
+	width: 100%;
+	padding: 0.3em;
+}
+
+.wrap h2,
+.wrap h3 {
+  padding: 0 0 0.6em;
+  margin: 0;
+}
+
+.wrap h3 {
+	text-align: center;
+}
+
+.wrapper label {
+	display: inline-block;
+	width: 100%;
+	overflow: hidden;
+}
+
+.wrapper label span {
+	padding: 0.4em 0 0;
+	display: inline-block;
+}
+
+.wrapper button {
+	background: #8ED8B6;
+}
+
+.wrapper input,
+.wrapper select,
+.wrapper button {
+	box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  border: none;
+	outline: none;
+	padding: 0.4em;
+	border-radius: 0;
+}
+
+.wrapper label > input,
+.wrapper label > select,
+.wrapper label > button {
+	float: right;
+	width: 60%;
+}
+
+.wrapper__buttons {
+	position: fixed;
+	bottom: 2em;
+	width: 50%;
+}
+
+.wrapper__buttons button {
+	width: 33.3333%;
+	float: left;
 }
