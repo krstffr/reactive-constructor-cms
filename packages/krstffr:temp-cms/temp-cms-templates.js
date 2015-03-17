@@ -1,3 +1,9 @@
+// TODO: Move to a better place
+var moveInArray = function (array, fromIndex, toIndex) {
+  array.splice(toIndex, 0, array.splice(fromIndex, 1)[0] );
+  return array;
+};
+
 Handlebars.registerHelper('getTemplateFromType', function () {
 
   if (!this.type || !this.key)
@@ -26,6 +32,51 @@ Handlebars.registerHelper('getTemplateFromType', function () {
 Handlebars.registerHelper('equals', function(a, b) {
   return a === b;
 });
+
+Template.editTemplate__Collection.rendered = function () {
+
+  // This is the wrapper for the elements which will be sortable
+  var sortableWrapper = this.find('.collection__items');
+
+  // The most important thing of all in this sortable is the
+  // return false; in the update. This prevents jQuery sortabale's
+  // built in DOM change (on update), and instead does nothing
+  // to the DOM on update. Instead we let Meteor/Blaze update the DOM
+  // from the setReactiveValue() method!
+  $( this.find('.collection__items') ).sortable({
+    // The placeholder element will get the same size as the
+    // element we're moving, and it will get the built in class.
+    placeholder: "ui-state-highlight",
+    forcePlaceholderSize: true,
+    start: function(e, ui) {
+      // Creates a temporary attribute on the element with the old index
+      $(this).attr('data-previndex', ui.item.index());
+    },
+    update: function(e, ui) {
+
+      // Gets the new and old index then removes the temporary attribute
+      var newIndex = ui.item.index();
+      var oldIndex = parseInt( $(this).attr('data-previndex'), 10 );
+      $(this).removeAttr('data-previndex');
+
+      // Get the parent context as well as this context (the array)
+      var parentContext = Blaze.getData( $(this).closest('.wrap')[0] );
+      var context = Blaze.getData( this );
+
+      // Switch around the positions in the array, move element from
+      // oldIndex to newIndex…
+      var newValue = moveInArray( context.value, oldIndex, newIndex );
+
+      // …and update the parent context to the new array.
+      parentContext.setReactiveValue( context.key, newValue );
+
+      // Super important! Return false to prevent jQuery UI from updating
+      // the DOM and instead letting Meteor/Blaze do that.
+      return false;
+
+    }
+  });
+};
 
 Template.editTemplate.helpers({
   data: function () {
@@ -64,7 +115,7 @@ Template.editTemplate__wrapper.events({
 
 Template.editTemplate.events({
   'click .temp-cms-create-new-instance': function ( e ) {
-    
+
     e.stopImmediatePropagation();
 
     var newItem = new window[this.type.replace(/Collection_/g, '')]();

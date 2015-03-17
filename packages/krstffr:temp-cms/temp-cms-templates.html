@@ -40,11 +40,15 @@
 			{{ key }}
 		</h3>
 
-		{{#each value }}
+		<div class="collection__items">
 
-			{{> Template.dynamic template=getTemplateFromType }}
+			{{#each value }}
 
-		{{/each}}
+				{{> Template.dynamic template=getTemplateFromType }}
+
+			{{/each}}
+
+		</div>
 
 		<button class="temp-add-new-coll-item">
 			Add new {{ key }}

@@ -11,11 +11,11 @@
 	font-family: sans-serif;
 	font-size: 13px;
 	position: fixed;
-	width: 50%;
+	width: 45%;
 	/*max-height: 70%;*/
 	bottom: 2em;
 	top: 2em;
-	left: 2em;
+	right: 2em;
 	overflow: auto;
 
 	background: #112;
@@ -36,12 +36,12 @@
 	margin: 0.7em 0;
 }
 
-.wrap .collection > .wrap {
+.wrap .collection__items > .wrap {
 	background: #112;
 	padding: 1.2em 0.7em 0.7em;
 	margin: 0;
 }
-.wrap .collection > .wrap + .wrap {
+.wrap .collection__items > .wrap + .wrap {
 	border-top: 1px dashed #333;
 }
 
