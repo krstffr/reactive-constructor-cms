@@ -50,6 +50,17 @@
 	padding: 0.3em;
 }
 
+.temp-remove-collection-item {
+	display: none;
+}
+
+.collection__items > .wrap > h2 .temp-remove-collection-item {
+	display: inline-block;
+  float: right;
+  font-size: 0.6em;
+  line-height: 2.1;
+}
+
 .wrap h2,
 .wrap h3 {
   padding: 0 0 0.6em;

@@ -59,16 +59,14 @@ Template.editTemplate__Collection.rendered = function () {
       var oldIndex = parseInt( $(this).attr('data-previndex'), 10 );
       $(this).removeAttr('data-previndex');
 
+      console.log( this );
+
       // Get the parent context as well as this context (the array)
       var parentContext = Blaze.getData( $(this).closest('.wrap')[0] );
       var context = Blaze.getData( this );
 
-      // Switch around the positions in the array, move element from
-      // oldIndex to newIndex…
-      var newValue = moveInArray( context.value, oldIndex, newIndex );
-
-      // …and update the parent context to the new array.
-      parentContext.setReactiveValue( context.key, newValue );
+      // Update the array using the arrayitemMove method on the parent context
+      parentContext.arrayitemMove( context.key, newIndex, oldIndex );
 
       // Super important! Return false to prevent jQuery UI from updating
       // the DOM and instead letting Meteor/Blaze do that.
@@ -114,6 +112,17 @@ Template.editTemplate__wrapper.events({
 });
 
 Template.editTemplate.events({
+  'click .temp-remove-collection-item': function ( e, tmpl ) {
+    
+    e.stopImmediatePropagation();
+
+    var listItem = $(e.currentTarget).closest('.wrap');
+    var context = Blaze.getData( listItem.closest('.collection__items')[0] );
+    var parentContext = Blaze.getData( listItem.closest('.collection').closest('.wrap')[0] );
+
+    parentContext.arrayitemRemove( context.key, listItem.index() );
+
+  },
   'click .temp-cms-create-new-instance': function ( e ) {
 
     e.stopImmediatePropagation();

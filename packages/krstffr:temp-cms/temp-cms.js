@@ -3,7 +3,7 @@ var TEMPcmsPlugin = new ReactiveConstructorPlugin({
 	initClass: function ( passedClass ) {
 
 		// Method for returning the type of an item as a string.
-		getTypeOfStructureItem = function ( item ) {
+		var getTypeOfStructureItem = function ( item ) {
 			// Does the item actaully have a name?
 			// Then it's probably a String or a Number or a Boolean, return it
 			if (item.name)
@@ -30,6 +30,20 @@ var TEMPcmsPlugin = new ReactiveConstructorPlugin({
 					type: getTypeOfStructureItem( typeStructure[key] )
 				};
 			});
+		};
+
+		passedClass.prototype.arrayitemRemove = function ( listKey, indexToRemove ) {
+			var arr = this.getReactiveValue( listKey );
+			arr.splice( indexToRemove, 1 );
+			this.setReactiveValue( listKey, arr );
+			return this.getReactiveValue( listKey );
+		};
+
+		passedClass.prototype.arrayitemMove = function ( listKey, newIndex, oldIndex ) {
+			var arr = this.getReactiveValue( listKey );
+			arr.splice( newIndex, 0, arr.splice( oldIndex, 1 )[0] );
+			this.setReactiveValue( listKey, arr );
+			return this.getReactiveValue( listKey );
 		};
 
 		passedClass.prototype.save = function() {
