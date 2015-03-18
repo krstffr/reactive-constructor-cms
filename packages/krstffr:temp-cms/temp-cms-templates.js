@@ -48,6 +48,7 @@ Template.editTemplate__Collection.rendered = function () {
     // element we're moving, and it will get the built in class.
     placeholder: "ui-state-highlight",
     forcePlaceholderSize: true,
+    delay: 150,
     start: function(e, ui) {
       // Creates a temporary attribute on the element with the old index
       $(this).attr('data-previndex', ui.item.index());
@@ -112,7 +113,18 @@ Template.editTemplate__wrapper.events({
 });
 
 Template.editTemplate.events({
-  'click .temp-remove-collection-item': function ( e, tmpl ) {
+  'click .temp-remove-collection-duplicate': function ( e ) {
+
+    e.stopImmediatePropagation();
+
+    var listItem = $(e.currentTarget).closest('.wrap');
+    var context = Blaze.getData( listItem.closest('.collection__items')[0] );
+    var parentContext = Blaze.getData( listItem.closest('.collection').closest('.wrap')[0] );
+
+    parentContext.arrayitemDuplicate( context.key, listItem.index() );
+
+  },
+  'click .temp-remove-collection-item': function ( e ) {
     
     e.stopImmediatePropagation();
 
