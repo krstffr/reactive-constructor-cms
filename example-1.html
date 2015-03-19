@@ -10,9 +10,23 @@
 
 <template name="invoiceTestTemplate">
 
+	{{#with person }}
+
+		<p>Name: {{ getReactiveValue 'name' }}</p>
+
+		<p>Title: {{ getReactiveValue 'title' }}</p>
+
+		<p>Age: {{ getReactiveValue 'age' }}</p>
+
+		<button class="edit-instance">Edit person</button>
+
+		<hr>
+
+	{{/with}}
+
 	{{#each invoices }}
 
-	  <button class="edit-invoice">Edit invoice</button>
+	  <button class="edit-instance">Edit invoice</button>
 
   	<h1>Invoice {{ getReactiveValue 'invoiceName' }}</h1>
 

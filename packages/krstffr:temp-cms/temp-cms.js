@@ -1,3 +1,5 @@
+renderedCMSView = false;
+
 var TEMPcmsPlugin = new ReactiveConstructorPlugin({
 
 	initClass: function ( passedClass ) {
@@ -81,8 +83,21 @@ var TEMPcmsPlugin = new ReactiveConstructorPlugin({
 
 		};
 
+		// Method for removing the currently visible CMS view (if there is one)
+		passedClass.prototype.editPageRemove = function () {
+			if ( renderedCMSView )
+				return Blaze.remove( renderedCMSView );
+			return false;
+		};
+
+		// Method for getting (and showing) the current CMS view
 		passedClass.prototype.editPageGet = function() {
-			Blaze.renderWithData( Template.editTemplate__wrapper, this, document.body );
+			// Remove any currently visible edit templates (TODO: Is this always a good thing?)
+			this.editPageRemove();
+
+			// Render the edit template
+			renderedCMSView = Blaze.renderWithData( Template.editTemplate__wrapper, this, document.body );
+
 		};
 
 		return passedClass;

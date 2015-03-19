@@ -107,7 +107,7 @@ Template.editTemplate__wrapper.events({
 
     e.stopImmediatePropagation();
 
-    Blaze.remove(tmpl.view);
+    this.editPageRemove();
     
   }
 });

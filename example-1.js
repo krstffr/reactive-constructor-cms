@@ -234,7 +234,7 @@ Template.invoiceTestTemplate.helpers({
 });
 
 Template.invoiceTestTemplate.events({
-  'click .edit-invoice': function ( e, tmpl ) {
+  'click .edit-instance': function ( e, tmpl ) {
 
     e.stopImmediatePropagation();
 
