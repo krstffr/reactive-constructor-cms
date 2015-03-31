@@ -85,8 +85,12 @@ var TEMPcmsPlugin = new ReactiveConstructorPlugin({
 
 		// Method for removing the currently visible CMS view (if there is one)
 		passedClass.prototype.editPageRemove = function () {
-			if ( renderedCMSView )
-				return Blaze.remove( renderedCMSView );
+			if ( renderedCMSView ) {
+				$('.wrapper').addClass('wrapper--hidden');
+				Meteor.setTimeout(function () {
+					Blaze.remove( renderedCMSView );
+				}, 200 );
+			}
 			return false;
 		};
 
@@ -97,6 +101,11 @@ var TEMPcmsPlugin = new ReactiveConstructorPlugin({
 
 			// Render the edit template
 			renderedCMSView = Blaze.renderWithData( Template.editTemplate__wrapper, this, document.body );
+
+			// TODO: Make better, use proper classes etc.
+			Meteor.setTimeout(function () {
+				$('.wrapper--hidden').removeClass('wrapper--hidden');
+			}, 5 );
 
 		};
 
