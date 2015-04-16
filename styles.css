@@ -66,11 +66,12 @@
 	display: none;
 }
 
-.collection__items > .wrap > h2 .temp-remove-collection-item {
+.collection__items > .wrap > h2 a {
 	display: inline-block;
   float: right;
   font-size: 0.6em;
   line-height: 2.1;
+  margin-left: 1em;
 }
 
 .wrap h2,

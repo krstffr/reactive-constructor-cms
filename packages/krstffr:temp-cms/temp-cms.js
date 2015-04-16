@@ -87,8 +87,6 @@ var TEMPcmsPlugin = new ReactiveConstructorPlugin({
 		// Method for removing the currently visible CMS view (if there is one)
 		passedClass.prototype.editPageRemove = function ( callback ) {
 			
-			console.log( renderedCMSView );
-
 			var instanceContext = this;
 
 			// Is there a current view? Then hide it!
