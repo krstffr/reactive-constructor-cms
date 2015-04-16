@@ -139,7 +139,7 @@ Template.editTemplate.events({
 
     e.stopImmediatePropagation();
 
-    var newItem = new window[this.type.replace(/Collection_/g, '')]();
+    var newItem = new ReactiveConstructors[this.type.replace(/Collection_/g, '')]();
 
     Template.currentData().setReactiveValue( this.key, newItem );
 
@@ -153,7 +153,7 @@ Template.editTemplate.events({
 
     e.stopImmediatePropagation();
 
-    var newItem = new window[this.type.replace(/Collection_/g, '')]();
+    var newItem = new ReactiveConstructors[this.type.replace(/Collection_/g, '')]();
 
     var items = Template.currentData().getReactiveValue( this.key );
     

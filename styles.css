@@ -21,6 +21,18 @@
 	background: #112;
 	color: white;
 
+	opacity: 1;
+	transform: translate(0,0);
+
+	transition: 0.2s all ease;
+
+}
+
+.wrapper--hidden {
+
+	opacity: 0;
+	transform: translate(0,20px);
+
 }
 
 .wrap {
