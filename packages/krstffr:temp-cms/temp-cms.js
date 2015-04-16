@@ -86,7 +86,7 @@ var TEMPcmsPlugin = new ReactiveConstructorPlugin({
 
 		// Method for removing the currently visible CMS view (if there is one)
 		passedClass.prototype.editPageRemove = function ( callback ) {
-			
+
 			var instanceContext = this;
 
 			// Is there a current view? Then hide it!
@@ -123,8 +123,6 @@ var TEMPcmsPlugin = new ReactiveConstructorPlugin({
 
 			// Remove any currently visible edit templates
 			return this.editPageRemove( function() {
-
-				console.log( this );
 
 				// Render the edit template
 				renderedCMSView = Blaze.renderWithData( Template.editTemplate__wrapper, this, document.body );

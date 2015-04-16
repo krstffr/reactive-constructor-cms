@@ -71,7 +71,7 @@
 	display: none;
 }
 
-.collection__items > .wrap > h2 a {
+.wrap > h2 a {
 	display: inline-block;
   float: right;
   font-size: 0.6em;
@@ -102,6 +102,10 @@
 
 .wrapper button {
 	background: #8ED8B6;
+	cursor: pointer;
+}
+.wrapper button:hover {
+	background: #7EB8A6;
 }
 
 .wrapper input,
@@ -112,7 +116,7 @@
   -webkit-box-sizing: border-box;
   border: none;
 	outline: none;
-	padding: 0.4em;
+	padding: 0.5em;
 	border-radius: 0;
 }
 

@@ -1,0 +1,3 @@
+ ☐ Make nested objects (not in an array) removable
+ ☐ How to handle adding of a constructor which has multiple type?
+ ☐ What's the best way to get the current data context in the blur/update value event? Right now using Template.currentData() which means we have to add this event and method to every unique template we might come up with. Not cool!

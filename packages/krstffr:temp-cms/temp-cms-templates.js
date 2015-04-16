@@ -19,7 +19,9 @@ Handlebars.registerHelper('getTemplateFromType', function () {
   if (!this.value)
     return 'editTemplate__noReactiveInstanceSet';
 
-  return 'editTemplate';
+  console.log( this.value, 'constructor right?');
+
+  return 'edit__ReactiveConstructor';
 
 });
 
@@ -94,6 +96,22 @@ Template.editTemplate.helpers({
   }
 });
 
+// TODO this is not clean at all actually.
+var handleBlurEvent = function ( e ) {
+
+  e.stopImmediatePropagation();
+
+  var value = $(e.currentTarget).val();
+
+  if (this.type === 'Number')
+    value = parseFloat( value, 10 );
+
+  console.log( this, value, Template.currentData() );
+
+  Template.currentData().setReactiveValue( this.key, value );
+
+};
+
 Template.editTemplate__wrapper.events({
   'click .temp-cms-close-button': function ( e ) {
 
@@ -102,6 +120,11 @@ Template.editTemplate__wrapper.events({
     this.editPageRemove();
     
   }
+});
+
+Template.edit__ReactiveConstructor.events({
+  // Method for updating the value of a property on keyup!
+  'blur input': handleBlurEvent
 });
 
 Template.editTemplate.events({
@@ -117,7 +140,7 @@ Template.editTemplate.events({
 
   },
   'click .temp-remove-collection-item': function ( e ) {
-    
+
     e.stopImmediatePropagation();
 
     var listItem = $(e.currentTarget).closest('.wrap');
@@ -155,18 +178,7 @@ Template.editTemplate.events({
 
   },
   // Method for updating the value of a property on keyup!
-  'blur input': function ( e ) {
-
-    e.stopImmediatePropagation();
-    
-    var value = $(e.currentTarget).val();
-
-    if (this.type === 'Number')
-      value = parseFloat( value, 10 );
-
-    Template.currentData().setReactiveValue( this.key, value );
-
-  },
+  'blur input': handleBlurEvent,
   // Method for boolean values
   'change .TEMP-bool-select': function ( e ) {
 

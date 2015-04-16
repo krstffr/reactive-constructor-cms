@@ -58,6 +58,26 @@
 
 </template>
 
+<template name="edit__ReactiveConstructor">
+
+	<div class="wrap">
+
+		<h2>
+			{{ rcType }}
+			<a class="temp-remove-reactive-instance-item">Remove</a>
+		</h2>
+
+		{{! Iterate over all the fields, get the corresponding field }}
+		{{#each getReactiveValuesAsArray }}
+
+			{{> Template.dynamic template=getTemplateFromType }}
+
+		{{/each }}
+
+	</div>
+	
+</template>
+
 <template name="editTemplate">
 
 	<div class="wrap">
@@ -77,8 +97,6 @@
 
 		{{/each }}
 
-		<!-- <button class="save">Save!</button> -->
-
 	</div>
 	
 </template>
@@ -90,7 +108,7 @@
 		<div class="wrapper__editable-fields">
 
 			{{> editTemplate }}
-			
+
 		</div>
 
 		<div class="wrapper__buttons">
