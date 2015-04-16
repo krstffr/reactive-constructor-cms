@@ -85,28 +85,58 @@ var TEMPcmsPlugin = new ReactiveConstructorPlugin({
 		};
 
 		// Method for removing the currently visible CMS view (if there is one)
-		passedClass.prototype.editPageRemove = function () {
+		passedClass.prototype.editPageRemove = function ( callback ) {
+			
+			console.log( renderedCMSView );
+
+			var instanceContext = this;
+
+			// Is there a current view? Then hide it!
 			if ( renderedCMSView ) {
+
+				// Hide the container by adding the hidden class
+				// TODO: Use a more proper class
 				$('.wrapper').addClass('wrapper--hidden');
-				Meteor.setTimeout(function () {
+
+				// Return a time out which actually remove the view
+				return Meteor.setTimeout(function () {
 					Blaze.remove( renderedCMSView );
+					// Now we don't have a view, set the var to false.
+					renderedCMSView = false;
+					// Is a callback provided? Execute it!
+					if (callback)
+						return callback.call( instanceContext );
 				}, 200 );
 			}
+
+			// Is a callback provided? Execute it!
+			if (callback)
+				return callback.call( instanceContext );
+
+			// No callback or current view? Return false.
+			// TODO: This should never happen. Make some kind of check?
+			console.error('editPageRemove() called without callback or renderedCMSView!');
 			return false;
+
 		};
 
 		// Method for getting (and showing) the current CMS view
 		passedClass.prototype.editPageGet = function() {
-			// Remove any currently visible edit templates (TODO: Is this always a good thing?)
-			this.editPageRemove();
 
-			// Render the edit template
-			renderedCMSView = Blaze.renderWithData( Template.editTemplate__wrapper, this, document.body );
+			// Remove any currently visible edit templates
+			return this.editPageRemove( function() {
 
-			// TODO: Make better, use proper classes etc.
-			Meteor.setTimeout(function () {
-				$('.wrapper--hidden').removeClass('wrapper--hidden');
-			}, 5 );
+				console.log( this );
+
+				// Render the edit template
+				renderedCMSView = Blaze.renderWithData( Template.editTemplate__wrapper, this, document.body );
+
+				// TODO: Make better, use proper classes etc.
+				Meteor.setTimeout(function () {
+					$('.wrapper--hidden').removeClass('wrapper--hidden');
+				}, 5 );
+
+			});
 
 		};
 
