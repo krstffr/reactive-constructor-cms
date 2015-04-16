@@ -206,18 +206,11 @@ invoices = new ReactiveVar( [ invoice1 ] );
 person = new Person({ name: 'Stoffe K' });
 
 person2 = new Person({ age: 17, rcType: 'child' });
-console.log( 'Person2 is now ' + person2.getAgePlus(0));
-console.log( ' and he/she will be: ' + person2.getAgePlus( 3 ) + ' in three years!' );
-console.log( 'Person2 is a teenager: ' + person2.isTeenager() );
-console.log( 'Person2 ages six years and is now: ' + person2.addYears( 6 ) );
-console.log( 'Person2 is a teenager after the six years? ' + person2.isTeenager() );
-console.log( 'Person1 should not have a isTeenager method!');
-console.log( 'typeof is: ' + typeof person.isTeenager );
 
 person3 = new Person({ age: 50, rcType: 'child' });
 // person4 = new Person();
 
-var person4 = new Person({ age: 50, rcType: 'worker', children: [{ age: 25, rcType: 'child' }] });
+new Person({ age: 50, rcType: 'worker', children: [{ age: 25, rcType: 'child' }] });
 
 Template.invoiceTestTemplate.helpers({
   person: function () {
@@ -235,7 +228,7 @@ Template.invoiceTestTemplate.helpers({
 });
 
 Template.invoiceTestTemplate.events({
-  'click .edit-instance': function ( e, tmpl ) {
+  'click .edit-instance': function ( e ) {
 
     e.stopImmediatePropagation();
 

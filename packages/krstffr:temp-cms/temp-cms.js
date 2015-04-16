@@ -2,7 +2,9 @@ renderedCMSView = false;
 
 var TEMPcmsPlugin = new ReactiveConstructorPlugin({
 
-	initClass: function ( passedClass ) {
+	initConstructor: function ( passedClass ) {
+
+		console.log('TEMPcmsPlugin: initConstructor() ', passedClass.name );
 
 		// Method for returning the type of an item as a string.
 		var getTypeOfStructureItem = function ( item ) {
@@ -78,8 +80,7 @@ var TEMPcmsPlugin = new ReactiveConstructorPlugin({
 			if (!this.collection)
 				throw new Meteor.Error('temp-cms', 'No collection defined for: ' + this.rcType );
 
-			console.log('saving!');
-			console.log( this );
+			console.log('saving: ', this );
 
 		};
 
@@ -115,7 +116,7 @@ var TEMPcmsPlugin = new ReactiveConstructorPlugin({
 
 	initInstance: function ( instance ) {
 
-		// console.log( 'running initInstance() on: ', instance );
+		console.log('TEMPcmsPlugin: initInstance() ', instance.getType() );
 
 		return instance;
 
