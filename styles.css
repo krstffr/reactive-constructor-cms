@@ -35,6 +35,11 @@
 
 }
 
+.wrapper__editable-fields{
+	height: 100%;
+	overflow: auto;
+}
+
 .wrap {
 	padding: 1.5em 1.2em;
 	width: 100%;
@@ -120,8 +125,8 @@
 
 .wrapper__buttons {
 	position: fixed;
-	bottom: 2em;
-	width: 45%;
+	bottom: 0;
+	width: 100%;
 }
 
 .wrapper__buttons button {
