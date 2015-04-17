@@ -142,11 +142,11 @@ Template.editTemplate.events({
     parentContext.arrayitemDuplicate( context.key, listItem.index() );
 
   },
-  'click .temp-remove-nested-rc-instance': function( e, tmpl ) {
+  'click .temp-remove-nested-rc-instance': function() {
 
     var parentContext = Template.parentData(0);
 
-    return parentContext.setReactiveValue( this.key, false );
+    return parentContext.unsetReactiveValue( this.key );
 
   },
   'click .temp-remove-collection-item': function ( e ) {
