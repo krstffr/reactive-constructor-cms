@@ -7,3 +7,16 @@
  ☐ What's the best way to get the current data context in the blur/update value event? Right now using Template.currentData() which means we have to add this event and method to every unique template we might come up with. Not cool!
 
  ☐ Use the type-name, not the constructor name for stuff (or both?)
+
+ ☐ How to handle nested "pure" objects? Should that even be allowed? NAH. Not in the CMS! Or? Maybe…
+   
+ ☐ Handle saves
+
+ ☐ Handle duplications
+
+ ☐ Handle deletes
+
+ ☐ Handle links to existing DB objects
+   ☐ Updating the link
+
+ ☐ 
