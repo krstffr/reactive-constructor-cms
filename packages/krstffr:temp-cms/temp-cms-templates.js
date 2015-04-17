@@ -19,7 +19,7 @@ Handlebars.registerHelper('getTemplateFromType', function () {
   if (!this.value)
     return 'editTemplate__noReactiveInstanceSet';
 
-  console.log( this.value, 'constructor right?');
+  console.log( 'rc-instance right?', this.value);
 
   return 'edit__ReactiveConstructor';
 
@@ -84,7 +84,7 @@ Template.editTemplate.helpers({
 
     // If there is no value set, it's probably (TODO!??)
     // a reactive instance which is not yet set!
-    if (!this.value && this.key && this.type)
+    if (this.key && this.type)
       return this;
 
     // Else the "actual value" should be returned!
@@ -106,9 +106,12 @@ var handleBlurEvent = function ( e ) {
   if (this.type === 'Number')
     value = parseFloat( value, 10 );
 
-  console.log( this, value, Template.currentData() );
+  // This is for handling template which have a data context of "key", "value"
+  // and "type"
+  if (Template.currentData().value)
+    return Template.currentData().value.setReactiveValue( this.key, value );
 
-  Template.currentData().setReactiveValue( this.key, value );
+  return Template.currentData().setReactiveValue( this.key, value );
 
 };
 
@@ -137,6 +140,13 @@ Template.editTemplate.events({
     var parentContext = Blaze.getData( listItem.closest('.collection').closest('.wrap')[0] );
 
     parentContext.arrayitemDuplicate( context.key, listItem.index() );
+
+  },
+  'click .temp-remove-nested-rc-instance': function( e, tmpl ) {
+
+    var parentContext = Template.parentData(0);
+
+    return parentContext.setReactiveValue( this.key, false );
 
   },
   'click .temp-remove-collection-item': function ( e ) {

@@ -63,12 +63,12 @@
 	<div class="wrap">
 
 		<h2>
-			{{ rcType }}
-			<a class="temp-remove-reactive-instance-item">Remove</a>
+			{{ value.rcType }}
+			<a class="temp-remove-nested-rc-instance">Remove</a>
 		</h2>
 
 		{{! Iterate over all the fields, get the corresponding field }}
-		{{#each getReactiveValuesAsArray }}
+		{{#each value.getReactiveValuesAsArray }}
 
 			{{> Template.dynamic template=getTemplateFromType }}
 
