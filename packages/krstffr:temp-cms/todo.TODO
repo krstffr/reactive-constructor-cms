@@ -19,4 +19,5 @@
  ☐ Handle links to existing DB objects
    ☐ Updating the link
 
- ☐ 
+ ☐ "Top" instances should not have Remove (or Duplicate!) buttons!
+   ☐ (Only "array children" shoulkd have duplicate)

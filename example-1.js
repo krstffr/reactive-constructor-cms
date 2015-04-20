@@ -15,13 +15,20 @@ Person = new ReactiveConstructor(function Person( initData ) {
 
   that.initData = initData || {};
 
+  that.globalValues = {
+    fields: {
+      age: Number,
+      name: String,
+      children: [ Person ],
+      parents: [ Person ],
+      sex: String
+    }
+  };
+
   that.typeStructure = [{
     type: 'worker',
     fields: {
-      name: String,
-      title: String,
-      age: Number,
-      children: [ Person ]
+      title: String
     },
     defaultData: {
       name: 'Kristoffer Klintberg',
@@ -32,8 +39,8 @@ Person = new ReactiveConstructor(function Person( initData ) {
   }, {
     type: 'husband',
     fields: {
-      age: Number,
-      wife: Person
+      wife: Person,
+      sex: 'male'
     },
     defaultData: {
       age: 49
@@ -41,17 +48,16 @@ Person = new ReactiveConstructor(function Person( initData ) {
   }, {
     type: 'wife',
     fields: {
-      age: Number,
       happy: Boolean
     },
     defaultData: {
-      age: 54
+      age: 54,
+      sex: 'female'
     }
   }, {
     type: 'child',
-    fields: {
-      age: Number,
-      parents: [ Person ]
+    defaultData: {
+      age: 18
     },
     methods: {
       isTeenager: function () {
