@@ -8,21 +8,44 @@
 
 </body>
 
-<template name="invoiceTestTemplate">
+<template name="personTestTemplate">
 
-	{{#with person }}
+	<div class="personTest">
 
-		<p>Name: {{ getReactiveValue 'name' }}</p>
+		<p>
+			Name: {{ getReactiveValue 'name' }}
+			<button class="edit-instance">Edit person</button>
+		</p>
 
 		<p>Title: {{ getReactiveValue 'title' }}</p>
 
 		<p>Age: {{ getReactiveValue 'age' }}</p>
 
-		<button class="edit-instance">Edit person</button>
+		{{#if getReactiveValue 'children' }}
 
-		<hr>
+			<h3>Children:</h3>
+
+			{{#each getReactiveValue 'children' }}
+
+				{{> personTestTemplate }}
+
+			{{/each}}
+
+		{{/if}}
+
+	</div>
+
+</template>
+
+<template name="invoiceTestTemplate">
+
+	{{#with person }}
+
+		{{> personTestTemplate }}
 
 	{{/with}}
+
+	<hr>
 
 	{{#each invoices }}
 
