@@ -1,6 +1,7 @@
  ✔ Make nested objects (not in an array) removable @done (15-04-17 12:11)
 
  ☐ How to handle adding of a constructor which has multiple type?
+   ☐ https://github.com/krstffr/reactive-constructor/issues/19!!
    Just show a list of all the types and let the user select the one she wants!
    ☐ Method in the CMS for exluding/including types for nested stuff!
 

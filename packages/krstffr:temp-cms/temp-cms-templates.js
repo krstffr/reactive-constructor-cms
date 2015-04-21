@@ -164,6 +164,7 @@ Template.editTemplate.events({
 
     e.stopImmediatePropagation();
 
+    // Now: Here we should list all instance types in the constructor
     var newItem = new ReactiveConstructors[this.type.replace(/Collection_/g, '')]();
 
     Template.currentData().setReactiveValue( this.key, newItem );

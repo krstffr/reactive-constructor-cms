@@ -124,8 +124,8 @@ InvoiceListItem = new ReactiveConstructor(function InvoiceListItem ( initData ) 
       taxDescription: String
     },
     defaultData: {
-      itemName: '',
-      units: 0,
+      itemName: 'Website',
+      units: 35,
       unitPrice: 700,
       unitDescription: 'timmar',
       tax: 25,
@@ -133,7 +133,7 @@ InvoiceListItem = new ReactiveConstructor(function InvoiceListItem ( initData ) 
     }
   }];
 
-  that.endPrice = function ( context ) {
+  that.endPrice = function () {
     return that.getReactiveValue('units') * that.getReactiveValue('unitPrice');
   };
 
@@ -203,7 +203,7 @@ Invoice = new ReactiveConstructor(function Invoice ( initData ) {
 
 });
 
-invoice1 = new Invoice({ invoiceName: 'KK666', items: [ new InvoiceListItem() ] });
+invoice1 = new Invoice({ invoiceName: 'KK001', items: [ new InvoiceListItem() ] });
 
 // invoice1.setReactiveValue('client', client );
 
