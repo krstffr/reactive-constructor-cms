@@ -137,3 +137,7 @@
 	width: 33.3333%;
 	float: left;
 }
+
+.temp-constructor-name{
+	opacity: 0.3;
+}

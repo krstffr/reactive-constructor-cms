@@ -83,9 +83,10 @@
 	<div class="wrap">
 
 		<h2>
-			{{ className }}{{#if type }},
-				type: <em>{{ type }}</em>
-			{{/if}}
+
+			{{ getType }}
+			<span class="temp-constructor-name">{{ constructorName }}</span>
+
 			<a class="temp-remove-collection-item">Remove</a>
 			<a class="temp-remove-collection-duplicate">Duplicate</a>
 		</h2>

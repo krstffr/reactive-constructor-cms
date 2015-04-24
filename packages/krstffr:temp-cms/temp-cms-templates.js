@@ -91,8 +91,12 @@ Template.editTemplate.helpers({
     return this.value;
 
   },
-  className: function () {
+  constructorName: function () {
     return this.constructor.name;
+  },
+  getType: function() {
+    var type = this.getType();
+    return type.charAt(0).toUpperCase() + type.slice(1);
   }
 });
 
@@ -179,7 +183,11 @@ Template.editTemplate.events({
 
     e.stopImmediatePropagation();
 
-    var newItem = new ReactiveConstructors[this.type.replace(/Collection_/g, '')]();
+    var typeNames = ReactiveConstructors[this.type.replace(/Collection_/g, '')].getTypeNames();
+
+    var type = prompt('What type you want?\n'+typeNames);
+
+    var newItem = new ReactiveConstructors[this.type.replace(/Collection_/g, '')]({ rcType: type });
 
     var items = Template.currentData().getReactiveValue( this.key );
     
