@@ -11,7 +11,8 @@ Package.onUse(function (api) {
 	api.use([
 		"templating",
 		"krstffr:reactive-constructor@0.0.4",
-		"mizzao:jquery-ui@1.11.2"
+		"mizzao:jquery-ui@1.11.2",
+    "stevezhu:lodash@1.0.2"
 		], "client");
 
 	api.addFiles([

@@ -39,10 +39,12 @@ Person = new ReactiveConstructor(function Person() {
       type: 'husband',
       fields: {
         wife: Person,
-        sex: 'male'
+        happy: Boolean
       },
       defaultData: {
-        age: 49
+        age: 49,
+        sex: 'male',
+        happy: true
       }
     }, {
       type: 'wife',
@@ -51,7 +53,8 @@ Person = new ReactiveConstructor(function Person() {
       },
       defaultData: {
         age: 54,
-        sex: 'female'
+        sex: 'female',
+        happy: false
       }
     }, {
       type: 'child',

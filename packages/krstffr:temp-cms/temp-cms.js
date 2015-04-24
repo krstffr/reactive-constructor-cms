@@ -66,9 +66,10 @@ var TEMPcmsPlugin = new ReactiveConstructorPlugin({
 			var arr = this.getReactiveValue( listKey );
 			// Get the item we want to duplicate
 			var item = arr[indexToDuplicate];
-			// Use the items .constructor and .getDataAsObject() methods to create a copy
-			// and push this to the array
-			arr.push( new item.constructor( item.getDataAsObject() ) );
+			// Use the .getDataAsObject() method to get this items data, and also add this instances type
+			var newItemData = _.assign({ rcType: item.getType() }, item.getDataAsObject() );
+			// Use the items .constructor to create a new instance and push this to the array
+			arr.push( new item.constructor( newItemData ) );
 			// Update the array…
 			this.setReactiveValue( listKey, arr );
 			// …and move the item to the position after the one being copied
