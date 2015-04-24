@@ -1,3 +1,21 @@
+<template name="editTemplate__selectOverview">
+
+	<div class="temp-select-overview__fader"></div>
+
+	<div class="temp-select-overview">
+	
+	<h2>{{ headline }}</h2>
+
+	{{#each selectableItems }}
+
+		<button>{{ value }}</button>
+
+	{{/each}}
+
+	</div>
+
+</template>
+
 <template name="editTemplate__noReactiveInstanceSet">
 	<label>
 		{{> editTemplate__labelString }}

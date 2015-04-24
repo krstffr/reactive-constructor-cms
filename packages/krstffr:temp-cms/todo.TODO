@@ -4,7 +4,8 @@
    ✔ https://github.com/krstffr/reactive-constructor/issues/19!! @done (15-04-24 11:29)
    Just show a list of all the types and let the user select the one she wants!
    ☐ Method in the CMS for exluding/including types for nested stuff!
-   ☐ We need some kind of global "whatever-wants-a-value-from-a-list -> show-overview-of-choises-in-list -> return-the-coice"-function/template.
+   ✔ We need some kind of global "whatever-wants-a-value-from-a-list -> show-overview-of-choises-in-list -> return-the-coice"-function/template. @done (15-04-25 00:16)
+   ☐ When creating a worker->wife->husband->wife, then duplication of the highest wife throws an error!
 
  ☐ What's the best way to get the current data context in the blur/update value event? Right now using Template.currentData() which means we have to add this event and method to every unique template we might come up with. Not cool!
 
