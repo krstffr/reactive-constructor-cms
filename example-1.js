@@ -20,7 +20,6 @@ Person = new ReactiveConstructor(function Person() {
         age: Number,
         name: String,
         children: [ Person ],
-        parents: [ Person ],
         sex: String
       }
     },

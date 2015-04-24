@@ -138,6 +138,7 @@
 	float: left;
 }
 
-.temp-constructor-name{
-	opacity: 0.3;
+.temp-constructor-name,
+.temp-input-value-type{
+	opacity: 0.35;
 }

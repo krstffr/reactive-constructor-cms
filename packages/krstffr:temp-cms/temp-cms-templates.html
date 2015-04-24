@@ -7,7 +7,8 @@
 
 <template name="editTemplate__labelString">
 	<span class="">
-		{{ key }} &lt;{{ type }}&gt;
+		{{ key }}
+		<span class="temp-input-value-type">&lt;{{ type }}&gt;</span>
 	</span>
 </template>
 
@@ -44,7 +45,7 @@
 
 			{{#each value }}
 
-				{{> Template.dynamic template=getTemplateFromType }}
+				{{> Template.dynamic template=getTemplateFromType data=listItemData }}
 
 			{{/each}}
 
@@ -58,48 +59,38 @@
 
 </template>
 
-<template name="edit__ReactiveConstructor">
+<template name="editTemplate">
 
 	<div class="wrap">
 
 		<h2>
-			{{ value.rcType }}
-			<a class="temp-remove-nested-rc-instance">Remove</a>
+			
+			{{ getType }}
+			<span class="temp-constructor-name">{{ constructorName }}</span>
+			
+			{{! Check if this is the highest parent, if so: don't display these }}
+			{{#if isListItem }}
+				<a class="temp-remove-collection-item">Remove</a>
+				<a class="temp-remove-collection-duplicate">Duplicate</a>
+			{{/if}}
+
+			{{#if isSingleInstance }}
+
+				<a class="temp-remove-nested-rc-instance">Remove instance</a>
+
+			{{/if}}
+
 		</h2>
 
 		{{! Iterate over all the fields, get the corresponding field }}
-		{{#each value.getReactiveValuesAsArray }}
+		{{#each getReactiveValuesAsArray }}
 
 			{{> Template.dynamic template=getTemplateFromType }}
 
 		{{/each }}
 
 	</div>
-	
-</template>
 
-<template name="editTemplate">
-
-	<div class="wrap">
-
-		<h2>
-
-			{{ getType }}
-			<span class="temp-constructor-name">{{ constructorName }}</span>
-
-			<a class="temp-remove-collection-item">Remove</a>
-			<a class="temp-remove-collection-duplicate">Duplicate</a>
-		</h2>
-
-		{{! Iterate over all the fields, get the corresponding field }}
-		{{#each getReactiveValuesAsArray }}
-
-			{{> Template.dynamic template=getTemplateFromType data=data }}
-
-		{{/each }}
-
-	</div>
-	
 </template>
 
 <template name="editTemplate__wrapper">
@@ -115,9 +106,7 @@
 		<div class="wrapper__buttons">
 
 			<button>Save</button>
-
 			<button>Duplicate</button>
-
 			<button class="temp-cms-close-button">Close</button>
 
 		</div>

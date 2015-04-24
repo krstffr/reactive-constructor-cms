@@ -21,7 +21,7 @@ Handlebars.registerHelper('getTemplateFromType', function () {
 
   console.log( 'rc-instance right?', this.value);
 
-  return 'edit__ReactiveConstructor';
+  return 'editTemplate';
 
 });
 
@@ -60,6 +60,8 @@ Template.editTemplate__Collection.rendered = function () {
       var parentContext = Blaze.getData( $(this).closest('.wrap')[0] );
       var context = Blaze.getData( this );
 
+      parentContext = parentContext.value || parentContext;
+
       // Update the array using the arrayitemMove method on the parent context
       parentContext.arrayitemMove( context.key, newIndex, oldIndex );
 
@@ -71,8 +73,19 @@ Template.editTemplate__Collection.rendered = function () {
   });
 };
 
+Template.editTemplate__Collection.helpers({
+  listItemData: function() {
+    return _.assign( this, { isListItem: true });
+  }
+});
+
 Template.editTemplate.helpers({
+  isSingleInstance: function() {
+    return this.key && this.value && this.type;
+  },
   data: function () {
+
+    return this;
 
     // The default values should return the value of this
     if (this.type.search(/String|Number|Boolean/g) > -1)
@@ -80,6 +93,11 @@ Template.editTemplate.helpers({
     
     // Collections should return the value of this
     if (this.type.search(/Collection_/g) > -1)
+      return this;
+
+    // If there is a getReactiveValue function, it is very
+    // probable that it is a reactive instance
+    if ( this.value && Match.test( this.value.getReactiveValue, Function ) )
       return this;
 
     // If there is no value set, it's probably (TODO!??)
@@ -91,11 +109,17 @@ Template.editTemplate.helpers({
     return this.value;
 
   },
+  getReactiveValuesAsArray: function() {
+    var instance = this.value || this;
+    return instance.getReactiveValuesAsArray();
+  },
   constructorName: function () {
-    return this.constructor.name;
+    var instance = this.value || this;
+    return instance.constructor.name;
   },
   getType: function() {
-    var type = this.getType();
+    var instance = this.value || this;
+    var type = instance.getType();
     return type.charAt(0).toUpperCase() + type.slice(1);
   }
 });
@@ -129,11 +153,6 @@ Template.editTemplate__wrapper.events({
   }
 });
 
-Template.edit__ReactiveConstructor.events({
-  // Method for updating the value of a property on keyup!
-  'blur input': handleBlurEvent
-});
-
 Template.editTemplate.events({
   'click .temp-remove-collection-duplicate': function ( e ) {
 
@@ -141,16 +160,24 @@ Template.editTemplate.events({
 
     var listItem = $(e.currentTarget).closest('.wrap');
     var context = Blaze.getData( listItem.closest('.collection__items')[0] );
-    var parentContext = Blaze.getData( listItem.closest('.collection').closest('.wrap')[0] );
+    var parentInstance = Blaze.getData( listItem.closest('.collection').closest('.wrap')[0] );
 
-    parentContext.arrayitemDuplicate( context.key, listItem.index() );
+    parentInstance = parentInstance.value || parentInstance;
+
+    parentInstance.arrayitemDuplicate( context.key, listItem.index() );
 
   },
-  'click .temp-remove-nested-rc-instance': function() {
+  'click .temp-remove-nested-rc-instance': function( e ) {
 
-    var parentContext = Template.parentData(0);
+    e.stopImmediatePropagation();
 
-    return parentContext.unsetReactiveValue( this.key );
+    var instanceItem = $( e.currentTarget ).closest('.wrap');
+    var parentItem = instanceItem.parent().closest('.wrap')[0];
+    var parentInstance = Blaze.getData( parentItem );
+
+    parentInstance = parentInstance.value || parentInstance;
+
+    return parentInstance.unsetReactiveValue( this.key );
 
   },
   'click .temp-remove-collection-item': function ( e ) {
@@ -159,22 +186,26 @@ Template.editTemplate.events({
 
     var listItem = $(e.currentTarget).closest('.wrap');
     var context = Blaze.getData( listItem.closest('.collection__items')[0] );
-    var parentContext = Blaze.getData( listItem.closest('.collection').closest('.wrap')[0] );
+    var parentInstance = Blaze.getData( listItem.closest('.collection').closest('.wrap')[0] );
 
-    parentContext.arrayitemRemove( context.key, listItem.index() );
+    parentInstance = parentInstance.value || parentInstance;
+
+    parentInstance.arrayitemRemove( context.key, listItem.index() );
 
   },
   'click .temp-cms-create-new-instance': function ( e ) {
 
     e.stopImmediatePropagation();
 
-    // Now: Here we should list all instance types in the constructor
-    var newItem = new ReactiveConstructors[this.type.replace(/Collection_/g, '')]();
+    var typeNames = ReactiveConstructors[this.type.replace(/Collection_/g, '')].getTypeNames();
+
+    var type = prompt('What type you want?\n'+typeNames);
+
+    var newItem = new ReactiveConstructors[this.type.replace(/Collection_/g, '')]({ rcType: type });
 
     Template.currentData().setReactiveValue( this.key, newItem );
 
   },
-  
   'click .save': function () {
     return this.saveInvoice();
   },
@@ -189,11 +220,13 @@ Template.editTemplate.events({
 
     var newItem = new ReactiveConstructors[this.type.replace(/Collection_/g, '')]({ rcType: type });
 
-    var items = Template.currentData().getReactiveValue( this.key );
+    var instance = Template.currentData().value || Template.currentData();
+
+    var items = instance.getReactiveValue( this.key );
     
     items.push( newItem );
 
-    Template.currentData().setReactiveValue( this.key, items );
+    instance.setReactiveValue( this.key, items );
 
   },
   // Method for updating the value of a property on keyup!
