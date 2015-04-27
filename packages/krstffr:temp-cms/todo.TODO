@@ -1,10 +1,12 @@
  ✔ Make nested objects (not in an array) removable @done (15-04-17 12:11)
+ 
+ ☐ Write tests!!!
 
- ☐ How to handle adding of a constructor which has multiple type?
+ ✔ How to handle adding of a constructor which has multiple type? @done (15-04-27 21:30)
    ✔ https://github.com/krstffr/reactive-constructor/issues/19!! @done (15-04-24 11:29)
    Just show a list of all the types and let the user select the one she wants!
    ✔ Method in the CMS for exluding/including types for nested stuff! @done (15-04-27 20:04)
-   ☐ Also this method for array's of types!!
+   ✔ Also this method for array's of types!! @done (15-04-27 21:30)
    ✔ We need some kind of global "whatever-wants-a-value-from-a-list -> show-overview-of-choises-in-list -> return-the-coice"-function/template. @done (15-04-25 00:16)
    ✔ When creating a worker->wife->husband->wife, then duplication of the highest wife throws an error! @done (15-04-27 17:00)
 

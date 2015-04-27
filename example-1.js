@@ -33,6 +33,11 @@ Person = new ReactiveConstructor(function Person() {
         title: 'Designer',
         age: 30,
         children: []
+      },
+      cmsOptions: {
+        filter: {
+          children: ['worker', 'child']
+        }
       }
     }, {
       type: 'husband',
@@ -51,7 +56,8 @@ Person = new ReactiveConstructor(function Person() {
           wife: ['wife']
         },
         exclude: {
-          buddies: ['wife', 'child']
+          buddies: ['wife', 'child'],
+          children: ['wife', 'husband']
         }
       }
     }, {

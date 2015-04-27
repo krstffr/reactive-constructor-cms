@@ -211,50 +211,13 @@ Template.editTemplate.events({
 
     e.stopImmediatePropagation();
 
-    // This is the var which will hold the select overview template
-    var renderedOverview = false;
-
     var constructorName = this.type.replace(/Collection_/g, '');
-
-    // Some vars to use in the callback
+    var key = this.key;
     var instance = Template.currentData().value || Template.currentData();
 
-    // Make sure the instance has the setReactiveValue() function
-    check( instance.setReactiveValue, Function );
-
-    // Get the key and type
-    var key = this.key;
-    var type = this.type;
-
-    // Get all the different types of instance names
-    var typeNames = instance.getCreatableTypes( constructorName, key );
-
-    // This is the data which gets passed to the select overview
-    var overviewSelectData = {
-      headline: 'Select ' + type,
-      selectableItems: typeNames,
-      callback: function( selectedItem ) {
-        // Create a new instance
-        var newItem = new ReactiveConstructors[ type.replace(/Collection_/g, '') ]({ rcType: selectedItem });
-        // Set the item to the key of the parent instance
-        instance.setReactiveValue( key, newItem );
-        // Remove the template
-        return overviewSelectData.removeTemplateCallback();
-      },
-      removeTemplateCallback: function() {
-        if (renderedOverview)
-          return Blaze.remove( renderedOverview );
-        return true;
-      }
-    };
-
-    // If there is only on selectable item, just create an instance from that!
-    if ( typeNames.length === 1 )
-      return overviewSelectData.callback( typeNames[0].value );
-    
-    // Render the view and store it in the var
-    renderedOverview = Blaze.renderWithData( Template.editTemplate__selectOverview, overviewSelectData, document.body );
-    return renderedOverview;
+    return instance.getSelectListOverview( constructorName, key, function( instance, key, newItem ) {
+      return instance.setReactiveValue( key, newItem );
+    });
 
   },
   'click .save': function () {
@@ -265,50 +228,16 @@ Template.editTemplate.events({
 
     e.stopImmediatePropagation();
 
-    // This is the var which will hold the select overview template
-    var renderedOverview = false;
-
-    // Get all the different types of instance names
-    var typeNames = ReactiveConstructors[this.type.replace(/Collection_/g, '')].getTypeNames();
-    typeNames = _.map(typeNames, function( name ){
-      return { value: name };
-    });
-
-    // Some vars to use in the callback
-    var instance = Template.currentData().value || Template.currentData();
-    check( instance.getReactiveValue, Function );
+    var constructorName = this.type.replace(/Collection_/g, '');
     var key = this.key;
-    var type = this.type;
+    var instance = Template.currentData().value || Template.currentData();
 
-    // This is the data which gets passed to the select overview
-    var overviewSelectData = {
-      headline: 'Select ' + type,
-      selectableItems: typeNames,
-      callback: function( selectedItem ) {
-        // Create a new instance
-        var newItem = new ReactiveConstructors[ type.replace(/Collection_/g, '') ]({ rcType: selectedItem });
-        // Set the item to the key of the parent instance
-        var items = instance.getReactiveValue( key );
-        items.push( newItem );
-        instance.setReactiveValue( key, items );
-        // Remove the template
-        return overviewSelectData.removeTemplateCallback();
-      },
-      removeTemplateCallback: function() {
-        if (renderedOverview)
-          return Blaze.remove( renderedOverview );
-        return true;
-      }
-    };
-
-    // If there is only on selectable item, just create an instance from that!
-    if ( typeNames.length === 1 )
-      return overviewSelectData.callback( typeNames[0].value );
-    
-    // Render the view and store it in the var
-    renderedOverview = Blaze.renderWithData( Template.editTemplate__selectOverview, overviewSelectData, document.body );
-    return renderedOverview;
-
+    return instance.getSelectListOverview( constructorName, key, function( instance, key, newItem ) {
+      var items = instance.getReactiveValue( key );
+      items.push( newItem );
+      instance.setReactiveValue( key, items );
+      return instance.setReactiveValue( key, items );
+    });
 
   },
   // Method for updating the value of a property on keyup!

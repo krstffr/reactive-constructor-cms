@@ -1,5 +1,8 @@
 renderedCMSView = false;
 
+// This is the var which will hold the select overview template
+renderedCMSSelectOverview = false;
+
 var TEMPcmsPlugin = new ReactiveConstructorPlugin({
 
 	initConstructor: function ( passedClass ) {
@@ -142,6 +145,44 @@ var TEMPcmsPlugin = new ReactiveConstructorPlugin({
 			return _.findWhere( passedClass.constructorDefaults().typeStructure, {
 				type: this.getType()
 			}).cmsOptions || {};
+		};
+
+		passedClass.prototype.getSelectListOverview = function( constructorName, key, setCallback ) {
+
+	    // Get all the different types of instance names
+	    var typeNames = this.getCreatableTypes( constructorName, key );
+
+	    var thisInstance = this;
+
+	    // This is the data which gets passed to the select overview
+	    var overviewSelectData = {
+	      headline: 'Select type of ' + constructorName,
+	      selectableItems: typeNames,
+	      callback: function( selectedItem ) {
+	        // Create a new instance
+	        var newItem = new ReactiveConstructors[ constructorName ]({ rcType: selectedItem });
+	        // Set the item to the key of the parent instance
+	        setCallback( thisInstance, key, newItem );
+	        // Remove the template
+	        return overviewSelectData.removeTemplateCallback();
+	      },
+	      removeTemplateCallback: function() {
+	        if (renderedCMSSelectOverview){
+	          Blaze.remove( renderedCMSSelectOverview );
+	          renderedCMSSelectOverview = false;
+	        }
+	        return true;
+	      }
+	    };
+
+	    // If there is only on selectable item, just create an instance from that!
+	    if ( typeNames.length === 1 )
+	      return overviewSelectData.callback( typeNames[0].value );
+	    
+	    // Render the view and store it in the var
+	    renderedCMSSelectOverview = Blaze.renderWithData( Template.editTemplate__selectOverview, overviewSelectData, document.body );
+	    return renderedCMSSelectOverview;
+
 		};
 
 		// Return an array of strings of the types which a field
