@@ -38,22 +38,37 @@ Person = new ReactiveConstructor(function Person() {
       type: 'husband',
       fields: {
         wife: Person,
+        buddies: [ Person ],
         happy: Boolean
       },
       defaultData: {
         age: 49,
         sex: 'male',
         happy: true
+      },
+      cmsOptions: {
+        filter: {
+          wife: ['wife']
+        },
+        exclude: {
+          buddies: ['wife', 'child']
+        }
       }
     }, {
       type: 'wife',
       fields: {
-        happy: Boolean
+        happy: Boolean,
+        bff: Person
       },
       defaultData: {
         age: 54,
         sex: 'female',
         happy: false
+      },
+      cmsOptions: {
+        exclude: {
+          bff: ['husband', 'child']
+        }
       }
     }, {
       type: 'child',

@@ -214,18 +214,20 @@ Template.editTemplate.events({
     // This is the var which will hold the select overview template
     var renderedOverview = false;
 
-    // Get all the different types of instance names
-    var typeNames = ReactiveConstructors[this.type.replace(/Collection_/g, '')].getTypeNames();
-    typeNames = _.map(typeNames, function( name ){
-      return { value: name };
-    });
+    var constructorName = this.type.replace(/Collection_/g, '');
 
     // Some vars to use in the callback
-    var instance = Template.currentData();
+    var instance = Template.currentData().value || Template.currentData();
+
     // Make sure the instance has the setReactiveValue() function
     check( instance.setReactiveValue, Function );
+
+    // Get the key and type
     var key = this.key;
     var type = this.type;
+
+    // Get all the different types of instance names
+    var typeNames = instance.getCreatableTypes( constructorName, key );
 
     // This is the data which gets passed to the select overview
     var overviewSelectData = {

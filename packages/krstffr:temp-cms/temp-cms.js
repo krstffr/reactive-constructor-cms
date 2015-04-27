@@ -137,6 +137,42 @@ var TEMPcmsPlugin = new ReactiveConstructorPlugin({
 
 		};
 
+		// Method for returning the instance's cmsOptions
+		passedClass.prototype.getInstanceCmsOptions = function() {
+			return _.findWhere( passedClass.constructorDefaults().typeStructure, {
+				type: this.getType()
+			}).cmsOptions || {};
+		};
+
+		// Return an array of strings of the types which a field
+		// can contain.
+		// TODO: This description is not great at all.
+		passedClass.prototype.getCreatableTypes = function( constructorName, key ) {
+
+			// Get all the instance types from the constructor
+	    var constructorNames = ReactiveConstructors[ constructorName ].getTypeNames();
+	    // Get only the names of the types
+	    constructorNames = _.map(constructorNames, function( name ){
+	      return { value: name };
+	    });
+
+	    // Check if this instance type has any filter
+	    var instanceCmsOptions = this.getInstanceCmsOptions();
+
+	    if (instanceCmsOptions.exclude && instanceCmsOptions.exclude[key] )
+	    	constructorNames = _.reject(constructorNames, function( type ){
+	    		return _.indexOf( instanceCmsOptions.exclude[key], type.value ) > -1;
+	    	});
+
+	    if (instanceCmsOptions.filter && instanceCmsOptions.filter[key] )
+	    	constructorNames = _.filter(constructorNames, function( type ){
+	    		return _.indexOf( instanceCmsOptions.filter[key], type.value ) > -1;
+	    	});
+
+	    return constructorNames;
+
+		};
+
 		return passedClass;
 
 	},
