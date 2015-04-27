@@ -222,6 +222,8 @@ Template.editTemplate.events({
 
     // Some vars to use in the callback
     var instance = Template.currentData();
+    // Make sure the instance has the setReactiveValue() function
+    check( instance.setReactiveValue, Function );
     var key = this.key;
     var type = this.type;
 
