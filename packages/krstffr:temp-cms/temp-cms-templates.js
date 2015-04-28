@@ -164,6 +164,12 @@ Template.editTemplate__wrapper.events({
 
     this.editPageRemove();
     
+  },
+  'click .temp-cms-publish-button': function () {
+    return this.save( true );
+  },
+  'click .temp-cms-save-draft-button': function () {
+    return this.save();
   }
 });
 
@@ -219,9 +225,6 @@ Template.editTemplate.events({
       return instance.setReactiveValue( key, newItem );
     });
 
-  },
-  'click .save': function () {
-    return this.saveInvoice();
   },
   // Method for adding new items to a collection
   'click .temp-add-new-coll-item': function ( e ) {

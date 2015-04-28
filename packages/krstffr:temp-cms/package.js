@@ -21,4 +21,8 @@ Package.onUse(function (api) {
 		"temp-cms-templates.js"
 		], "client");
 
+	api.addFiles([
+		"temp-cms-server.js"
+		], "server");
+
 });

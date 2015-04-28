@@ -79,12 +79,24 @@ var TEMPcmsPlugin = new ReactiveConstructorPlugin({
 			return this.arrayitemMove( listKey, (indexToDuplicate+1), (this.getReactiveValue( listKey ).length - 1) );
 		};
 
-		passedClass.prototype.save = function() {
-			
-			if (!this.collection)
-				throw new Meteor.Error('temp-cms', 'No collection defined for: ' + this.rcType );
+		passedClass.prototype.getCollection = function() {
+			if ( !passedClass.constructorDefaults().cmsOptions || !passedClass.constructorDefaults().cmsOptions.collection)
+				return false;
+			return passedClass.constructorDefaults().cmsOptions.collection;
+		};
 
-			console.log('saving: ', this );
+		passedClass.prototype.save = function( publishBool ) {
+
+			publishBool = publishBool || false;
+			
+			if ( !this.getCollection() )
+				throw new Meteor.Error('temp-cms', 'No collection defined for: ' + passedClass.name );
+
+			console.log( this.getDataAsObject() );
+
+			return Meteor.call('rc-temp-cms/publish', this.getDataAsObject(), passedClass.name, publishBool, function(err, res) {
+				console.log( err, res );
+			});
 
 		};
 
@@ -222,8 +234,18 @@ var TEMPcmsPlugin = new ReactiveConstructorPlugin({
 
 		console.log('TEMPcmsPlugin: initInstance() ', instance.getType() );
 
+		// If a collection is defined for this constructor, make sure this
+		// instance has an _id field
+		if ( instance.getCollection() && !instance.getReactiveValue('_id') )
+			instance.setReactiveValue('_id', Meteor.uuid() );
+
 		return instance;
 
+	},
+
+	pluginTypeStructure: {
+		tempCmsStatus: String,
+		updateTime: String
 	}
 
 });

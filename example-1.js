@@ -5,9 +5,6 @@
 
 Invoices = new Meteor.Collection('invoices');
 
-if (Meteor.isServer)
-  return false;
-
 // Create a reactive constructor which can be used in tests.
 Person = new ReactiveConstructor(function Person() {
 
@@ -195,6 +192,9 @@ Invoice = new ReactiveConstructor(function Invoice () {
 
 }, function() {
   return {
+    cmsOptions: {
+      collection: Invoices
+    },
     typeStructure: [{
       type: 'invoice',
       fields: {
@@ -228,6 +228,9 @@ person3 = new Person({ age: 50, rcType: 'child' });
 // person4 = new Person();
 
 new Person({ age: 50, rcType: 'worker', children: [{ age: 25, rcType: 'child' }] });
+
+if (Meteor.isServer)
+  return false;
 
 Template.invoiceTestTemplate.helpers({
   person: function () {
