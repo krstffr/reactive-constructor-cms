@@ -133,3 +133,39 @@
 	</div>
 
 </template>
+
+
+<template name="tempCMS__loadSavedDoc">
+
+	<h1>Load saved doc</h1>
+
+	{{#if Template.subscriptionsReady }}
+		
+		<h2>Ready!</h2>
+		
+		{{#each tempCms__constructors }}
+
+			<h3>{{ constructorName }}</h3>
+
+			<ul>
+
+				{{#each items }}
+
+					<li>
+						{{ ../constructorName }}
+						<a class="temp-cms-edit-doc-from-list">
+							{{ getReactiveValue '_id' }}
+						</a>
+					</li>
+
+				{{/each}}
+
+			</ul>
+		
+		{{/each}}
+
+  {{else}}
+    <h4>Loading...</h4>
+  {{/if}}
+	
+</template>

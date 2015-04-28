@@ -39,3 +39,21 @@ Meteor.methods({
 
 	}
 });
+
+
+Meteor.publish('temp-cms-publications', function() {
+	
+	// Get all the publications
+	var collections = _.chain(ReactiveConstructors)
+	.map(function( constructor ){
+		if (constructor.constructorDefaults().cmsOptions && constructor.constructorDefaults().cmsOptions.collection)
+			return constructor.constructorDefaults().cmsOptions.collection;
+	})
+	.compact()
+	.value();
+
+	return _.map(collections, function( collection ){
+		return collection.find({ tempCmsStatus: 'edit' });
+	});
+
+});

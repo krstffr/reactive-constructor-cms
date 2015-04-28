@@ -10,6 +10,7 @@ Package.onUse(function (api) {
 
 	api.use([
 		"templating",
+		"reactive-var@1.0.4",
 		"krstffr:reactive-constructor@0.0.4",
 		"mizzao:jquery-ui@1.11.2",
     "stevezhu:lodash@1.0.2"
@@ -24,5 +25,10 @@ Package.onUse(function (api) {
 	api.addFiles([
 		"temp-cms-server.js"
 		], "server");
+
+	api.export([
+		"tempCMSInstances",
+		"TEMPcmsPlugin"
+		], "client");
 
 });

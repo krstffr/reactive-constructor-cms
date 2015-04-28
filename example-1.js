@@ -218,8 +218,6 @@ invoice1 = new Invoice({ invoiceName: 'KK001', items: [ new InvoiceListItem() ]
 
 // invoice1.setReactiveValue('client', client );
 
-invoices = new ReactiveVar( [ invoice1 ] );
-
 person = new Person({ name: 'Stoffe K' });
 
 person2 = new Person({ age: 17, rcType: 'child' });
@@ -243,7 +241,10 @@ Template.invoiceTestTemplate.helpers({
     return client;
   },
   invoices: function () {
-    return invoices.get();
+    var constructorType = _.findWhere( tempCMSInstances.get(), { constructorName: 'Invoice' });
+    if (!constructorType)
+      return false;
+    return constructorType.items;
   }
 });
 

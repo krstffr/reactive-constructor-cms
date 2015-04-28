@@ -1,9 +1,16 @@
+// Use this for MongoDB dates
+var ISODate = Date;
+
+// This is the view for the CMS
 renderedCMSView = false;
 
 // This is the var which will hold the select overview template
 renderedCMSSelectOverview = false;
 
-var TEMPcmsPlugin = new ReactiveConstructorPlugin({
+// Fetched instances, use this source to update/get a doc "globally"!
+tempCMSInstances = new ReactiveVar([]);
+
+TEMPcmsPlugin = new ReactiveConstructorPlugin({
 
 	initConstructor: function ( passedClass ) {
 
@@ -96,6 +103,8 @@ var TEMPcmsPlugin = new ReactiveConstructorPlugin({
 
 			return Meteor.call('rc-temp-cms/publish', this.getDataAsObject(), passedClass.name, publishBool, function(err, res) {
 				console.log( err, res );
+				if (res)
+					TEMPcmsPlugin.updateGlobalInstanceStore();
 			});
 
 		};
@@ -245,7 +254,32 @@ var TEMPcmsPlugin = new ReactiveConstructorPlugin({
 
 	pluginTypeStructure: {
 		tempCmsStatus: String,
-		updateTime: String
+		updateTime: ISODate
 	}
 
 });
+
+TEMPcmsPlugin.getGlobalInstanceStore = function() {
+	return tempCMSInstances.get();
+};
+
+TEMPcmsPlugin.updateGlobalInstanceStore = function() {
+
+  // Setup the "global store" of cool reactive instances!
+  var globalData =_.chain(ReactiveConstructors)
+  .filter(function( constructor ){
+    return constructor.constructorDefaults().cmsOptions && constructor.constructorDefaults().cmsOptions.collection;
+  })
+  .map(function( constructor ){
+    return {
+      constructorName: constructor.name,
+      items: _.map( constructor.constructorDefaults().cmsOptions.collection.find({ tempCmsStatus: 'edit' }).fetch(), function( instanceData ) {
+        return new ReactiveConstructors[ constructor.name ]( instanceData );
+      })
+    };
+  })
+  .value();
+
+  return tempCMSInstances.set( globalData );
+
+};

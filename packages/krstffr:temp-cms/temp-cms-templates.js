@@ -20,7 +20,7 @@ Handlebars.registerHelper('getTemplateFromType', function () {
     return 'editTemplate';
 
   // Is it a string? Return the basic template
-  if (this.type === 'String' || this.type === 'Number')
+  if (this.type === 'String' || this.type === 'Number' || this.type === 'Date')
     return 'editTemplate__String';
 
   // Is it a boolean?
@@ -254,5 +254,21 @@ Template.editTemplate.events({
     
     Template.currentData().setReactiveValue( this.key, value === 'true' );
 
+  }
+});
+
+Template.tempCMS__loadSavedDoc.onCreated(function() {
+  this.subscribe('temp-cms-publications', TEMPcmsPlugin.updateGlobalInstanceStore );
+});
+
+Template.tempCMS__loadSavedDoc.helpers({
+  tempCms__constructors: function() {
+    return TEMPcmsPlugin.getGlobalInstanceStore();
+  }
+});
+
+Template.tempCMS__loadSavedDoc.events({
+  'click .temp-cms-edit-doc-from-list': function() {
+    return this.editPageGet();
   }
 });
