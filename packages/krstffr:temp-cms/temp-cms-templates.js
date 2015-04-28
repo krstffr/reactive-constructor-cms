@@ -166,10 +166,19 @@ Template.editTemplate__wrapper.events({
     
   },
   'click .temp-cms-publish-button': function () {
-    return this.save( true );
+    return this.save({ publish: true });
   },
   'click .temp-cms-save-draft-button': function () {
     return this.save();
+  },
+  'click .temp-cms-duplicate-button': function() {
+    var instance = this;
+    return instance.save({ duplicate: true }, function( res ) {
+      if ( res.edit ){
+        var createdInstance = TEMPcmsPlugin.getInstanceByTypeAndId( instance.constructor.name, res.edit.insertedId );
+        return createdInstance.editPageGet();
+      }
+    });
   }
 });
 
@@ -220,10 +229,11 @@ Template.editTemplate.events({
     var constructorName = this.type.replace(/Collection_/g, '');
     var key = this.key;
     var instance = Template.currentData().value || Template.currentData();
+    var listItems = ReactiveConstructors[ constructorName ].getCreatableTypes( key, instance );
 
-    return instance.getSelectListOverview( constructorName, key, function( instance, key, newItem ) {
+    return TEMPcmsPlugin.getSelectListOverview( listItems, constructorName, key, function( newItem, instance, key ) {
       return instance.setReactiveValue( key, newItem );
-    });
+    }, instance );
 
   },
   // Method for adding new items to a collection
@@ -234,13 +244,14 @@ Template.editTemplate.events({
     var constructorName = this.type.replace(/Collection_/g, '');
     var key = this.key;
     var instance = Template.currentData().value || Template.currentData();
+    var listItems = ReactiveConstructors[ constructorName ].getCreatableTypes( key, instance );
 
-    return instance.getSelectListOverview( constructorName, key, function( instance, key, newItem ) {
+    return TEMPcmsPlugin.getSelectListOverview( listItems, constructorName, key, function( newItem, instance, key ) {
       var items = instance.getReactiveValue( key );
       items.push( newItem );
       instance.setReactiveValue( key, items );
       return instance.setReactiveValue( key, items );
-    });
+    }, instance );
 
   },
   // Method for updating the value of a property on keyup!
@@ -270,5 +281,14 @@ Template.tempCMS__loadSavedDoc.helpers({
 Template.tempCMS__loadSavedDoc.events({
   'click .temp-cms-edit-doc-from-list': function() {
     return this.editPageGet();
+  },
+  'click .temp-cms-create-doc-from-list': function() {
+
+    var listItems = ReactiveConstructors[ this.constructorName ].getCreatableTypes();
+
+    return TEMPcmsPlugin.getSelectListOverview( listItems, this.constructorName, false, function( newItem ) {
+      return newItem.editPageGet();
+    });
+
   }
 });

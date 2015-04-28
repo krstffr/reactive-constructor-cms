@@ -4,6 +4,7 @@
 /* global Invoice:true */
 
 Invoices = new Meteor.Collection('invoices');
+Clients = new Meteor.Collection('clients');
 
 // Create a reactive constructor which can be used in tests.
 Person = new ReactiveConstructor(function Person() {
@@ -103,11 +104,17 @@ Client = new ReactiveConstructor( function Client() {
 
 }, function() {
   return {
+    cmsOptions: {
+      collection: Clients
+    },
     typeStructure: [{
       type: 'client',
       fields: {
         clientName: String,
         adressStreet: String
+      },
+      defaultData: {
+        clientName: 'New client'
       }
     }]
   };

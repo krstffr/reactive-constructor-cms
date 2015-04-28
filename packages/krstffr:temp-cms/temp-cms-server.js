@@ -1,5 +1,7 @@
 Meteor.methods({
-	'rc-temp-cms/publish': function( item, type, publishBool ) {
+	'rc-temp-cms/publish': function( item, type, saveOptions ) {
+
+		saveOptions = saveOptions || {};
 			
 		// Get the collection to store the doc(s) in
 		var constructorCmsOptions = ReactiveConstructors[ type ].constructorDefaults().cmsOptions;
@@ -12,6 +14,10 @@ Meteor.methods({
 		// Get a timestamp of this update
 		item.updateTime = new Date();
 
+		// Is it a duplication waiting to happen?
+		if (saveOptions.duplicate)
+			item._id = Meteor.uuid();
+
 		// Save a backup of the doc
 		var backupDoc = _.omit( _.clone( item ), '_id' );
 		backupDoc.mainId = item._id;
@@ -19,8 +25,8 @@ Meteor.methods({
 		backupDoc.tempCmsStatus = 'backup';
 		savedDocs.backup = constructorCmsOptions.collection.insert( backupDoc );
 
-		// Publish the doc if the publishBool was set to true
-		if (publishBool){
+		// Publish the doc if the saveOptions.publish was set to true
+		if ( saveOptions.publish ){
 			var publishDoc = _.clone( backupDoc );
 			publishDoc.tempCmsStatus = 'published';
 			savedDocs.published = constructorCmsOptions.collection.upsert({
