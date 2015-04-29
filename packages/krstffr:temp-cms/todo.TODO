@@ -3,16 +3,30 @@
 
  ☐ The god damn name!!!!
 
+ ☐ Security
+   ☐ Require user to be logged in to do anything? (Should probably be setable! true by default)
+
  ☐ Saving of data:
    ☐ Avoid 1000000000 backups per "main doc"
+ 
+ ☐ Main UI! 
+   ☐ The look and feel of this thing. 
+   ☐ Also: how does the user reach the UI?
+     ☐ No router!!
+     ☐ Maybe the user can add a {{> HERE }} wherever she wants to have it?
 
  ☐ Fetching of data from DB
    ☐ UI
+     ☐ Make is a list instead of buttons! See the problem which arose in Matryoshka. Not good!
    ☐ How to handle the "problem" of getting a DB object in multiple places, which created multiple instances of the same data?
       Keep it all in one place as defined by the plugin? Sort of like a global place for all reactive instances fetched from this plugin?
       ☐ Now there is a method for this, just pass constructor name and _id. Works right??
+      ☐ Also use this for populating the list when selecting what part to add.
  
+ ☐ Ability to filter for specific type (within a constructor) when defining what can be "nested" in an instance. For example: maybe a pagePart only should be able to have nested pagePart->images, and not pagePart->menuItems. Etc.
+
  ☐ Handling of various input types, text/textarea/disabled/select etc.
+   ☐ Select boxes: this needs extra special attention I guess?
 
  ☐ What's the best way to get the current data context in the blur/update value event? Right now using Template.currentData() which means we have to add this event and method to every unique template we might come up with. Not cool!
 
@@ -22,8 +36,14 @@
 
  ☐ Handle links to existing DB objects
    ☐ Updating the link
+   ☐ Removing the link
 
  ☐ Nested list (array) instances with it's own nested lists looks MESSY. Too much going on.
+
+ ☐ Ability to "go to" a nested object.
+
+ ☐ Ability to define how "deep" nested objects should run.
+   ☐ Maybe a "load more" button? Or the "go to" ability mentioned above?
 
 ＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿
 Archive:
