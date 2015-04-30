@@ -234,9 +234,11 @@ Template.editTemplate.events({
     var instance = Template.currentData().value || Template.currentData();
     var listItems = ReactiveConstructors[ constructorName ].getCreatableTypes( key, instance );
 
-    console.log( instance.getLinkableInstances( this.key ) );
+    var currentInstances = ReactiveConstructors[ constructorName ].getLinkableInstances( instance, key );
+    console.log( currentInstances );
 
-    return TEMPcmsPlugin.getSelectListOverview( listItems, constructorName, key, function( newItem, instance, key ) {
+    return TEMPcmsPlugin.getSelectListOverview( currentInstances, constructorName, key, function( newItem, instance, key ) {
+      console.log( newItem );
       return instance.setReactiveValue( key, newItem );
     }, instance );
 

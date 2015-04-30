@@ -38,6 +38,7 @@
 
  ✔ Handle deletes @done (15-04-30 09:51)
    ☐ Needs security check
+   ☐ Only show delet button for docs which are actually saved to DB (not new ones…)
 
  ☐ Handle links to existing DB objects
    ☐ Updating the link

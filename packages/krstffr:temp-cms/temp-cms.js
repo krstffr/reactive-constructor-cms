@@ -135,59 +135,17 @@ TEMPcmsPlugin = new ReactiveConstructorPlugin({
 
 		};
 
-		// Method for removing the currently visible CMS view (if there is one)
-		passedClass.prototype.editPageRemove = function ( callback ) {
+		// DEPRECATED
+		passedClass.prototype.editPageRemove = function () {
 
 			throw new Meteor.Error('DEPRECATED', 'NOPE: DO NOT USE!');
-
-			var instanceContext = this;
-
-			// Is there a current view? Then hide it!
-			if ( renderedCMSView ) {
-
-				// Hide the container by adding the hidden class
-				// TODO: Use a more proper class
-				$('.wrapper').addClass('wrapper--hidden');
-
-				// Return a time out which actually remove the view
-				return Meteor.setTimeout(function () {
-					Blaze.remove( renderedCMSView );
-					// Now we don't have a view, set the var to false.
-					renderedCMSView = false;
-					// Is a callback provided? Execute it!
-					if (callback)
-						return callback.call( instanceContext );
-				}, 200 );
-			}
-
-			// Is a callback provided? Execute it!
-			if (callback)
-				return callback.call( instanceContext );
-
-			// No callback or current view? Return false.
-			// TODO: This should never happen. Make some kind of check?
-			console.error('editPageRemove() called without callback or renderedCMSView!');
-			return false;
 
 		};
 
-		// Method for getting (and showing) the current CMS view
+		// DEPRECATED
 		passedClass.prototype.editPageGet = function() {
 
 			throw new Meteor.Error('DEPRECATED', 'NOPE: DO NOT USE!');
-
-			// Remove any currently visible edit templates
-			return this.editPageRemove( function() {
-
-				// Render the edit template
-				renderedCMSView = Blaze.renderWithData( Template.editTemplate__wrapper, this, document.body );
-
-				// TODO: Make better, use proper classes etc.
-				Meteor.setTimeout(function () {
-					$('.wrapper--hidden').removeClass('wrapper--hidden');
-				}, 5 );
-
-			});
 
 		};
 
@@ -200,8 +158,45 @@ TEMPcmsPlugin = new ReactiveConstructorPlugin({
 
 		// Method for returning all current instances (from the DB)
 		// which can be added to a one of this instances' fields (by key)
-		passedClass.prototype.getLinkableInstances = function( key ) {
-			console.log( key );
+		passedClass.getLinkableInstances = function( instance, key ) {
+
+			// Get the object which holds all instances (in the items fields)
+			// If there is no object, or no items-field, there are no items and return false
+			var instanceHolder = _.findWhere( TEMPcmsPlugin.getGlobalInstanceStore(), { constructorName: passedClass.name });
+			if (!instanceHolder || !instanceHolder.items)
+				return false;
+
+			var items = instanceHolder.items;
+
+			// We do not want to return this object, so filter away items with this _id
+			items = _.reject(items, function(item){
+				return item._id === instance.getReactiveValue('_id');
+			});
+
+			return passedClass.filterCreatableTypes( key, items, instance, 'rcType' );
+
+		};
+
+		// Method for filtering a list of types by types defined for the instance
+		passedClass.filterCreatableTypes = function( key, typeNames, instance, typeNameKey ) {
+
+			check( typeNames, Array );
+
+			// Check if this instance type has any filter
+	    var instanceCmsOptions = instance.getInstanceCmsOptions();
+
+	    if (instanceCmsOptions.exclude && instanceCmsOptions.exclude[key] )
+	    	typeNames = _.reject(typeNames, function( type ){
+	    		return _.indexOf( instanceCmsOptions.exclude[key], type[ typeNameKey ] ) > -1;
+	    	});
+
+	    if (instanceCmsOptions.filter && instanceCmsOptions.filter[key] )
+	    	typeNames = _.filter(typeNames, function( type ){
+	    		return _.indexOf( instanceCmsOptions.filter[key], type[ typeNameKey ] ) > -1;
+	    	});
+
+	    return typeNames;
+
 		};
 
 		// Return an array of strings of the types which a field
@@ -211,29 +206,17 @@ TEMPcmsPlugin = new ReactiveConstructorPlugin({
 		passedClass.getCreatableTypes = function( key, instance ) {
 
 			// Get all the instance types from the constructor
-	    var constructorNames = passedClass.getTypeNames();
+	    var typeNames = passedClass.getTypeNames();
 	    // Get only the names of the types
-	    constructorNames = _.map(constructorNames, function( name ){
+	    typeNames = _.map(typeNames, function( name ){
 	      return { value: name };
 	    });
 
+	    // If no instance is passed, just return all the type names
 	    if (!instance)
-	    	return constructorNames;
+	    	return typeNames;
 
-	    // Check if this instance type has any filter
-	    var instanceCmsOptions = instance.getInstanceCmsOptions();
-
-	    if (instanceCmsOptions.exclude && instanceCmsOptions.exclude[key] )
-	    	constructorNames = _.reject(constructorNames, function( type ){
-	    		return _.indexOf( instanceCmsOptions.exclude[key], type.value ) > -1;
-	    	});
-
-	    if (instanceCmsOptions.filter && instanceCmsOptions.filter[key] )
-	    	constructorNames = _.filter(constructorNames, function( type ){
-	    		return _.indexOf( instanceCmsOptions.filter[key], type.value ) > -1;
-	    	});
-
-	    return constructorNames;
+	    return passedClass.filterCreatableTypes( key, typeNames, instance, 'value' );
 
 		};
 
@@ -272,11 +255,25 @@ TEMPcmsPlugin.getSelectListOverview = function( listItems, constructorName, key,
   var overviewSelectData = {
     headline: 'Select type of ' + constructorName,
     selectableItems: listItems,
+    // This callback accepts a selectedItem which either consists of an object with a .value
+    // field, which is used to create a new instance. OR the selectedItem IS the new actual
+    // object to be added/linked to the current instance.
     callback: function( selectedItem ) {
-      // Create a new instance
-      var newItem = new ReactiveConstructors[ constructorName ]({ rcType: selectedItem });
-      // Set the item to the key of the parent instance
-      setCallback( newItem, instance, key );
+    	if ( selectedItem._id ){
+    		// Handle linking of an exisiting object!
+    		var linkedItem = {
+    			type: 'TEMPCMS-linked-item',
+    			constructorName: selectedItem.constructor.name,
+    			_id: selectedItem._id
+    		};
+    		setCallback( linkedItem, instance, key );
+    	}
+    	if ( selectedItem.value ) {
+	      // Create a new instance
+	      var newItem = new ReactiveConstructors[ constructorName ]({ rcType: selectedItem.value });
+	      // Set the item to the key of the parent instance
+	      setCallback( newItem, instance, key );
+	    }
       // Remove the template
       return overviewSelectData.removeTemplateCallback();
     },
@@ -291,7 +288,7 @@ TEMPcmsPlugin.getSelectListOverview = function( listItems, constructorName, key,
 
   // If there is only on selectable item, just create an instance from that!
   if ( listItems.length === 1 )
-    return overviewSelectData.callback( listItems[0].value );
+    return overviewSelectData.callback( listItems[0] );
   
   // Render the view and store it in the var
   renderedCMSSelectOverview = Blaze.renderWithData( Template.editTemplate__selectOverview, overviewSelectData, document.body );
