@@ -158,12 +158,15 @@ var handleBlurEvent = function ( e ) {
 };
 
 Template.editTemplate__wrapper.events({
-  'click .temp-cms-close-button': function ( e ) {
-
-    e.stopImmediatePropagation();
-
-    this.editPageRemove();
-    
+  'click .temp-cms-close-button': function () {
+    return TEMPcmsPlugin.editPageRemove( this );
+  },
+  'click .temp-cms-remove-button': function() {
+    this.deleteInstance( function( res ) {
+      if (res > 0)
+        return TEMPcmsPlugin.editPageRemove();
+      throw new Error('temp-cms', 'No docs removed? ' + res );
+    });
   },
   'click .temp-cms-publish-button': function () {
     return this.save({ publish: true });
@@ -176,7 +179,7 @@ Template.editTemplate__wrapper.events({
     return instance.save({ duplicate: true }, function( res ) {
       if ( res.edit ){
         var createdInstance = TEMPcmsPlugin.getInstanceByTypeAndId( instance.constructor.name, res.edit.insertedId );
-        return createdInstance.editPageGet();
+        return TEMPcmsPlugin.editPageGet( createdInstance );
       }
     });
   }
@@ -231,6 +234,8 @@ Template.editTemplate.events({
     var instance = Template.currentData().value || Template.currentData();
     var listItems = ReactiveConstructors[ constructorName ].getCreatableTypes( key, instance );
 
+    console.log( instance.getLinkableInstances( this.key ) );
+
     return TEMPcmsPlugin.getSelectListOverview( listItems, constructorName, key, function( newItem, instance, key ) {
       return instance.setReactiveValue( key, newItem );
     }, instance );
@@ -280,14 +285,14 @@ Template.tempCMS__loadSavedDoc.helpers({
 
 Template.tempCMS__loadSavedDoc.events({
   'click .temp-cms-edit-doc-from-list': function() {
-    return this.editPageGet();
+    return TEMPcmsPlugin.editPageGet( this );
   },
   'click .temp-cms-create-doc-from-list': function() {
 
     var listItems = ReactiveConstructors[ this.constructorName ].getCreatableTypes();
 
     return TEMPcmsPlugin.getSelectListOverview( listItems, this.constructorName, false, function( newItem ) {
-      return newItem.editPageGet();
+      return TEMPcmsPlugin.editPageGet( newItem );
     });
 
   }

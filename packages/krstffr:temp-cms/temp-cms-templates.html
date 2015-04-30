@@ -126,6 +126,7 @@
 			<button class="temp-cms-publish-button">Publish</button>
 			<button class="temp-cms-save-draft-button">Save draft</button>
 			<button class="temp-cms-duplicate-button">Duplicate</button>
+			<button class="temp-cms-remove-button">Remove</button>
 			<button class="temp-cms-close-button">Close</button>
 
 		</div>
@@ -154,7 +155,7 @@
 					<li>
 						{{ ../constructorName }}
 						<a class="temp-cms-edit-doc-from-list">
-							{{ getReactiveValue '_id' }}
+							{{ getType }}, {{ getReactiveValue '_id' }}
 						</a>
 					</li>
 

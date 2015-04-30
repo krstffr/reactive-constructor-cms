@@ -25,6 +25,8 @@
       ☐ Now there is a method for this, just pass constructor name and _id. Works right??
       ☐ Also use this for populating the list when selecting what part to add.
  
+ ☐ Global filter method for filtering in lists etc.
+
  ☐ Ability to filter for specific type (within a constructor) when defining what can be "nested" in an instance. For example: maybe a pagePart only should be able to have nested pagePart->images, and not pagePart->menuItems. Etc.
 
  ☐ Handling of various input types, text/textarea/disabled/select etc.
@@ -34,7 +36,8 @@
 
  ☐ How to handle nested "pure" objects? Should that even be allowed? NAH. Not in the CMS! Or? Maybe…
 
- ☐ Handle deletes
+ ✔ Handle deletes @done (15-04-30 09:51)
+   ☐ Needs security check
 
  ☐ Handle links to existing DB objects
    ☐ Updating the link

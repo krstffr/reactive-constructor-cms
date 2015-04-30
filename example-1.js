@@ -5,6 +5,7 @@
 
 Invoices = new Meteor.Collection('invoices');
 Clients = new Meteor.Collection('clients');
+Persons = new Meteor.Collection('persons');
 
 // Create a reactive constructor which can be used in tests.
 Person = new ReactiveConstructor(function Person() {
@@ -13,6 +14,9 @@ Person = new ReactiveConstructor(function Person() {
 
 }, function () {
   return {
+    cmsOptions: {
+      collection: Persons
+    },
     globalValues: {
       fields: {
         age: Number,
@@ -260,7 +264,7 @@ Template.invoiceTestTemplate.events({
 
     e.stopImmediatePropagation();
 
-    this.editPageGet();
+    TEMPcmsPlugin.editPageGet( this );
 
   }
 });

@@ -1,10 +1,10 @@
 Meteor.methods({
-	'rc-temp-cms/publish': function( item, type, saveOptions ) {
+	'rc-temp-cms/save': function( item, constructorName, saveOptions ) {
 
 		saveOptions = saveOptions || {};
 			
 		// Get the collection to store the doc(s) in
-		var constructorCmsOptions = ReactiveConstructors[ type ].constructorDefaults().cmsOptions;
+		var constructorCmsOptions = ReactiveConstructors[ constructorName ].constructorDefaults().cmsOptions;
 		if (!constructorCmsOptions || !constructorCmsOptions.collection)
 			throw new Meteor.Error('temp-cms-no-collection-defined', 'No collection defined for: ' + passedClass.name );
 
@@ -42,6 +42,18 @@ Meteor.methods({
 		savedDocs.edit = constructorCmsOptions.collection.upsert( item._id, { $set: _.omit( item, '_id') });
 
 		return savedDocs;
+
+	},
+	'rc-temp-cms/delete': function( id, constructorName ) {
+			
+		check( id, String );
+		check( constructorName, String );
+
+		var constructorCmsOptions = ReactiveConstructors[ constructorName ].constructorDefaults().cmsOptions;
+		if (!constructorCmsOptions || !constructorCmsOptions.collection)
+			throw new Meteor.Error('temp-cms-no-collection-defined', 'No collection defined for: ' + passedClass.name );
+
+		return constructorCmsOptions.collection.remove({ $or: [{ mainId: id }, { _id: id }] });
 
 	}
 });

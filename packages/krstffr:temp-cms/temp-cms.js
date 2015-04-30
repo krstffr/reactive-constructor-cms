@@ -99,19 +99,46 @@ TEMPcmsPlugin = new ReactiveConstructorPlugin({
 
 			console.log( this.getDataAsObject() );
 
-			return Meteor.call('rc-temp-cms/publish', this.getDataAsObject(), passedClass.name, saveOptions, function(err, res) {
+			return Meteor.call('rc-temp-cms/save', this.getDataAsObject(), passedClass.name, saveOptions, function(err, res) {
+				
 				console.log( err, res );
-				if ( res ){
+
+				if ( res )
 					TEMPcmsPlugin.updateGlobalInstanceStore();
-					if (callback)
-						callback( res );
-				}
+				if (callback)
+					return callback( res );
+				return true;
+			});
+
+		};
+
+		passedClass.prototype.deleteInstance = function( callback ) {
+			
+			if ( !this.getCollection() )
+				throw new Meteor.Error('temp-cms', 'No collection defined for: ' + passedClass.name );
+
+			var id = this.getDataAsObject()._id;
+
+			check( id, String );
+			check( passedClass.name, String );
+
+			return Meteor.call('rc-temp-cms/delete', id, passedClass.name, function(err, res) {
+				
+				console.log( err, res );
+
+				if ( res )
+					TEMPcmsPlugin.updateGlobalInstanceStore();
+				if ( callback )
+					return callback( res );
+				return true;
 			});
 
 		};
 
 		// Method for removing the currently visible CMS view (if there is one)
 		passedClass.prototype.editPageRemove = function ( callback ) {
+
+			throw new Meteor.Error('DEPRECATED', 'NOPE: DO NOT USE!');
 
 			var instanceContext = this;
 
@@ -147,6 +174,8 @@ TEMPcmsPlugin = new ReactiveConstructorPlugin({
 		// Method for getting (and showing) the current CMS view
 		passedClass.prototype.editPageGet = function() {
 
+			throw new Meteor.Error('DEPRECATED', 'NOPE: DO NOT USE!');
+
 			// Remove any currently visible edit templates
 			return this.editPageRemove( function() {
 
@@ -167,6 +196,12 @@ TEMPcmsPlugin = new ReactiveConstructorPlugin({
 			return _.findWhere( passedClass.constructorDefaults().typeStructure, {
 				type: this.getType()
 			}).cmsOptions || {};
+		};
+
+		// Method for returning all current instances (from the DB)
+		// which can be added to a one of this instances' fields (by key)
+		passedClass.prototype.getLinkableInstances = function( key ) {
+			console.log( key );
 		};
 
 		// Return an array of strings of the types which a field
@@ -229,6 +264,8 @@ TEMPcmsPlugin = new ReactiveConstructorPlugin({
 
 });
 
+// TODO: Maybe return an actual Template which gets rendered by whatever is calling this method?
+// How to handle removing of existing templates which might exist?
 TEMPcmsPlugin.getSelectListOverview = function( listItems, constructorName, key, setCallback, instance ) {
 
   // This is the data which gets passed to the select overview
@@ -279,6 +316,8 @@ TEMPcmsPlugin.getGlobalInstanceStore = function() {
 
 TEMPcmsPlugin.updateGlobalInstanceStore = function() {
 
+	console.log( 'TEMPcmsPlugin.updateGlobalInstanceStore()' );
+
   // Setup the "global store" of cool reactive instances!
   var globalData =_.chain(ReactiveConstructors)
   .filter(function( constructor ){
@@ -295,5 +334,59 @@ TEMPcmsPlugin.updateGlobalInstanceStore = function() {
   .value();
 
   return tempCMSInstances.set( globalData );
+
+};
+
+TEMPcmsPlugin.editPageRemove = function( instance, callback ) {
+
+	if (callback)
+		check( callback, Function );
+
+	// Is there a current view? Then hide it!
+	if ( renderedCMSView ) {
+
+		// Hide the container by adding the hidden class
+		// TODO: Use a more proper class
+		$('.wrapper').addClass('wrapper--hidden');
+
+		// Return a time out which actually remove the view
+		return Meteor.setTimeout(function () {
+			Blaze.remove( renderedCMSView );
+			// Now we don't have a view, set the var to false.
+			renderedCMSView = false;
+			// Is a callback provided? Execute it!
+			if (callback)
+				return callback( instance );
+
+		}, 200 );
+	}
+
+	// Is a callback provided? Execute it!
+	if (callback)
+		return callback( instance );
+
+	// No callback or current view? Return false.
+	// TODO: This should never happen. Make some kind of check?
+	console.error('editPageRemove() called without callback or renderedCMSView!');
+	return false;
+
+};
+
+TEMPcmsPlugin.editPageGet = function( instance ) {
+
+	check( instance, ReactiveConstructors[ instance.constructor.name ] );
+
+	// Remove any currently visible edit templates
+	return TEMPcmsPlugin.editPageRemove( instance, function( instance ) {
+
+		// Render the edit template
+		renderedCMSView = Blaze.renderWithData( Template.editTemplate__wrapper, instance, document.body );
+
+		// TODO: Make better, use proper classes etc.
+		Meteor.setTimeout(function () {
+			$('.wrapper--hidden').removeClass('wrapper--hidden');
+		}, 5 );
+
+	});
 
 };
