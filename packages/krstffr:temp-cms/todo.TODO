@@ -46,7 +46,11 @@
 
  ☐ Nested list (array) instances with it's own nested lists looks MESSY. Too much going on.
 
- ☐ Ability to "go to" a nested object.
+ ☐ Better "isListItem" support, now adds a field to linked items.
+
+ ☐ Ability to "go to" a nested object. 
+
+ ✔ Can't remove a linked child (which is not in a list) @done (15-04-30 14:24)
 
  ☐ Setting of dates, don't seem to work?
 

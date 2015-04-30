@@ -32,14 +32,12 @@ Meteor.methods({
 			savedDocs.published = constructorCmsOptions.collection.upsert({
 				mainId: publishDoc.mainId,
 				tempCmsStatus: 'published'
-			}, {
-				$set: _.omit( publishDoc, ['mainId', 'tempCmsStatus'])
-			});
+			}, _.omit( publishDoc, ['mainId', 'tempCmsStatus']) );
 		}
 
 		item.tempCmsStatus = 'edit';
 
-		savedDocs.edit = constructorCmsOptions.collection.upsert( item._id, { $set: _.omit( item, '_id') });
+		savedDocs.edit = constructorCmsOptions.collection.upsert( item._id, _.omit( item, '_id'));
 
 		return savedDocs;
 

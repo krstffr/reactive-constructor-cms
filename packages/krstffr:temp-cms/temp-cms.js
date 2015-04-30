@@ -76,10 +76,19 @@ TEMPcmsPlugin = new ReactiveConstructorPlugin({
 			var arr = this.getReactiveValue( listKey );
 			// Get the item we want to duplicate
 			var item = arr[indexToDuplicate];
-			// Use the .getDataAsObject() method to get this items data, and also add this instances type
-			var newItemData = _.assign({ rcType: item.getType() }, item.getDataAsObject() );
-			// Use the items .constructor to create a new instance and push this to the array
-			arr.push( new item.constructor( newItemData ) );
+			// Is it an "ordinary" new instance? Or a link to an exisiting DB doc
+			if ( Match.test( item.getType, Function) ) {
+				// Use the .getDataAsObject() method to get this items data, and also add this instances type
+				var newItemData = _.assign({ rcType: item.getType() }, item.getDataAsObject() );
+				newItemData._id = Meteor.uuid();
+				// Use the items .constructor to create a new instance and push this to the array
+				arr.push( new item.constructor( newItemData ) );
+			}
+			else{
+				// It's a link to an existing object!
+				// Just clone it.
+				arr.push( _.clone( item ) );
+			}
 			// Update the array…
 			this.setReactiveValue( listKey, arr );
 			// …and move the item to the position after the one being copied
@@ -96,8 +105,6 @@ TEMPcmsPlugin = new ReactiveConstructorPlugin({
 			
 			if ( !this.getCollection() )
 				throw new Meteor.Error('temp-cms', 'No collection defined for: ' + passedClass.name );
-
-			console.log( this.getDataAsObject() );
 
 			return Meteor.call('rc-temp-cms/save', this.getDataAsObject(), passedClass.name, saveOptions, function(err, res) {
 				
@@ -164,7 +171,7 @@ TEMPcmsPlugin = new ReactiveConstructorPlugin({
 			// If there is no object, or no items-field, there are no items and return false
 			var instanceHolder = _.findWhere( TEMPcmsPlugin.getGlobalInstanceStore(), { constructorName: passedClass.name });
 			if (!instanceHolder || !instanceHolder.items)
-				return false;
+				return [];
 
 			var items = instanceHolder.items;
 
@@ -252,26 +259,64 @@ TEMPcmsPlugin = new ReactiveConstructorPlugin({
 
 });
 
-TEMPcmsPlugin.checkReactiveValueType = function( passedValue, currentTypeToCheck, ordinaryCheck ) {
+TEMPcmsPlugin.checkReactiveValueType = function( passedValue, currentTypeToCheck, ordinaryCheckReactiveValueType ) {
+
 	// It could be a linked object! If so: accept it!
 	if (passedValue.type && passedValue.type === 'TEMPCMS-linked-item'){
 		check( passedValue, {type: String, constructorName: String, _id: String });
 		return true;
 	}
-	return ordinaryCheck();
+	if ( Match.test(passedValue, Array ) ){
+		// Remove all items in the array which are of type TEMPCMS-linked-item
+		passedValue = _.reject(passedValue, function( item ){
+			if (!item || !item.type)
+				return true;
+			return item.type === 'TEMPCMS-linked-item';
+		});
+	}
+
+	return ordinaryCheckReactiveValueType( passedValue, currentTypeToCheck );
+
 };
 
-TEMPcmsPlugin.checkReactiveValues = function( dataToCheck, currentTypeStructure, ordinaryMethod ) {
+TEMPcmsPlugin.checkReactiveValues = function( dataToCheck, currentTypeStructure, ordinaryCheckReactiveValues ) {
 
 	// Exlude all items which have a type of TEMPCMS-linked-item
 	dataToCheck = _.reject( dataToCheck, function( item ){
+		
 		if (item && item.type)
 			return item.type === 'TEMPCMS-linked-item';
-	});
+		
+		return true;
 
-	console.log( dataToCheck );
+	});
 	
-	return ordinaryMethod();
+	return ordinaryCheckReactiveValues( dataToCheck, currentTypeStructure );
+
+};
+
+TEMPcmsPlugin.setValueToCorrectType = function( instance, value, key, ordinarySetValueToCorrectType ) {
+
+	if (value && value.type === 'TEMPCMS-linked-item')
+		return value;
+
+	if ( Match.test(value, Array ) && value.length > 0 ){
+
+		return _.map( value, function ( arrayVal ) {
+			// Is it a "plain" object? Then transform it into a non-plain
+			// from the type provided in the typeStructure!
+			// Else just return the current array value
+			if ( arrayVal.type === 'TEMPCMS-linked-item')
+				return arrayVal;
+			var valueType = instance.getCurrentTypeStructure()[key];
+			if ( Match.test( arrayVal, Object ) && ReactiveConstructors[ valueType[ 0 ].name ] )
+				return new ReactiveConstructors[ valueType[ 0 ].name ]( arrayVal );
+			return arrayVal;
+		});
+
+	}
+
+	return ordinarySetValueToCorrectType( instance, value, key );
 
 };
 
@@ -287,7 +332,6 @@ TEMPcmsPlugin.getSelectListOverview = function( listItems, constructorName, key,
     // field, which is used to create a new instance. OR the selectedItem IS the new actual
     // object to be added/linked to the current instance.
     callback: function( selectedItem ) {
-    	console.log( selectedItem );
     	if ( selectedItem._id ){
     		// Handle linking of an exisiting object!
     		var linkedItem = {

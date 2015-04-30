@@ -91,7 +91,8 @@ Template.editTemplate__Collection.rendered = function () {
 
       // Super important! Return false to prevent jQuery UI from updating
       // the DOM and instead letting Meteor/Blaze do that.
-      return false;
+      // TODO: This is no longer needed as they SHOULD both be the same!!
+      // return false;
 
     }
   });
@@ -135,15 +136,31 @@ Template.editTemplate.helpers({
   },
   getReactiveValuesAsArray: function() {
     var instance = this.value || this;
-    return instance.getReactiveValuesAsArray();
+    if (Match.test( instance.getReactiveValuesAsArray, Function ))
+      return instance.getReactiveValuesAsArray();
+
+    return _.map( instance, function( value, key ) {
+      return {
+        key: key,
+        value: value,
+        type: 'String'
+      };
+    });
+
   },
   constructorName: function () {
     var instance = this.value || this;
+    if (instance.constructor.name === 'Object')
+      return false;
     return instance.constructor.name;
   },
   getType: function() {
     var instance = this.value || this;
-    var type = instance.getType();
+    var type = '';
+    if (Match.test( instance.getType, Function ))
+      type = instance.getType();
+    if (instance.type)
+      type = instance.type;
     return type.charAt(0).toUpperCase() + type.slice(1);
   }
 });
@@ -217,6 +234,8 @@ Template.editTemplate.events({
     var parentItem = instanceItem.parent().closest('.wrap')[0];
     var parentInstance = Blaze.getData( parentItem );
 
+    console.log( this );
+
     parentInstance = parentInstance.value || parentInstance;
 
     return parentInstance.unsetReactiveValue( this.key );
@@ -244,11 +263,9 @@ Template.editTemplate.events({
     var instance = Template.currentData().value || Template.currentData();
     var listItems = ReactiveConstructors[ constructorName ].getCreatableTypes( key, instance );
 
-    var currentInstances = ReactiveConstructors[ constructorName ].getLinkableInstances( instance, key );
-    console.log( currentInstances );
+    listItems = listItems.concat( ReactiveConstructors[ constructorName ].getLinkableInstances( instance, key ) );
 
-    return TEMPcmsPlugin.getSelectListOverview( currentInstances, constructorName, key, function( newItem, instance, key ) {
-      console.log( newItem );
+    return TEMPcmsPlugin.getSelectListOverview( listItems, constructorName, key, function( newItem, instance, key ) {
       return instance.setReactiveValue( key, newItem );
     }, instance );
 
@@ -262,6 +279,8 @@ Template.editTemplate.events({
     var key = this.key;
     var instance = Template.currentData().value || Template.currentData();
     var listItems = ReactiveConstructors[ constructorName ].getCreatableTypes( key, instance );
+
+    listItems = listItems.concat( ReactiveConstructors[ constructorName ].getLinkableInstances( instance, key ) );
 
     return TEMPcmsPlugin.getSelectListOverview( listItems, constructorName, key, function( newItem, instance, key ) {
       var items = instance.getReactiveValue( key );
