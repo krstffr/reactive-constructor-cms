@@ -4,13 +4,23 @@ Template.editTemplate__selectOverview.events({
     var callback = Template.parentData(0).callback;
     check( callback, Function );
     // Execute the callback!
-    return callback( this.value );
+    return callback( this );
   },
   'click .temp-select-overview__fader': function() {
     var removeTemplateCallback = Template.parentData(0).removeTemplateCallback;
     check( removeTemplateCallback, Function );
     // Execute the callback!
     return removeTemplateCallback();
+  }
+});
+
+Template.editTemplate__selectOverview.helpers({
+  buttonValue: function() {
+    if (this.tempCmsName)
+      return this.tempCmsName;
+    if (this.value)
+      return this.value;
+    throw new Error('temp-cms', 'No button text?');
   }
 });
 

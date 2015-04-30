@@ -8,7 +8,7 @@
 
 	{{#each selectableItems }}
 
-		<button>{{ value }}</button>
+		<button>{{ buttonValue }}</button>
 
 	{{/each}}
 
@@ -153,9 +153,8 @@
 				{{#each items }}
 
 					<li>
-						{{ ../constructorName }}
 						<a class="temp-cms-edit-doc-from-list">
-							{{ getType }}, {{ getReactiveValue '_id' }}
+							{{ ../constructorName }} {{ getType }}: {{ tempCmsName }}
 						</a>
 					</li>
 

@@ -233,7 +233,11 @@ TEMPcmsPlugin = new ReactiveConstructorPlugin({
 		if ( instance.getCollection() && !instance.getReactiveValue('_id') )
 			instance.setReactiveValue('_id', Meteor.uuid() );
 
+		if ( instance.getCollection() && !instance.getReactiveValue('tempCmsName') )
+			instance.setReactiveValue('tempCmsName', 'New ' + instance.getType() );
+
 		instance._id = instance.getReactiveValue('_id');
+		instance.tempCmsName = instance.getReactiveValue('tempCmsName');
 
 		return instance;
 
@@ -241,11 +245,35 @@ TEMPcmsPlugin = new ReactiveConstructorPlugin({
 
 	pluginTypeStructure: {
 		_id: String,
+		tempCmsName: String,
 		tempCmsStatus: String,
 		updateTime: ISODate
 	}
 
 });
+
+TEMPcmsPlugin.checkReactiveValueType = function( passedValue, currentTypeToCheck, ordinaryCheck ) {
+	// It could be a linked object! If so: accept it!
+	if (passedValue.type && passedValue.type === 'TEMPCMS-linked-item'){
+		check( passedValue, {type: String, constructorName: String, _id: String });
+		return true;
+	}
+	return ordinaryCheck();
+};
+
+TEMPcmsPlugin.checkReactiveValues = function( dataToCheck, currentTypeStructure, ordinaryMethod ) {
+
+	// Exlude all items which have a type of TEMPCMS-linked-item
+	dataToCheck = _.reject( dataToCheck, function( item ){
+		if (item && item.type)
+			return item.type === 'TEMPCMS-linked-item';
+	});
+
+	console.log( dataToCheck );
+	
+	return ordinaryMethod();
+
+};
 
 // TODO: Maybe return an actual Template which gets rendered by whatever is calling this method?
 // How to handle removing of existing templates which might exist?
@@ -259,6 +287,7 @@ TEMPcmsPlugin.getSelectListOverview = function( listItems, constructorName, key,
     // field, which is used to create a new instance. OR the selectedItem IS the new actual
     // object to be added/linked to the current instance.
     callback: function( selectedItem ) {
+    	console.log( selectedItem );
     	if ( selectedItem._id ){
     		// Handle linking of an exisiting object!
     		var linkedItem = {

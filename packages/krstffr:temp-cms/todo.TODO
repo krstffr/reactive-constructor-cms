@@ -48,6 +48,8 @@
 
  ☐ Ability to "go to" a nested object.
 
+ ☐ Setting of dates, don't seem to work?
+
  ☐ Ability to define how "deep" nested objects should run.
    ☐ Maybe a "load more" button? Or the "go to" ability mentioned above?
 
