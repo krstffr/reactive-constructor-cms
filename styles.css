@@ -67,7 +67,17 @@
 	padding: 0.3em;
 }
 
-.temp-remove-collection-item {
+.wrap > h2 .temp-remove-collection-item,
+.wrap > h2 .temp-remove-collection-duplicate{
+	display: none;
+}
+
+.collection__items > .wrap > h2 .temp-remove-collection-item,
+.collection__items > .wrap > h2 .temp-remove-collection-duplicate{
+	display: inline-block;
+}
+
+.wrapper > .wrapper__editable-fields > .wrap > h2 a {
 	display: none;
 }
 

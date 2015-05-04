@@ -35,6 +35,7 @@ TEMPcmsPlugin = new ReactiveConstructorPlugin({
 		};
 
 		// Method for returning the data for the CMS frontend basically
+		// Has test: ✔
 		passedClass.prototype.getReactiveValuesAsArray = function () {
 			var typeStructure = this.getCurrentTypeStructure();
 			return _.map( this.reactiveData.get(), function( value, key ) {
@@ -48,9 +49,11 @@ TEMPcmsPlugin = new ReactiveConstructorPlugin({
 
 		// Method for removing item from an array
 		// (an array in the reactive object, found from the passed key)
+		// Has test: ✔
 		passedClass.prototype.arrayitemRemove = function ( listKey, indexToRemove ) {
 			// Get the array…
 			var arr = this.getReactiveValue( listKey );
+			check( arr, Array );
 			// …remove the item…
 			arr.splice( indexToRemove, 1 );
 			// …and update the array.
@@ -59,9 +62,11 @@ TEMPcmsPlugin = new ReactiveConstructorPlugin({
 
 		// Method for moving an item in an array
 		// (an array in the reactive object, found from the passed key)
+		// Has test: ✔
 		passedClass.prototype.arrayitemMove = function ( listKey, newIndex, oldIndex ) {
 			// Get the array…
 			var arr = this.getReactiveValue( listKey );
+			check( arr, Array );
 			// …move the item…
 			arr.splice( newIndex, 0, arr.splice( oldIndex, 1 )[0] );
 			// …and update the array.
@@ -71,9 +76,11 @@ TEMPcmsPlugin = new ReactiveConstructorPlugin({
 		// Method for duplicating an item in an array,
 		// putting it next to the item we duplicate
 		// (an array in the reactive object, found from the passed key)
+		// Has test: ✔
 		passedClass.prototype.arrayitemDuplicate = function ( listKey, indexToDuplicate ) {
 			// Get the array…
 			var arr = this.getReactiveValue( listKey );
+			check( arr, Array );
 			// Get the item we want to duplicate
 			var item = arr[indexToDuplicate];
 			// Is it an "ordinary" new instance? Or a link to an exisiting DB doc
@@ -95,12 +102,14 @@ TEMPcmsPlugin = new ReactiveConstructorPlugin({
 			return this.arrayitemMove( listKey, (indexToDuplicate+1), (this.getReactiveValue( listKey ).length - 1) );
 		};
 
+		// Has test: ✔
 		passedClass.prototype.getCollection = function() {
 			if ( !passedClass.constructorDefaults().cmsOptions || !passedClass.constructorDefaults().cmsOptions.collection)
 				return false;
 			return passedClass.constructorDefaults().cmsOptions.collection;
 		};
 
+		// Has test: ✔
 		passedClass.prototype.save = function( saveOptions, callback ) {
 			
 			if ( !this.getCollection() )
@@ -119,6 +128,7 @@ TEMPcmsPlugin = new ReactiveConstructorPlugin({
 
 		};
 
+		// Has test: ✔
 		passedClass.prototype.deleteInstance = function( callback ) {
 			
 			if ( !this.getCollection() )
@@ -142,21 +152,8 @@ TEMPcmsPlugin = new ReactiveConstructorPlugin({
 
 		};
 
-		// DEPRECATED
-		passedClass.prototype.editPageRemove = function () {
-
-			throw new Meteor.Error('DEPRECATED', 'NOPE: DO NOT USE!');
-
-		};
-
-		// DEPRECATED
-		passedClass.prototype.editPageGet = function() {
-
-			throw new Meteor.Error('DEPRECATED', 'NOPE: DO NOT USE!');
-
-		};
-
 		// Method for returning the instance's cmsOptions
+		// Has test: ✔
 		passedClass.prototype.getInstanceCmsOptions = function() {
 			return _.findWhere( passedClass.constructorDefaults().typeStructure, {
 				type: this.getType()
@@ -166,6 +163,12 @@ TEMPcmsPlugin = new ReactiveConstructorPlugin({
 		// Method for returning all current instances (from the DB)
 		// which can be added to a one of this instances' fields (by key)
 		passedClass.getLinkableInstances = function( instance, key ) {
+
+			if (!instance)
+				throw new Meteor.Error('temp-cms', 'No instance passed to '+passedClass.name+' getLinkableInstances()');
+
+			if (!key)
+				throw new Meteor.Error('temp-cms', 'No key passed to '+passedClass.name+' getLinkableInstances()');
 
 			// Get the object which holds all instances (in the items fields)
 			// If there is no object, or no items-field, there are no items and return false
@@ -201,6 +204,8 @@ TEMPcmsPlugin = new ReactiveConstructorPlugin({
 	    	typeNames = _.filter(typeNames, function( type ){
 	    		return _.indexOf( instanceCmsOptions.filter[key], type[ typeNameKey ] ) > -1;
 	    	});
+
+	    console.log( typeNames );
 
 	    return typeNames;
 
@@ -259,19 +264,28 @@ TEMPcmsPlugin = new ReactiveConstructorPlugin({
 
 });
 
+// Method for overriding the default checkReactiveValueType method.
+// This overriding is needed due to the nesting of "linked instances"
+// which are not of the correct types by default.
+// Has test: ✔
 TEMPcmsPlugin.checkReactiveValueType = function( passedValue, currentTypeToCheck, ordinaryCheckReactiveValueType ) {
+
+	// Make sure the correct values are passed
+	if (!passedValue || !currentTypeToCheck)
+		throw new Meteor.Error('temp-cms', 'No value passed to TEMPcmsPlugin.checkReactiveValueType()');
+
+	check( ordinaryCheckReactiveValueType, Function );
 
 	// It could be a linked object! If so: accept it!
 	if (passedValue.type && passedValue.type === 'TEMPCMS-linked-item'){
 		check( passedValue, {type: String, constructorName: String, _id: String });
 		return true;
 	}
+
+	// If an array is passed: remove all items in the array which are of type TEMPCMS-linked-item
 	if ( Match.test(passedValue, Array ) ){
-		// Remove all items in the array which are of type TEMPCMS-linked-item
 		passedValue = _.reject(passedValue, function( item ){
-			if (!item || !item.type)
-				return true;
-			return item.type === 'TEMPCMS-linked-item';
+			return item && item.type && item.type === 'TEMPCMS-linked-item';
 		});
 	}
 
@@ -279,49 +293,86 @@ TEMPcmsPlugin.checkReactiveValueType = function( passedValue, currentTypeToCheck
 
 };
 
+// Method for overriding the default checkReactiveValues method.
+// This overriding is needed due to the nesting of "linked instances"
+// which are not of the correct types by default.
+// Has test: ✔
 TEMPcmsPlugin.checkReactiveValues = function( dataToCheck, currentTypeStructure, ordinaryCheckReactiveValues ) {
 
-	// Exlude all items which have a type of TEMPCMS-linked-item
-	dataToCheck = _.reject( dataToCheck, function( item ){
-		
-		if (item && item.type)
-			return item.type === 'TEMPCMS-linked-item';
-		
-		return true;
+	// Make sure dataToCheck is passed!
+	if (!dataToCheck || !currentTypeStructure)
+		throw new Meteor.Error('temp-cms', 'Missing arguments in TEMPcmsPlugin.checkReactiveValues()');
 
-	});
+	check( ordinaryCheckReactiveValues, Function );
+
+	// Exlude all items which have a type of TEMPCMS-linked-item
+	dataToCheck = _(dataToCheck).mapValues(function( item ){
+
+		// If an array is passed: remove all items in the array which are linked items
+		if ( Match.test(item, Array ) ){
+			item = _.reject(item, function( arrayItem ){
+				return arrayItem && arrayItem.type && arrayItem.type === 'TEMPCMS-linked-item';
+			});
+		}
+		
+		// Is the item a linked instance?
+		if (item && item.type && item.type === 'TEMPCMS-linked-item')
+			return false;
+		
+		// Else return the item
+		return item;
+
+	}).pick( _.identity ).value();
 	
 	return ordinaryCheckReactiveValues( dataToCheck, currentTypeStructure );
 
 };
 
+// Method for overriding the default setting of an object/instance to the correct type.
+// Used for allowing "linked nestables" (which else would throw errors)
+// Has test: ✔
 TEMPcmsPlugin.setValueToCorrectType = function( instance, value, key, ordinarySetValueToCorrectType ) {
 
+	// Make sure all values are passed
+	if (!instance)
+		throw new Meteor.Error('temp-cms', 'Missing "instance" argument in TEMPcmsPlugin.setValueToCorrectType()');
+
+	check( ordinarySetValueToCorrectType, Function );
+
+	// Is it an linked instance? Just return it!
 	if (value && value.type === 'TEMPCMS-linked-item')
 		return value;
 
+	// Is it an array with elements?
 	if ( Match.test(value, Array ) && value.length > 0 ){
 
 		return _.map( value, function ( arrayVal ) {
-			// Is it a "plain" object? Then transform it into a non-plain
-			// from the type provided in the typeStructure!
-			// Else just return the current array value
+
+			// Is it a linked object? Then return it.
 			if ( arrayVal.type === 'TEMPCMS-linked-item')
 				return arrayVal;
-			var valueType = instance.getCurrentTypeStructure()[key];
-			if ( Match.test( arrayVal, Object ) && ReactiveConstructors[ valueType[ 0 ].name ] )
-				return new ReactiveConstructors[ valueType[ 0 ].name ]( arrayVal );
+
+			// Does the array item have a reactive constructor defined?
+			// If so: create a new instance from the constructor.
+			var constructorName = instance.getCurrentTypeStructure()[key];
+			if ( Match.test( arrayVal, Object ) && ReactiveConstructors[ constructorName[ 0 ].name ] )
+				return new ReactiveConstructors[ constructorName[ 0 ].name ]( arrayVal );
+			
 			return arrayVal;
+
 		});
 
 	}
 
+	// Run the ordinary method instead!
 	return ordinarySetValueToCorrectType( instance, value, key );
 
 };
 
 // TODO: Maybe return an actual Template which gets rendered by whatever is calling this method?
 // How to handle removing of existing templates which might exist?
+// How to write tests for this?
+// Very "side-effecty"
 TEMPcmsPlugin.getSelectListOverview = function( listItems, constructorName, key, setCallback, instance ) {
 
   // This is the data which gets passed to the select overview
@@ -369,6 +420,7 @@ TEMPcmsPlugin.getSelectListOverview = function( listItems, constructorName, key,
 
 };
 
+// Has test: ✔
 TEMPcmsPlugin.getInstanceByTypeAndId = function( constructorName, _id ) {
 	
 	check( constructorName, String );
@@ -380,10 +432,12 @@ TEMPcmsPlugin.getInstanceByTypeAndId = function( constructorName, _id ) {
 
 };
 
+// Has test: ✔
 TEMPcmsPlugin.getGlobalInstanceStore = function() {
 	return tempCMSInstances.get();
 };
 
+// Has test: ✔
 TEMPcmsPlugin.updateGlobalInstanceStore = function() {
 
 	console.log( 'TEMPcmsPlugin.updateGlobalInstanceStore()' );
@@ -403,10 +457,14 @@ TEMPcmsPlugin.updateGlobalInstanceStore = function() {
   })
   .value();
 
-  return tempCMSInstances.set( globalData );
+  tempCMSInstances.set( globalData );
+
+  return TEMPcmsPlugin.getGlobalInstanceStore();
 
 };
 
+// How to write tests for this?
+// Very "side-effecty"
 TEMPcmsPlugin.editPageRemove = function( instance, callback ) {
 
 	if (callback)
@@ -442,6 +500,8 @@ TEMPcmsPlugin.editPageRemove = function( instance, callback ) {
 
 };
 
+// How to write tests for this?
+// Very "side-effecty"
 TEMPcmsPlugin.editPageGet = function( instance ) {
 
 	check( instance, ReactiveConstructors[ instance.constructor.name ] );

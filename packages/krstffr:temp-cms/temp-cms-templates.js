@@ -98,12 +98,6 @@ Template.editTemplate__Collection.rendered = function () {
   });
 };
 
-Template.editTemplate__Collection.helpers({
-  listItemData: function() {
-    return _.assign( this, { isListItem: true });
-  }
-});
-
 Template.editTemplate.helpers({
   isSingleInstance: function() {
     return this.key && this.value && this.type;
@@ -218,6 +212,7 @@ Template.editTemplate.events({
     if ( Match.test( this.getReactiveValue, Function ) )
       return TEMPcmsPlugin.editPageGet( this );
     var instance = (this.value && this.value.type === 'TEMPCMS-linked-item') ? this.value : this;
+    
     instance = TEMPcmsPlugin.getInstanceByTypeAndId( instance.constructorName, instance._id );
     return TEMPcmsPlugin.editPageGet( instance );
     // if (this.value && this.value.type)

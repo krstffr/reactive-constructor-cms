@@ -63,7 +63,7 @@
 
 			{{#each value }}
 
-				{{> Template.dynamic template=getTemplateFromType data=listItemData }}
+				{{> Template.dynamic template=getTemplateFromType }}
 
 			{{/each}}
 
@@ -86,16 +86,12 @@
 			{{ getType }}
 			<span class="temp-constructor-name">{{ constructorName }}</span>
 			
-			{{! Check if this is the highest parent, if so: don't display these }}
-			{{#if isListItem }}
-				<a class="temp-remove-collection-item">Remove</a>
-				<a class="temp-remove-collection-duplicate">Duplicate</a>
-				<a class="temp-open-child-instance">Open</a>
-			{{/if}}
+			<a class="temp-remove-collection-item">Remove</a>
+			<a class="temp-remove-collection-duplicate">Duplicate</a>
+			<a class="temp-open-child-instance">Open</a>
 
 			{{#if isSingleInstance }}
 				<a class="temp-remove-nested-rc-instance">Remove instance</a>
-				<a class="temp-open-child-instance">Open</a>
 			{{/if}}
 
 		</h2>
