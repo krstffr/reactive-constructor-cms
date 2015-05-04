@@ -213,6 +213,16 @@ Template.editTemplate__wrapper.events({
 });
 
 Template.editTemplate.events({
+  'click .temp-open-child-instance': function() {
+    // This is not a "linked" object, but a directly nested one
+    if ( Match.test( this.getReactiveValue, Function ) )
+      return TEMPcmsPlugin.editPageGet( this );
+    var instance = (this.value && this.value.type === 'TEMPCMS-linked-item') ? this.value : this;
+    instance = TEMPcmsPlugin.getInstanceByTypeAndId( instance.constructorName, instance._id );
+    return TEMPcmsPlugin.editPageGet( instance );
+    // if (this.value && this.value.type)
+    //   TEMPcmsPlugin.getInstanceByTypeAndId
+  },
   'click .temp-remove-collection-duplicate': function ( e ) {
 
     e.stopImmediatePropagation();
@@ -233,8 +243,6 @@ Template.editTemplate.events({
     var instanceItem = $( e.currentTarget ).closest('.wrap');
     var parentItem = instanceItem.parent().closest('.wrap')[0];
     var parentInstance = Blaze.getData( parentItem );
-
-    console.log( this );
 
     parentInstance = parentInstance.value || parentInstance;
 

@@ -38,17 +38,18 @@
 
  ✔ Handle deletes @done (15-04-30 09:51)
    ☐ Needs security check
-   ☐ Only show delet button for docs which are actually saved to DB (not new ones…)
+   ☐ Only show delete button for docs which are actually saved to DB (not new ones…)
 
  ☐ Handle links to existing DB objects
    ☐ Updating the link
    ☐ Removing the link
+   ☐ How to display the object in the parent? The fields really are of no use for the user?
 
  ☐ Nested list (array) instances with it's own nested lists looks MESSY. Too much going on.
 
  ☐ Better "isListItem" support, now adds a field to linked items.
 
- ☐ Ability to "go to" a nested object. 
+ ✔ Ability to "go to" a nested object.  @done (15-05-04 14:18)
 
  ✔ Can't remove a linked child (which is not in a list) @done (15-04-30 14:24)
 
@@ -56,6 +57,8 @@
 
  ☐ Ability to define how "deep" nested objects should run.
    ☐ Maybe a "load more" button? Or the "go to" ability mentioned above?
+ 
+ ☐ Saving of "parent" instance, when editing a child instance
 
 ＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿
 Archive:
