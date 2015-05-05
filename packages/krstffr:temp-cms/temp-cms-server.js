@@ -10,6 +10,9 @@ var getCollectionFromConstructorName = function( constructorName ) {
 Meteor.methods({
 	'rc-temp-cms/save': function( item, constructorName, saveOptions ) {
 
+		if (!this.userId)
+			throw new Meteor.Error('temp-cms', 'You need to be logged in.' );
+
 		saveOptions = saveOptions || {};
 			
 		// Get the collection to store the doc(s) in
@@ -54,6 +57,10 @@ Meteor.methods({
 	},
 	// Method for removing all backups which are older than the numToKeep (number) latest
 	'rc-temp-cms/delete-old-backups': function( mainId, numToKeep, constructorName ) {
+
+		if (!this.userId)
+			throw new Meteor.Error('temp-cms', 'You need to be logged in.' );
+
 		// Get the collection
 		var collection = getCollectionFromConstructorName( constructorName );
 		// Get the numToKeep latest backup (-1 since we're only removing docs AFTER this one)
@@ -65,6 +72,9 @@ Meteor.methods({
 
 	},
 	'rc-temp-cms/delete': function( id, constructorName ) {
+
+		if (!this.userId)
+			throw new Meteor.Error('temp-cms', 'You need to be logged in.' );
 			
 		check( id, String );
 		check( constructorName, String );
@@ -80,6 +90,10 @@ Meteor.methods({
 
 
 Meteor.publish('temp-cms-publications', function() {
+
+	// These should only be available to logged in users
+	if (!this.userId)
+		return this.error( new Meteor.Error('temp-cms', 'You need to login to subscribe to temp-cms-publications' ) );
 	
 	// Get all the publications
 	return _.chain(ReactiveConstructors)

@@ -160,21 +160,14 @@ Template.editTemplate.helpers({
 });
 
 // TODO this is not clean at all actually.
-var handleBlurEvent = function ( e ) {
+var updateInput = function ( value, key, type, instance ) {
 
-  e.stopImmediatePropagation();
+  if (type === 'Number')
+    value = parseFloat( value, 10 ) || 0;
 
-  var value = $(e.currentTarget).val();
+  instance = instance || Template.currentData().value || Template.currentData();
 
-  if (this.type === 'Number')
-    value = parseFloat( value, 10 );
-
-  // This is for handling template which have a data context of "key", "value"
-  // and "type"
-  if (Template.currentData().value)
-    return Template.currentData().value.setReactiveValue( this.key, value );
-
-  return Template.currentData().setReactiveValue( this.key, value );
+  return instance.setReactiveValue( key, value );
 
 };
 
@@ -294,7 +287,12 @@ Template.editTemplate.events({
 
   },
   // Method for updating the value of a property on keyup!
-  'blur input': handleBlurEvent,
+  'blur input': function( e ) {
+    e.stopImmediatePropagation();
+    var value = $(e.currentTarget).val();
+    var instance = Template.currentData().value || Template.currentData();
+    return updateInput( value, this.key, this.type, instance );
+  },
   // Method for boolean values
   'change .TEMP-bool-select': function ( e ) {
 

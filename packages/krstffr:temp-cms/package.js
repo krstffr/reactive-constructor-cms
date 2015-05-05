@@ -35,7 +35,13 @@ Package.onUse(function (api) {
 
 Package.onTest(function (api) {
   	
-  api.use(["tinytest", "krstffr:reactive-constructor", "krstffr:temp-cms"], ["client", "server"]);
+  api.use([
+  	"tinytest",
+  	"krstffr:reactive-constructor",
+  	"krstffr:temp-cms",
+  	"accounts-base",
+  	"accounts-password"
+  	], ["client", "server"]);
 
   api.export("ReactiveConstructors", ["server", "client"]);
 

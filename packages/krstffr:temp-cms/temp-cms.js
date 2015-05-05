@@ -111,6 +111,9 @@ TEMPcmsPlugin = new ReactiveConstructorPlugin({
 
 		// Has test: ✔
 		passedClass.prototype.save = function( saveOptions, callback ) {
+
+			if ( !Meteor.userId() )
+				throw new Meteor.Error('temp-cms', 'You need to be logged in.' );
 			
 			if ( !this.getCollection() )
 				throw new Meteor.Error('temp-cms', 'No collection defined for: ' + passedClass.name );
@@ -118,8 +121,8 @@ TEMPcmsPlugin = new ReactiveConstructorPlugin({
 			return Meteor.call('rc-temp-cms/save', this.getDataAsObject(), passedClass.name, saveOptions, function(err, res) {
 				if ( res )
 					TEMPcmsPlugin.updateGlobalInstanceStore();
-				if (callback)
-					return callback( res );
+				if ( callback )
+					return callback( res, err );
 				return true;
 			});
 
@@ -127,6 +130,9 @@ TEMPcmsPlugin = new ReactiveConstructorPlugin({
 
 		// Has test: ✔
 		passedClass.prototype.deleteInstance = function( callback ) {
+
+			if ( !Meteor.userId() )
+				throw new Meteor.Error('temp-cms', 'You need to be logged in.' );
 			
 			if ( !this.getCollection() )
 				throw new Meteor.Error('temp-cms', 'No collection defined for: ' + passedClass.name );
@@ -137,13 +143,10 @@ TEMPcmsPlugin = new ReactiveConstructorPlugin({
 			check( passedClass.name, String );
 
 			return Meteor.call('rc-temp-cms/delete', id, passedClass.name, function(err, res) {
-				
-				console.log( err, res );
-
 				if ( res )
 					TEMPcmsPlugin.updateGlobalInstanceStore();
 				if ( callback )
-					return callback( res );
+					return callback( res, err );
 				return true;
 			});
 
@@ -504,6 +507,9 @@ TEMPcmsPlugin.editPageRemove = function( instance, callback ) {
 // How to write tests for this?
 // Very "side-effecty"
 TEMPcmsPlugin.editPageGet = function( instance ) {
+
+	if (!Meteor.userId())
+		throw new Meteor.Error('temp-cms', 'You need to be logged in.' );
 
 	check( instance, ReactiveConstructors[ instance.constructor.name ] );
 

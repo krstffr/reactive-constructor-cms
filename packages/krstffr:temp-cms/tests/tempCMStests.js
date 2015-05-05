@@ -96,17 +96,17 @@ Meteor.startup(function() {
 		}; 
 	});
 
-	NonSaveableConstructor = new ReactiveConstructor(function NonSaveableConstructor() {
+NonSaveableConstructor = new ReactiveConstructor(function NonSaveableConstructor() {
 
-		this.initReactiveValues( arguments[0] );
+	this.initReactiveValues( arguments[0] );
 
-	}, function() {
-		return {
-			typeStructure: [{
-				type: 'this is a non saveable instance'
-			}]
-		};
-	});
+}, function() {
+	return {
+		typeStructure: [{
+			type: 'this is a non saveable instance'
+		}]
+	};
+});
 
 });
 
@@ -119,6 +119,35 @@ if (Meteor.isServer){
 	});
 	return false;
 }
+
+var accountCreated = false;
+var loginOrCreateAccount = function( cb ) {
+	
+	var username = 'test-user';
+	var password = 'test-pass';
+
+	if (!accountCreated){
+		return Accounts.createUser({ username: username, password: password }, function() {
+			accountCreated = true;
+			// Now login as well!
+			return loginOrCreateAccount( cb );
+		});
+	}
+	else {
+		Meteor.loginWithPassword(username, password, function() {
+			return cb();
+		});
+	}
+
+};
+
+var startSubscription = function( cb ) {
+	Meteor.subscribe('temp-cms-publications', {
+		onReady: function() {
+			cb();
+		}
+	});
+};
 
 Tinytest.add('TEMPcmsPlugin - init: main object and all methods exists', function(test) {
 
@@ -417,25 +446,91 @@ Tinytest.addAsync('TEMPcmsPlugin async - cleanup, remove all collections', funct
 
 });
 
-Tinytest.addAsync('TEMPcmsPlugin async - check subscription', function(test, next) {
-	Meteor.subscribe('temp-cms-publications', {
-		onReady: function() {
+Tinytest.addAsync('TEMPcmsPlugin async - not logged in method call: rc-temp-cms/save', function(test, next) {
+
+	Meteor.logout(function() {
+		Meteor.call('rc-temp-cms/save', function( err, res ) {
+			test.isUndefined( res );
+			test.isTrue( Match.test( err.reason, String ) );
 			next();
-		}
+		});
 	});
+
 });
 
-Tinytest.addAsync('TEMPcmsPlugin async - instance.save()', function(test, next) {
+Tinytest.addAsync('TEMPcmsPlugin async - not logged in method call: rc-temp-cms/delete-old-backups', function(test, next) {
 
-	var docToSave = new Person();
-	docToSave.save({}, function(res){
-		test.equal( res.backupsRemoved, 0 );
-		test.isTrue( Match.test( res.backup, String ) );
-		test.isTrue( Match.test( res.edit, {
-			insertedId: String,
-			numberAffected: Number
-		}));
+	Meteor.logout(function() {
+		Meteor.call('rc-temp-cms/delete-old-backups', function( err, res ) {
+			test.isUndefined( res );
+			test.isTrue( Match.test( err.reason, String ) );
+			next();
+		});
+	});
+
+});
+
+Tinytest.addAsync('TEMPcmsPlugin async - not logged in method call: rc-temp-cms/rc-temp-cms/delete', function(test, next) {
+
+	Meteor.logout(function() {
+		Meteor.call('rc-temp-cms/rc-temp-cms/delete', function( err, res ) {
+			test.isUndefined( res );
+			test.isTrue( Match.test( err.reason, String ) );
+			next();
+		});
+	});
+
+});
+
+
+Tinytest.addAsync('TEMPcmsPlugin async - check subscription without user', function(test, next) {
+
+	// Make sure we're logged out
+	Meteor.logout(function() {
+		Meteor.subscribe('temp-cms-publications', {
+			onStop: function( err ) {
+				test.equal(err.errorType, 'Meteor.Error');
+				next();
+			}
+		});
+	});
+
+});
+
+Tinytest.addAsync('TEMPcmsPlugin async - check subscription with user', function(test, next) {
+	
+	loginOrCreateAccount(function() {
+		return startSubscription(function() {
+			next();
+		});
+	});
+
+});
+
+Tinytest.addAsync('TEMPcmsPlugin async - instance.save(), not logged in', function(test, next) {
+
+	Meteor.logout(function() {
+		test.throws(function() {
+			docToSave.save({});
+		});
 		next();
+	});
+
+});
+
+Tinytest.addAsync('TEMPcmsPlugin async - instance.save(), logged in', function(test, next) {
+
+	loginOrCreateAccount(function() {
+		var docToSave = new Person();
+		docToSave.save({}, function(res){
+			test.equal( res.backupsRemoved, 0 );
+			test.isTrue( Match.test( res.backup, String ) );
+			test.isTrue( Match.test( res.edit, {
+				insertedId: String,
+				numberAffected: Number
+			}));
+			next();
+		});
 	});
 
 });
@@ -503,66 +598,97 @@ Tinytest.addAsync('TEMPcmsPlugin async - instance.save(), remove backups', funct
 
 });
 
-Tinytest.addAsync('TEMPcmsPlugin async - instance.deleteInstance()', function(test, next) {
+Tinytest.addAsync('TEMPcmsPlugin async - instance.deleteInstance(), not logged in', function(test, next) {
 
 	var docToSave = new Person();
 
 	// First save the doc, so we know we have one
 	docToSave.save({}, function(){
-		docToSave.deleteInstance(function(res){
-			test.isTrue( Match.test( res, Number ) );
-			test.isTrue( res > 0 );
+
+		Meteor.logout(function() {
+
+			test.throws(function() {
+				docToSave.deleteInstance();
+			});
+
 			next();
+
 		});
+
+	});
+
+});
+
+Tinytest.addAsync('TEMPcmsPlugin async - instance.deleteInstance(), logged in', function(test, next) {
+
+	loginOrCreateAccount(function() {
+
+		var docToSave = new Person();
+
+		// First save the doc, so we know we have one
+		docToSave.save({}, function(){
+			docToSave.deleteInstance(function(res){
+				test.isTrue( Match.test( res, Number ) );
+				test.isTrue( res > 0 );
+				next();
+			});
+		});
+
 	});
 
 });
 
 Tinytest.addAsync('TEMPcmsPlugin async - Person.getLinkableInstances()', function(test, next) {
+
+	startSubscription(function() {
 	
-	// Should throw errors if no instance or key is passed
-	test.throws(function(){
-		Person.getLinkableInstances();
-	});
-	test.throws(function(){
-		Person.getLinkableInstances( new Person() );
-	});
+		// Should throw errors if no instance or key is passed
+		test.throws(function(){
+			Person.getLinkableInstances();
+		});
+		test.throws(function(){
+			Person.getLinkableInstances( new Person() );
+		});
 
-	var getGlobalPersons = function() {
-		return _.findWhere(TEMPcmsPlugin.getGlobalInstanceStore(), { constructorName: 'Person' }).items;
-	};
-
-	test.notEqual( getGlobalPersons().length, 0 );
-
-	Meteor.call('tempcms-test/cleanup-test-db', function( err ) {
-		if (err)
-			throw new Error('something went wrong?' + err );
-
-		// Update the "globale instance store"
 		TEMPcmsPlugin.updateGlobalInstanceStore();
-		// Check that there are now 0 persons
-		test.equal( getGlobalPersons().length, 0 );
 
-		// Let's create a person
-		var testPerson = new Person({ rcType: 'husband' });
+		var getGlobalPersons = function() {
+			return _.findWhere(TEMPcmsPlugin.getGlobalInstanceStore(), { constructorName: 'Person' }).items;
+		};
 
-		// There should be no "wives" available
-		test.equal( Person.getLinkableInstances( testPerson, 'wife' ).length, 0 );
+		test.notEqual( getGlobalPersons().length, 0 );
 
-		// Now: let's add one wife and one worker
-		var wife = new Person({ rcType: 'wife' });
-		var worker = new Person({ rcType: 'worker' });
+		Meteor.call('tempcms-test/cleanup-test-db', function( err ) {
+			if (err)
+				throw new Error('something went wrong?' + err );
 
-		wife.save({}, function() {
-			worker.save({}, function() {
-				// Now there should be 2 persons
-				test.equal( getGlobalPersons().length, 2 );
-				// And there should be one wife available
-				test.equal( Person.getLinkableInstances( testPerson, 'wife' ).length, 1 );
-				// And one buddy
-				test.equal( Person.getLinkableInstances( testPerson, 'buddies' ).length, 1 );
-				next();
+			// Update the "globale instance store"
+			TEMPcmsPlugin.updateGlobalInstanceStore();
+			// Check that there are now 0 persons
+			test.equal( getGlobalPersons().length, 0 );
+
+			// Let's create a person
+			var testPerson = new Person({ rcType: 'husband' });
+
+			// There should be no "wives" available
+			test.equal( Person.getLinkableInstances( testPerson, 'wife' ).length, 0 );
+
+			// Now: let's add one wife and one worker
+			var wife = new Person({ rcType: 'wife' });
+			var worker = new Person({ rcType: 'worker' });
+
+			wife.save({}, function() {
+				worker.save({}, function() {
+					// Now there should be 2 persons
+					test.equal( getGlobalPersons().length, 2 );
+					// And there should be one wife available
+					test.equal( Person.getLinkableInstances( testPerson, 'wife' ).length, 1 );
+					// And one buddy
+					test.equal( Person.getLinkableInstances( testPerson, 'buddies' ).length, 1 );
+					next();
+				});
 			});
+
 		});
 
 	});
