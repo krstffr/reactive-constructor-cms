@@ -30,8 +30,12 @@ Handlebars.registerHelper('getTemplateFromType', function () {
     return 'editTemplate';
 
   // Is it a string? Return the basic template
-  if (this.type === 'String' || this.type === 'Number' || this.type === 'Date')
+  if (this.type === 'String' || this.type === 'Number' || this.type === 'Date'){
+    var userSpecifiedInput = Template.parentData(1).getInputType( this.key );
+    if (userSpecifiedInput === 'textarea')
+      return 'editTemplate__Textarea';
     return 'editTemplate__String';
+  }
 
   // Is it a boolean?
   if (this.type === 'Boolean')
@@ -104,28 +108,8 @@ Template.editTemplate.helpers({
   },
   data: function () {
 
+    // TODO: This should be refactored away!
     return this;
-
-    // The default values should return the value of this
-    if (this.type.search(/String|Number|Boolean/g) > -1)
-      return this;
-    
-    // Collections should return the value of this
-    if (this.type.search(/Collection_/g) > -1)
-      return this;
-
-    // If there is a getReactiveValue function, it is very
-    // probable that it is a reactive instance
-    if ( this.value && Match.test( this.value.getReactiveValue, Function ) )
-      return this;
-
-    // If there is no value set, it's probably (TODO!??)
-    // a reactive instance which is not yet set!
-    if (this.key && this.type)
-      return this;
-
-    // Else the "actual value" should be returned!
-    return this.value;
 
   },
   getReactiveValuesAsArray: function() {

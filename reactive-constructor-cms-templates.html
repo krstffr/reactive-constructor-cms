@@ -30,7 +30,7 @@
 <template name="editTemplate__labelString">
 	<span class="">
 		{{ key }}
-		<span class="reactive-constructor-cms-input-value-type">&lt;{{ type }}&gt;</span>
+		<!-- <span class="reactive-constructor-cms-input-value-type">&lt;{{ type }}&gt;</span> -->
 	</span>
 </template>
 
@@ -39,6 +39,15 @@
 	<label>
 		{{> editTemplate__labelString }}
 		<input type="text" value="{{ value }}">
+	</label>
+	
+</template>
+
+<template name="editTemplate__Textarea">
+	
+	<label>
+		{{> editTemplate__labelString }}
+		<textarea>{{ value }}</textarea>
 	</label>
 	
 </template>

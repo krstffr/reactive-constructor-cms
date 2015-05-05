@@ -38,6 +38,11 @@ Person = new ReactiveConstructor(function Person() {
         children: []
       },
       cmsOptions: {
+        inputs: {
+          name: {
+            type: 'textarea'
+          }
+        },
         filter: {
           children: ['worker', 'child']
         }

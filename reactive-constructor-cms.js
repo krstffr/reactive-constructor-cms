@@ -34,6 +34,16 @@ ReactiveConstructorCmsPlugin = new ReactiveConstructorPlugin({
 			}
 		};
 
+		// Method for returing an "overriding" inputtype, for example a textarea
+		// instead of a text.
+		// TODO: Needs to check "global" overrides as well!
+		// Has test: ✔
+		passedClass.prototype.getInputType = function( key ) {
+			if (this.getInstanceCmsOptions().inputs && this.getInstanceCmsOptions().inputs[key])
+				return this.getInstanceCmsOptions().inputs[key].type;
+			return false;
+		};
+
 		// Method for returning the data for the CMS frontend basically
 		// Has test: ✔
 		passedClass.prototype.getReactiveValuesAsArray = function () {

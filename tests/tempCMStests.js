@@ -31,6 +31,11 @@ Meteor.startup(function() {
 					children: []
 				},
 				cmsOptions: {
+					inputs: {
+						name: {
+							type: 'textarea'
+						}
+					},
 					filter: {
 						children: ['worker', 'child']
 					}
@@ -420,6 +425,15 @@ Tinytest.add('ReactiveConstructorCmsPlugin instance methods - instance.getInstan
 
 	// This should just be an empty object
 	test.isTrue( Match.test( nonSaveableInstance.getInstanceCmsOptions(), {} ) );
+
+});
+
+Tinytest.add('ReactiveConstructorCmsPlugin instance methods - instance.getInputType()', function(test) {
+	
+	var person = new Person({ rcType: 'worker' });
+
+	test.equal( person.getInputType('title'), false );
+	test.equal( person.getInputType('name'), 'textarea' );
 
 });
 

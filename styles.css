@@ -129,7 +129,8 @@
 
 .reactive-constructor-cms-wrapper input,
 .reactive-constructor-cms-wrapper select,
-.reactive-constructor-cms-wrapper button {
+.reactive-constructor-cms-wrapper button,
+.reactive-constructor-cms-wrapper textarea {
 	box-sizing: border-box;
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
@@ -139,11 +140,16 @@
 	border-radius: 0;
 }
 
+.reactive-constructor-cms-wrapper textarea{
+	height: 200px;
+}
+
 .reactive-constructor-cms-wrapper label > input,
 .reactive-constructor-cms-wrapper label > select,
-.reactive-constructor-cms-wrapper label > button {
+.reactive-constructor-cms-wrapper label > button,
+.reactive-constructor-cms-wrapper label > textarea {
 	float: right;
-	width: 60%;
+	width: 70%;
 }
 
 .reactive-constructor-cms-wrapper .wrapper__buttons {
