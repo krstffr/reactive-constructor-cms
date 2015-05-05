@@ -25,6 +25,8 @@ Meteor.methods({
 		backupDoc.tempCmsStatus = 'backup';
 		savedDocs.backup = constructorCmsOptions.collection.insert( backupDoc );
 
+		// Remove all backups after the last 15 ones
+
 		// Publish the doc if the saveOptions.publish was set to true
 		if ( saveOptions.publish ){
 			var publishDoc = _.clone( backupDoc );
@@ -32,7 +34,7 @@ Meteor.methods({
 			savedDocs.published = constructorCmsOptions.collection.upsert({
 				mainId: publishDoc.mainId,
 				tempCmsStatus: 'published'
-			}, _.omit( publishDoc, ['mainId', 'tempCmsStatus']) );
+			}, publishDoc );
 		}
 
 		item.tempCmsStatus = 'edit';
