@@ -271,7 +271,7 @@ Template.editTemplate.events({
 
   },
   // Method for updating the value of a property on keyup!
-  'blur input': function( e ) {
+  'blur input, blur textarea': function( e ) {
     e.stopImmediatePropagation();
     var value = $(e.currentTarget).val();
     var instance = Template.currentData().value || Template.currentData();
