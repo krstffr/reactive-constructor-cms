@@ -489,7 +489,7 @@ ReactiveConstructorCmsPlugin.editPageRemove = function( instance, callback ) {
 
 		// Hide the container by adding the hidden class
 		// TODO: Use a more proper class
-		$('.wrapper').addClass('wrapper--hidden');
+		$('.reactive-constructor-cms-wrapper').addClass('wrapper--hidden');
 
 		// Return a time out which actually remove the view
 		return Meteor.setTimeout(function () {

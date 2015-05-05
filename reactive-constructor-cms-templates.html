@@ -5,12 +5,16 @@
 	<div class="reactive-constructor-cms-select-overview">
 	
 	<h2>{{ headline }}</h2>
-
+	
+	<ul>
 	{{#each selectableItems }}
 
-		<button>{{ buttonValue }}</button>
+		<li>
+			<a>{{ buttonValue }}</a>
+		</li>
 
 	{{/each}}
+	</ul>
 
 	</div>
 
@@ -109,7 +113,7 @@
 
 <template name="editTemplate__wrapper">
 
-	<div class="wrapper wrapper--hidden">
+	<div class="reactive-constructor-cms-wrapper wrapper--hidden">
 
 		<div class="wrapper__editable-fields">
 

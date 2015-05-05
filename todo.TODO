@@ -5,6 +5,8 @@
  
  ☐ Keydown update of value (without messing with the input!)
 
+ ☐ Nested children shuold not have _id, status etc.
+
  ☐ Main UI! 
    ☐ The look and feel of this thing. 
    ☐ Also: how does the user reach the UI?

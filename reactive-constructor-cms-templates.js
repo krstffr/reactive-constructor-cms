@@ -1,5 +1,5 @@
 Template.editTemplate__selectOverview.events({
-  'click button': function() {
+  'click li a': function() {
     // Make sure we have a callback function!
     var callback = Template.parentData(0).callback;
     check( callback, Function );

@@ -19,7 +19,8 @@ Package.onUse(function (api) {
 	api.addFiles([
 		"reactive-constructor-cms.js",
 		"reactive-constructor-cms-templates.html",
-		"reactive-constructor-cms-templates.js"
+		"reactive-constructor-cms-templates.js",
+		"styles.css",
 		], "client");
 
 	api.addFiles([
