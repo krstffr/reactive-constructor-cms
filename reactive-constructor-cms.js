@@ -87,7 +87,9 @@ ReactiveConstructorCmsPlugin = new ReactiveConstructorPlugin({
 			if ( Match.test( item.getType, Function) ) {
 				// Use the .getDataAsObject() method to get this items data, and also add this instances type
 				var newItemData = _.assign({ rcType: item.getType() }, item.getDataAsObject() );
-				newItemData._id = Meteor.uuid();
+				// Is the item creatable? Assign a new _id
+				if ( item.getCollection() )
+					newItemData._id = Meteor.uuid();
 				// Use the items .constructor to create a new instance and push this to the array
 				arr.push( new item.constructor( newItemData ) );
 			}
@@ -246,24 +248,32 @@ ReactiveConstructorCmsPlugin = new ReactiveConstructorPlugin({
 
 		// If a collection is defined for this constructor, make sure this
 		// instance has an _id field
-		if ( instance.getCollection() && !instance.getReactiveValue('_id') )
-			instance.setReactiveValue('_id', Meteor.uuid() );
+		if (instance.getCollection()) {
+			if ( !instance.getReactiveValue('_id') )
+				instance.setReactiveValue('_id', Meteor.uuid() );
 
-		if ( instance.getCollection() && !instance.getReactiveValue('reactiveConstructorCmsName') )
-			instance.setReactiveValue('reactiveConstructorCmsName', 'New ' + instance.getType() );
+			if ( !instance.getReactiveValue('reactiveConstructorCmsName') )
+				instance.setReactiveValue('reactiveConstructorCmsName', 'New ' + instance.getType() );
 
-		instance._id = instance.getReactiveValue('_id');
-		instance.reactiveConstructorCmsName = instance.getReactiveValue('reactiveConstructorCmsName');
+			instance._id = instance.getReactiveValue('_id');
+			instance.reactiveConstructorCmsName = instance.getReactiveValue('reactiveConstructorCmsName');
+		}
 
 		return instance;
 
 	},
 
-	pluginTypeStructure: {
-		_id: String,
-		reactiveConstructorCmsName: String,
-		reactiveConstructorCmsStatus: String,
-		updateTime: ISODate
+	pluginTypeStructure: function ( instance ) {
+		// Does the instance have a collection?
+		// Else don't assign any extra fields
+		if ( !instance.getCollection() )
+			return {};
+		return {
+			_id: String,
+			reactiveConstructorCmsName: String,
+			reactiveConstructorCmsStatus: String,
+			updateTime: ISODate
+		};
 	}
 
 });

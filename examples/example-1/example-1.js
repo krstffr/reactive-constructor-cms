@@ -22,7 +22,8 @@ Person = new ReactiveConstructor(function Person() {
         age: Number,
         name: String,
         children: [ Person ],
-        sex: String
+        sex: String,
+        pets: [ Pet ]
       }
     },
     typeStructure: [{
@@ -100,6 +101,24 @@ Person = new ReactiveConstructor(function Person() {
       }
     }]
   }; 
+});
+
+Pet = new ReactiveConstructor(function Pet() {
+
+  this.initReactiveValues( arguments[0] );
+
+}, function() {
+  return {
+    typeStructure: [{
+      type: 'cat',
+      fields: {
+        name: String
+      },
+      defaultData: {
+        name: 'Mr. Cat-pants'
+      }
+    }]
+  };
 });
 
 Client = new ReactiveConstructor( function Client() {
