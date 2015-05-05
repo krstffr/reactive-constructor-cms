@@ -162,6 +162,7 @@ TEMPcmsPlugin = new ReactiveConstructorPlugin({
 
 		// Method for returning all current instances (from the DB)
 		// which can be added to a one of this instances' fields (by key)
+		// Has test: ✔
 		passedClass.getLinkableInstances = function( instance, key ) {
 
 			if (!instance)
@@ -190,7 +191,12 @@ TEMPcmsPlugin = new ReactiveConstructorPlugin({
 		// Method for filtering a list of types by types defined for the instance
 		passedClass.filterCreatableTypes = function( key, typeNames, instance, typeNameKey ) {
 
+			// Make sure typeNames are passed
 			check( typeNames, Array );
+
+			// Make sure an instance is passed
+			if (!instance)
+				throw new Meteor.Error('temp-cms', 'No instance passed to '+passedClass.name+' filterCreatableTypes()');
 
 			// Check if this instance type has any filter
 	    var instanceCmsOptions = instance.getInstanceCmsOptions();
@@ -214,7 +220,7 @@ TEMPcmsPlugin = new ReactiveConstructorPlugin({
 		// Return an array of strings of the types which a field
 		// can contain. Use the constructor for this, since it's not really
 		// bound to the specific instance.
-		// TODO: This description is not great at all.
+		// Has test: ✔
 		passedClass.getCreatableTypes = function( key, instance ) {
 
 			// Get all the instance types from the constructor
@@ -225,10 +231,10 @@ TEMPcmsPlugin = new ReactiveConstructorPlugin({
 	    });
 
 	    // If no instance is passed, just return all the type names
-	    if (!instance)
-	    	return typeNames;
-
-	    return passedClass.filterCreatableTypes( key, typeNames, instance, 'value' );
+	    if (instance)
+	    	return passedClass.filterCreatableTypes( key, typeNames, instance, 'value' );
+	    
+	    return typeNames;
 
 		};
 

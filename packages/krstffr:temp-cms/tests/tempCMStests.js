@@ -96,17 +96,17 @@ Meteor.startup(function() {
 		}; 
 	});
 
-NonSaveableConstructor = new ReactiveConstructor(function NonSaveableConstructor() {
+	NonSaveableConstructor = new ReactiveConstructor(function NonSaveableConstructor() {
 
-	this.initReactiveValues( arguments[0] );
+		this.initReactiveValues( arguments[0] );
 
-}, function() {
-	return {
-		typeStructure: [{
-			type: 'this is a non saveable instance'
-		}]
-	};
-});
+	}, function() {
+		return {
+			typeStructure: [{
+				type: 'this is a non saveable instance'
+			}]
+		};
+	});
 
 });
 
@@ -392,6 +392,22 @@ Tinytest.add('TEMPcmsPlugin instance methods - instance.getInstanceCmsOptions()'
 	test.isTrue( Match.test( nonSaveableInstance.getInstanceCmsOptions(), {} ) );
 
 });
+
+
+Tinytest.add('TEMPcmsPlugin constructor methods - getCreatableTypes()', function(test) {
+
+	// Return all when no instance is passed
+	test.equal( Person.getCreatableTypes().length, 4 );
+
+	var testHusband = new Person({ rcType: 'husband' });
+	// The husband type should only have one creatable type of wife
+	test.equal( Person.getCreatableTypes( 'wife', testHusband ).length, 1 );
+
+	// The husband type should only have two creatable types of buddies
+	test.equal( Person.getCreatableTypes( 'buddies', testHusband ).length, 2 );
+
+});
+
 
 
 
