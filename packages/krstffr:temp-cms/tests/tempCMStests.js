@@ -336,7 +336,6 @@ Tinytest.add('TEMPcmsPlugin instance methods - instance.arrayitemMove()', functi
 
 });
 
-
 Tinytest.add('TEMPcmsPlugin instance methods - instance.arrayitemRemove()', function(test) {
 	
 	var person = new Person({ rcType: 'husband', buddies: [{}, { name: 'john' }, {}]});
@@ -393,7 +392,6 @@ Tinytest.add('TEMPcmsPlugin instance methods - instance.getInstanceCmsOptions()'
 
 });
 
-
 Tinytest.add('TEMPcmsPlugin constructor methods - getCreatableTypes()', function(test) {
 
 	// Return all when no instance is passed
@@ -407,10 +405,6 @@ Tinytest.add('TEMPcmsPlugin constructor methods - getCreatableTypes()', function
 	test.equal( Person.getCreatableTypes( 'buddies', testHusband ).length, 2 );
 
 });
-
-
-
-
 
 Tinytest.addAsync('TEMPcmsPlugin async - cleanup, remove all collections', function(test, next) {
 
@@ -431,15 +425,6 @@ Tinytest.addAsync('TEMPcmsPlugin async - check subscription', function(test, nex
 	});
 });
 
-Tinytest.addAsync('TEMPcmsPlugin async - TEMPcmsPlugin.getGlobalInstanceStore() / TEMPcmsPlugin.updateGlobalInstanceStore()', function(test, next) {
-	var resultOfUpdate = TEMPcmsPlugin.updateGlobalInstanceStore();
-	test.equal( resultOfUpdate, TEMPcmsPlugin.getGlobalInstanceStore() );
-	next();
-});
-
-
-
-
 Tinytest.addAsync('TEMPcmsPlugin async - instance.save()', function(test, next) {
 
 	var docToSave = new Person();
@@ -450,6 +435,32 @@ Tinytest.addAsync('TEMPcmsPlugin async - instance.save()', function(test, next) 
 			numberAffected: Number
 		}));
 		next();
+	});
+
+});
+
+Tinytest.addAsync('TEMPcmsPlugin async - instance.save({ publish: true })', function(test, next) {
+
+	var docToSave = new Person();
+
+	docToSave.save({ publish: true }, function(res){
+		
+		test.isTrue( Match.test( res.backup, String ) );
+		
+		test.equal( res.published.numberAffected, 1 );
+
+		test.isTrue( Match.test( res.published, {
+			insertedId: String,
+			numberAffected: Number
+		}));
+
+		test.isTrue( Match.test( res.edit, {
+			insertedId: String,
+			numberAffected: Number
+		}));
+
+		next();
+
 	});
 
 });
@@ -518,6 +529,12 @@ Tinytest.addAsync('TEMPcmsPlugin async - Person.getLinkableInstances()', functio
 
 	});
 
+});
+
+Tinytest.addAsync('TEMPcmsPlugin async - TEMPcmsPlugin.getGlobalInstanceStore() / TEMPcmsPlugin.updateGlobalInstanceStore()', function(test, next) {
+	var resultOfUpdate = TEMPcmsPlugin.updateGlobalInstanceStore();
+	test.equal( resultOfUpdate, TEMPcmsPlugin.getGlobalInstanceStore() );
+	next();
 });
 
 Tinytest.addAsync('TEMPcmsPlugin async - TEMPcmsPlugin.getInstanceByTypeAndId()', function(test, next) {
