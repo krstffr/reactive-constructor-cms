@@ -116,9 +116,6 @@ TEMPcmsPlugin = new ReactiveConstructorPlugin({
 				throw new Meteor.Error('temp-cms', 'No collection defined for: ' + passedClass.name );
 
 			return Meteor.call('rc-temp-cms/save', this.getDataAsObject(), passedClass.name, saveOptions, function(err, res) {
-				
-				console.log( err, res );
-
 				if ( res )
 					TEMPcmsPlugin.updateGlobalInstanceStore();
 				if (callback)
@@ -210,8 +207,6 @@ TEMPcmsPlugin = new ReactiveConstructorPlugin({
 	    	typeNames = _.filter(typeNames, function( type ){
 	    		return _.indexOf( instanceCmsOptions.filter[key], type[ typeNameKey ] ) > -1;
 	    	});
-
-	    console.log( typeNames );
 
 	    return typeNames;
 

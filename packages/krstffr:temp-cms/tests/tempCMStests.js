@@ -429,6 +429,7 @@ Tinytest.addAsync('TEMPcmsPlugin async - instance.save()', function(test, next) 
 
 	var docToSave = new Person();
 	docToSave.save({}, function(res){
+		test.equal( res.backupsRemoved, 0 );
 		test.isTrue( Match.test( res.backup, String ) );
 		test.isTrue( Match.test( res.edit, {
 			insertedId: String,
@@ -444,6 +445,8 @@ Tinytest.addAsync('TEMPcmsPlugin async - instance.save({ publish: true })', func
 	var docToSave = new Person();
 
 	docToSave.save({ publish: true }, function(res){
+
+		test.equal( res.backupsRemoved, 0 );
 		
 		test.isTrue( Match.test( res.backup, String ) );
 		
@@ -462,6 +465,41 @@ Tinytest.addAsync('TEMPcmsPlugin async - instance.save({ publish: true })', func
 		next();
 
 	});
+
+});
+
+Tinytest.addAsync('TEMPcmsPlugin async - instance.save(), remove backups', function(test, next) {
+
+	// Let's first save a doc X times
+	var docToSave = new Person();
+	var saveTimes = 20;
+	var backupsShouldBeRemovedAfter = saveTimes-15;
+
+	var saveRecurse = function( num, instance ) {
+		instance.save({ publish: true }, function( res ){
+
+			test.isTrue( Match.test( res, {
+				published: Object,
+				edit: Object,
+				backup: String,
+				backupsRemoved: Number
+			}));
+
+			if (num <= backupsShouldBeRemovedAfter)
+				test.equal( res.backupsRemoved, 1 );
+			else
+				test.equal( res.backupsRemoved, 0 );
+
+			if (num>0)
+				return saveRecurse( num-1, instance );
+
+			return next();
+
+		});
+
+	};
+
+	return saveRecurse( saveTimes, docToSave );
 
 });
 
