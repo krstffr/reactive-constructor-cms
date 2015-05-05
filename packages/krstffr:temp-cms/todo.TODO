@@ -43,7 +43,7 @@
  ☐ How to handle nested "pure" objects? Should that even be allowed? NAH. Not in the CMS! Or? Maybe…
 
  ✔ Handle deletes @done (15-04-30 09:51)
-   ☐ Needs security check
+   ✔ Needs security check @done (15-05-05 16:47)
    ☐ Only show delete button for docs which are actually saved to DB (not new ones…)
 
  ☐ Handle links to existing DB objects
