@@ -264,7 +264,7 @@ Template.invoiceTestTemplate.events({
 
     e.stopImmediatePropagation();
 
-    TEMPcmsPlugin.editPageGet( this );
+    ReactiveConstructorCmsPlugin.editPageGet( this );
 
   }
 });

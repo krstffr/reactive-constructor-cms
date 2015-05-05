@@ -1,8 +1,8 @@
 <template name="editTemplate__selectOverview">
 
-	<div class="temp-select-overview__fader"></div>
+	<div class="reactive-constructor-cms-select-overview__fader"></div>
 
-	<div class="temp-select-overview">
+	<div class="reactive-constructor-cms-select-overview">
 	
 	<h2>{{ headline }}</h2>
 
@@ -19,14 +19,14 @@
 <template name="editTemplate__noReactiveInstanceSet">
 	<label>
 		{{> editTemplate__labelString }}
-		<button class="temp-cms-create-new-instance">Create new {{ key }}</button>
+		<button class="reactive-constructor-cms-create-new-instance">Create new {{ key }}</button>
 	</label>
 </template>
 
 <template name="editTemplate__labelString">
 	<span class="">
 		{{ key }}
-		<span class="temp-input-value-type">&lt;{{ type }}&gt;</span>
+		<span class="reactive-constructor-cms-input-value-type">&lt;{{ type }}&gt;</span>
 	</span>
 </template>
 
@@ -43,7 +43,7 @@
 
 	<label>
 		{{> editTemplate__labelString }}
-		<select class="TEMP-bool-select">
+		<select class="reactive-constructor-cms-bool-select">
 				<option value="true" selected="{{#if equals value true }}selected{{/if}}">True</option>
 				<option value="false" selected="{{#if equals value false }}selected{{/if}}">False</option>
 		</select>
@@ -69,7 +69,7 @@
 
 		</div>
 
-		<button class="temp-add-new-coll-item">
+		<button class="reactive-constructor-cms-add-new-coll-item">
 			Add new {{ key }}
 		</button>
 
@@ -84,14 +84,14 @@
 		<h2>
 			
 			{{ getType }}
-			<span class="temp-constructor-name">{{ constructorName }}</span>
+			<span class="reactive-constructor-cms-constructor-name">{{ constructorName }}</span>
 			
-			<a class="temp-remove-collection-item">Remove</a>
-			<a class="temp-remove-collection-duplicate">Duplicate</a>
-			<a class="temp-open-child-instance">Open</a>
+			<a class="reactive-constructor-cms-remove-collection-item">Remove</a>
+			<a class="reactive-constructor-cms-duplicate-collection-item">Duplicate</a>
+			<a class="reactive-constructor-cms-open-child-instance">Open</a>
 
 			{{#if isSingleInstance }}
-				<a class="temp-remove-nested-rc-instance">Remove instance</a>
+				<a class="reactive-constructor-cms-remove-nested-instance">Remove instance</a>
 			{{/if}}
 
 		</h2>
@@ -119,11 +119,11 @@
 
 		<div class="wrapper__buttons">
 
-			<button class="temp-cms-publish-button">Publish</button>
-			<button class="temp-cms-save-draft-button">Save draft</button>
-			<button class="temp-cms-duplicate-button">Duplicate</button>
-			<button class="temp-cms-remove-button">Remove</button>
-			<button class="temp-cms-close-button">Close</button>
+			<button class="reactive-constructor-cms-publish-button">Publish</button>
+			<button class="reactive-constructor-cms-save-draft-button">Save draft</button>
+			<button class="reactive-constructor-cms-duplicate-button">Duplicate</button>
+			<button class="reactive-constructor-cms-remove-button">Remove</button>
+			<button class="reactive-constructor-cms-close-button">Close</button>
 
 		</div>
 
@@ -131,7 +131,7 @@
 
 </template>
 
-<template name="tempCMS__loadSavedDoc">
+<template name="reactiveConstructorCms__loadSavedDoc">
 
 	<h1>Open saved document</h1>
 
@@ -139,7 +139,7 @@
 
 		{{#if Template.subscriptionsReady }}
 						
-			{{#each tempCms__constructors }}
+			{{#each reactiveConstructorCms__constructors }}
 
 				<h3>{{ constructorName }}</h3>
 
@@ -148,15 +148,15 @@
 					{{#each items }}
 
 						<li>
-							<a class="temp-cms-edit-doc-from-list">
-								{{ ../constructorName }} {{ getType }}: {{ tempCmsName }}
+							<a class="reactive-constructor-cms-edit-doc-from-list">
+								{{ ../constructorName }} {{ getType }}: {{ reactiveConstructorCmsName }}
 							</a>
 						</li>
 
 					{{/each}}
 
 					<li>
-						<a class="temp-cms-create-doc-from-list">
+						<a class="reactive-constructor-cms-create-doc-from-list">
 						Create new {{ constructorName }}</a>
 					</li>
 

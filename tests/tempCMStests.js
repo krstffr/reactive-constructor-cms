@@ -112,7 +112,7 @@ NonSaveableConstructor = new ReactiveConstructor(function NonSaveableConstructor
 
 if (Meteor.isServer){
 	Meteor.methods({
-		'tempcms-test/cleanup-test-db': function() {
+		'reactive-constructor-cms/cleanup-test-db': function() {
 			console.log('removing all persons from DB…');
 			return Persons.remove({});
 		}
@@ -142,81 +142,81 @@ var loginOrCreateAccount = function( cb ) {
 };
 
 var startSubscription = function( cb ) {
-	Meteor.subscribe('temp-cms-publications', {
+	Meteor.subscribe('reactive-constructor-cms-publications', {
 		onReady: function() {
 			cb();
 		}
 	});
 };
 
-Tinytest.add('TEMPcmsPlugin - init: main object and all methods exists', function(test) {
+Tinytest.add('ReactiveConstructorCmsPlugin - init: main object and all methods exists', function(test) {
 
-	test.isTrue( Match.test( TEMPcmsPlugin, ReactiveConstructorPlugin ) );
+	test.isTrue( Match.test( ReactiveConstructorCmsPlugin, ReactiveConstructorPlugin ) );
 
-	test.isTrue( Match.test( TEMPcmsPlugin.checkReactiveValueType, Function ) );
-	test.isTrue( Match.test( TEMPcmsPlugin.checkReactiveValues, Function ) );
-	test.isTrue( Match.test( TEMPcmsPlugin.setValueToCorrectType, Function ) );
-	test.isTrue( Match.test( TEMPcmsPlugin.getSelectListOverview, Function ) );
-	test.isTrue( Match.test( TEMPcmsPlugin.getInstanceByTypeAndId, Function ) );
-	test.isTrue( Match.test( TEMPcmsPlugin.getGlobalInstanceStore, Function ) );
-	test.isTrue( Match.test( TEMPcmsPlugin.updateGlobalInstanceStore, Function ) );
-	test.isTrue( Match.test( TEMPcmsPlugin.editPageRemove, Function ) );
-	test.isTrue( Match.test( TEMPcmsPlugin.editPageGet, Function ) );
+	test.isTrue( Match.test( ReactiveConstructorCmsPlugin.checkReactiveValueType, Function ) );
+	test.isTrue( Match.test( ReactiveConstructorCmsPlugin.checkReactiveValues, Function ) );
+	test.isTrue( Match.test( ReactiveConstructorCmsPlugin.setValueToCorrectType, Function ) );
+	test.isTrue( Match.test( ReactiveConstructorCmsPlugin.getSelectListOverview, Function ) );
+	test.isTrue( Match.test( ReactiveConstructorCmsPlugin.getInstanceByTypeAndId, Function ) );
+	test.isTrue( Match.test( ReactiveConstructorCmsPlugin.getGlobalInstanceStore, Function ) );
+	test.isTrue( Match.test( ReactiveConstructorCmsPlugin.updateGlobalInstanceStore, Function ) );
+	test.isTrue( Match.test( ReactiveConstructorCmsPlugin.editPageRemove, Function ) );
+	test.isTrue( Match.test( ReactiveConstructorCmsPlugin.editPageGet, Function ) );
 
 });
 
-Tinytest.add('TEMPcmsPlugin overrides - checkReactiveValueType()', function(test) {
+Tinytest.add('ReactiveConstructorCmsPlugin overrides - checkReactiveValueType()', function(test) {
 
-	var incorrectLinkObject = {type: 'TEMPCMS-linked-item', constructorName: Person, _id: 456 };
-	var correctLinkObject = {type: 'TEMPCMS-linked-item', constructorName: 'Person', _id: 'a proper id' };
+	var incorrectLinkObject = {type: 'reactive-constructor-cms-linked-item', constructorName: Person, _id: 456 };
+	var correctLinkObject = {type: 'reactive-constructor-cms-linked-item', constructorName: 'Person', _id: 'a proper id' };
 
 	// Should fail if not passing correct arguments
 	test.throws(function () {
-		TEMPcmsPlugin.checkReactiveValueType();
+		ReactiveConstructorCmsPlugin.checkReactiveValueType();
 	});
 	test.throws(function () {
-		TEMPcmsPlugin.checkReactiveValueType('firstVal');
+		ReactiveConstructorCmsPlugin.checkReactiveValueType('firstVal');
 	});
 	test.throws(function () {
-		TEMPcmsPlugin.checkReactiveValueType('firstVal', Object);
+		ReactiveConstructorCmsPlugin.checkReactiveValueType('firstVal', Object);
 	});
 	test.throws(function () {
-		TEMPcmsPlugin.checkReactiveValueType('firstVal', Object, 'Wrong type');
+		ReactiveConstructorCmsPlugin.checkReactiveValueType('firstVal', Object, 'Wrong type');
 	});
 	test.throws(function() {
-		TEMPcmsPlugin.checkReactiveValueType(incorrectLinkObject, 'shit', function() {});
+		ReactiveConstructorCmsPlugin.checkReactiveValueType(incorrectLinkObject, 'shit', function() {});
 	});
 
 	// Passing a proper linked object should return true
-	test.isTrue( TEMPcmsPlugin.checkReactiveValueType(correctLinkObject, 'shit', function() {}) );
+	test.isTrue( ReactiveConstructorCmsPlugin.checkReactiveValueType(correctLinkObject, 'shit', function() {}) );
 
 	// Passing an array with a linked object should pass an empty array to the default method
-	TEMPcmsPlugin.checkReactiveValueType([ correctLinkObject ], 'shit', function( passedValue ) {
+	ReactiveConstructorCmsPlugin.checkReactiveValueType([ correctLinkObject ], 'shit', function( passedValue ) {
 		test.equal(passedValue, []);
 	});
 
 	// Passing an array with an "ordinary" constructor should pass an array with the constructor
 	 // to the default method
-	 TEMPcmsPlugin.checkReactiveValueType([ Person ], 'shit', function( passedValue ) {
+	 ReactiveConstructorCmsPlugin.checkReactiveValueType([ Person ], 'shit', function( passedValue ) {
 	 	test.equal(passedValue, [Person]);
 	 });
 
 	});
 
-Tinytest.add('TEMPcmsPlugin overrides - checkReactiveValues()', function(test) {
+Tinytest.add('ReactiveConstructorCmsPlugin overrides - checkReactiveValues()', function(test) {
 
 	// Should fail if not passing correct arguments
 	test.throws(function () {
-		TEMPcmsPlugin.checkReactiveValues();
+		ReactiveConstructorCmsPlugin.checkReactiveValues();
 	});
 	test.throws(function () {
-		TEMPcmsPlugin.checkReactiveValues('firstVal');
+		ReactiveConstructorCmsPlugin.checkReactiveValues('firstVal');
 	});
 	test.throws(function () {
-		TEMPcmsPlugin.checkReactiveValues('firstVal', Object);
+		ReactiveConstructorCmsPlugin.checkReactiveValues('firstVal', Object);
 	});
 	test.throws(function () {
-		TEMPcmsPlugin.checkReactiveValues('firstVal', Object, 'Wrong type');
+		ReactiveConstructorCmsPlugin.checkReactiveValues('firstVal', Object, 'Wrong type');
 	});
 
 	var ordinaryStructure = {
@@ -230,19 +230,19 @@ Tinytest.add('TEMPcmsPlugin overrides - checkReactiveValues()', function(test) {
 		something: 'hej'
 	};
 
-	TEMPcmsPlugin.checkReactiveValues( ordinaryInstance, ordinaryStructure, function( dataToCheck, currentTypeStructure ) {
+	ReactiveConstructorCmsPlugin.checkReactiveValues( ordinaryInstance, ordinaryStructure, function( dataToCheck, currentTypeStructure ) {
 		test.equal( ordinaryInstance, dataToCheck );
 		test.equal( ordinaryStructure, currentTypeStructure );
 	});
 
-	var correctLinkObject = {type: 'TEMPCMS-linked-item', constructorName: 'Person', _id: 'a proper id' };
+	var correctLinkObject = {type: 'reactive-constructor-cms-linked-item', constructorName: 'Person', _id: 'a proper id' };
 	var linkInstance = {
 		persons: [ correctLinkObject ],
 		wife: correctLinkObject,
 		something: 'hej'
 	};
 
-	TEMPcmsPlugin.checkReactiveValues( linkInstance, ordinaryStructure, function( dataToCheck, currentTypeStructure ) {
+	ReactiveConstructorCmsPlugin.checkReactiveValues( linkInstance, ordinaryStructure, function( dataToCheck, currentTypeStructure ) {
 		test.equal( dataToCheck.persons, [] );
 		test.isUndefined( dataToCheck.wife );
 		test.equal( ordinaryStructure, currentTypeStructure );
@@ -250,28 +250,28 @@ Tinytest.add('TEMPcmsPlugin overrides - checkReactiveValues()', function(test) {
 
 });
 
-Tinytest.add('TEMPcmsPlugin overrides - setValueToCorrectType', function(test) {
+Tinytest.add('ReactiveConstructorCmsPlugin overrides - setValueToCorrectType', function(test) {
 
 	// Not passing the correct arguments should throw errors
 	test.throws(function() {
-		TEMPcmsPlugin.setValueToCorrectType();
+		ReactiveConstructorCmsPlugin.setValueToCorrectType();
 	});
 	test.throws(function() {
-		TEMPcmsPlugin.setValueToCorrectType(1,2,3,'not a function');
+		ReactiveConstructorCmsPlugin.setValueToCorrectType(1,2,3,'not a function');
 	});
 
 	// Make sure correct values are passed through the way they should
 	var instance = new Person({ rcType: 'husband' });
 	var wifeObject = { rcType: 'wife '};
-	TEMPcmsPlugin.setValueToCorrectType(instance, wifeObject, 'wife', function( passedInstance, value, key ) {
+	ReactiveConstructorCmsPlugin.setValueToCorrectType(instance, wifeObject, 'wife', function( passedInstance, value, key ) {
 		test.equal( value, wifeObject );
 		test.equal( key, 'wife' );
 		test.equal( passedInstance, instance );
 	});
 
 	// Make sure a linked value is passed through the way it should
-	var linkedWife = { type: 'TEMPCMS-linked-item', constructorName: 'Person', _id: 'a proper id' };
-	TEMPcmsPlugin.setValueToCorrectType(instance, linkedWife, 'wife', function( passedInstance, value, key ) {
+	var linkedWife = { type: 'reactive-constructor-cms-linked-item', constructorName: 'Person', _id: 'a proper id' };
+	ReactiveConstructorCmsPlugin.setValueToCorrectType(instance, linkedWife, 'wife', function( passedInstance, value, key ) {
 		test.equal( value, linkedWife );
 		test.equal( key, 'wife' );
 		test.equal( passedInstance, instance );
@@ -279,7 +279,7 @@ Tinytest.add('TEMPcmsPlugin overrides - setValueToCorrectType', function(test) {
 
 	// Make sure an array of both linked and "ordinary" values are passed through the way it should
 	var buddies = [ { rcType: 'husband' }, linkedWife ];
-	TEMPcmsPlugin.setValueToCorrectType(instance, buddies, 'buddies', function( passedInstance, value, key ) {
+	ReactiveConstructorCmsPlugin.setValueToCorrectType(instance, buddies, 'buddies', function( passedInstance, value, key ) {
 		test.equal( value, buddies );
 		test.equal( key, 'buddies' );
 		test.equal( passedInstance, instance );
@@ -287,7 +287,7 @@ Tinytest.add('TEMPcmsPlugin overrides - setValueToCorrectType', function(test) {
 
 });
 
-Tinytest.add('TEMPcmsPlugin instance methods - getCollection', function(test) {
+Tinytest.add('ReactiveConstructorCmsPlugin instance methods - getCollection', function(test) {
 
 	var testPerson = new Person();
 
@@ -299,7 +299,7 @@ Tinytest.add('TEMPcmsPlugin instance methods - getCollection', function(test) {
 
 });
 
-Tinytest.add('TEMPcmsPlugin instance methods - instance.save(), throw error for non saveable', function(test) {
+Tinytest.add('ReactiveConstructorCmsPlugin instance methods - instance.save(), throw error for non saveable', function(test) {
 
 	var docToFail = new NonSaveableConstructor();
 
@@ -309,7 +309,7 @@ Tinytest.add('TEMPcmsPlugin instance methods - instance.save(), throw error for 
 
 });
 
-Tinytest.add('TEMPcmsPlugin instance methods - instance.deleteInstance(), throw error for non saveable', function(test) {
+Tinytest.add('ReactiveConstructorCmsPlugin instance methods - instance.deleteInstance(), throw error for non saveable', function(test) {
 
 	var docToFail = new NonSaveableConstructor();
 
@@ -319,7 +319,7 @@ Tinytest.add('TEMPcmsPlugin instance methods - instance.deleteInstance(), throw 
 
 });
 
-Tinytest.add('TEMPcmsPlugin instance methods - instance.arrayitemDuplicate()', function(test) {
+Tinytest.add('ReactiveConstructorCmsPlugin instance methods - instance.arrayitemDuplicate()', function(test) {
 	
 	var person = new Person({ rcType: 'husband', buddies: [{}, { name: 'john' }, {}]});
 	var buddies = person.getReactiveValue('buddies');
@@ -342,7 +342,7 @@ Tinytest.add('TEMPcmsPlugin instance methods - instance.arrayitemDuplicate()', f
 
 });
 
-Tinytest.add('TEMPcmsPlugin instance methods - instance.arrayitemMove()', function(test) {
+Tinytest.add('ReactiveConstructorCmsPlugin instance methods - instance.arrayitemMove()', function(test) {
 	
 	var person = new Person({ rcType: 'husband', buddies: [{}, { name: 'john' }, {}]});
 	var buddies = person.getReactiveValue('buddies');
@@ -365,7 +365,7 @@ Tinytest.add('TEMPcmsPlugin instance methods - instance.arrayitemMove()', functi
 
 });
 
-Tinytest.add('TEMPcmsPlugin instance methods - instance.arrayitemRemove()', function(test) {
+Tinytest.add('ReactiveConstructorCmsPlugin instance methods - instance.arrayitemRemove()', function(test) {
 	
 	var person = new Person({ rcType: 'husband', buddies: [{}, { name: 'john' }, {}]});
 	var buddies = person.getReactiveValue('buddies');
@@ -387,7 +387,7 @@ Tinytest.add('TEMPcmsPlugin instance methods - instance.arrayitemRemove()', func
 
 });
 
-Tinytest.add('TEMPcmsPlugin instance methods - instance.getReactiveValuesAsArray()', function(test) {
+Tinytest.add('ReactiveConstructorCmsPlugin instance methods - instance.getReactiveValuesAsArray()', function(test) {
 	
 	var person = new Person({
 		rcType: 'husband',
@@ -404,7 +404,7 @@ Tinytest.add('TEMPcmsPlugin instance methods - instance.getReactiveValuesAsArray
 
 });
 
-Tinytest.add('TEMPcmsPlugin instance methods - instance.getInstanceCmsOptions()', function(test) {
+Tinytest.add('ReactiveConstructorCmsPlugin instance methods - instance.getInstanceCmsOptions()', function(test) {
 	
 	var person = new Person({
 		rcType: 'husband',
@@ -421,7 +421,7 @@ Tinytest.add('TEMPcmsPlugin instance methods - instance.getInstanceCmsOptions()'
 
 });
 
-Tinytest.add('TEMPcmsPlugin constructor methods - getCreatableTypes()', function(test) {
+Tinytest.add('ReactiveConstructorCmsPlugin constructor methods - getCreatableTypes()', function(test) {
 
 	// Return all when no instance is passed
 	test.equal( Person.getCreatableTypes().length, 4 );
@@ -435,9 +435,9 @@ Tinytest.add('TEMPcmsPlugin constructor methods - getCreatableTypes()', function
 
 });
 
-Tinytest.addAsync('TEMPcmsPlugin async - cleanup, remove all collections', function(test, next) {
+Tinytest.addAsync('ReactiveConstructorCmsPlugin async - cleanup, remove all collections', function(test, next) {
 
-	Meteor.call('tempcms-test/cleanup-test-db', function(err, res) {
+	Meteor.call('reactive-constructor-cms/cleanup-test-db', function(err, res) {
 		if (!err){
 			console.log( 'Removed: ', res, ' docs from DB.' );
 			next();
@@ -446,10 +446,10 @@ Tinytest.addAsync('TEMPcmsPlugin async - cleanup, remove all collections', funct
 
 });
 
-Tinytest.addAsync('TEMPcmsPlugin async - not logged in method call: rc-temp-cms/save', function(test, next) {
+Tinytest.addAsync('ReactiveConstructorCmsPlugin async - not logged in method call: rc-temp-cms/save', function(test, next) {
 
 	Meteor.logout(function() {
-		Meteor.call('rc-temp-cms/save', function( err, res ) {
+		Meteor.call('reactive-constructor-cms/save', function( err, res ) {
 			test.isUndefined( res );
 			test.isTrue( Match.test( err.reason, String ) );
 			next();
@@ -458,10 +458,10 @@ Tinytest.addAsync('TEMPcmsPlugin async - not logged in method call: rc-temp-cms/
 
 });
 
-Tinytest.addAsync('TEMPcmsPlugin async - not logged in method call: rc-temp-cms/delete-old-backups', function(test, next) {
+Tinytest.addAsync('ReactiveConstructorCmsPlugin async - not logged in method call: rc-temp-cms/delete-old-backups', function(test, next) {
 
 	Meteor.logout(function() {
-		Meteor.call('rc-temp-cms/delete-old-backups', function( err, res ) {
+		Meteor.call('reactive-constructor-cms/delete-old-backups', function( err, res ) {
 			test.isUndefined( res );
 			test.isTrue( Match.test( err.reason, String ) );
 			next();
@@ -470,10 +470,10 @@ Tinytest.addAsync('TEMPcmsPlugin async - not logged in method call: rc-temp-cms/
 
 });
 
-Tinytest.addAsync('TEMPcmsPlugin async - not logged in method call: rc-temp-cms/rc-temp-cms/delete', function(test, next) {
+Tinytest.addAsync('ReactiveConstructorCmsPlugin async - not logged in method call: rc-temp-cms/rc-temp-cms/delete', function(test, next) {
 
 	Meteor.logout(function() {
-		Meteor.call('rc-temp-cms/rc-temp-cms/delete', function( err, res ) {
+		Meteor.call('reactive-constructor-cms/rc-temp-cms/delete', function( err, res ) {
 			test.isUndefined( res );
 			test.isTrue( Match.test( err.reason, String ) );
 			next();
@@ -483,11 +483,11 @@ Tinytest.addAsync('TEMPcmsPlugin async - not logged in method call: rc-temp-cms/
 });
 
 
-Tinytest.addAsync('TEMPcmsPlugin async - check subscription without user', function(test, next) {
+Tinytest.addAsync('ReactiveConstructorCmsPlugin async - check subscription without user', function(test, next) {
 
 	// Make sure we're logged out
 	Meteor.logout(function() {
-		Meteor.subscribe('temp-cms-publications', {
+		Meteor.subscribe('reactive-constructor-cms-publications', {
 			onStop: function( err ) {
 				test.equal(err.errorType, 'Meteor.Error');
 				next();
@@ -497,7 +497,7 @@ Tinytest.addAsync('TEMPcmsPlugin async - check subscription without user', funct
 
 });
 
-Tinytest.addAsync('TEMPcmsPlugin async - check subscription with user', function(test, next) {
+Tinytest.addAsync('ReactiveConstructorCmsPlugin async - check subscription with user', function(test, next) {
 	
 	loginOrCreateAccount(function() {
 		return startSubscription(function() {
@@ -507,7 +507,7 @@ Tinytest.addAsync('TEMPcmsPlugin async - check subscription with user', function
 
 });
 
-Tinytest.addAsync('TEMPcmsPlugin async - instance.save(), not logged in', function(test, next) {
+Tinytest.addAsync('ReactiveConstructorCmsPlugin async - instance.save(), not logged in', function(test, next) {
 
 	Meteor.logout(function() {
 		test.throws(function() {
@@ -518,7 +518,7 @@ Tinytest.addAsync('TEMPcmsPlugin async - instance.save(), not logged in', functi
 
 });
 
-Tinytest.addAsync('TEMPcmsPlugin async - instance.save(), logged in', function(test, next) {
+Tinytest.addAsync('ReactiveConstructorCmsPlugin async - instance.save(), logged in', function(test, next) {
 
 	loginOrCreateAccount(function() {
 		var docToSave = new Person();
@@ -535,7 +535,7 @@ Tinytest.addAsync('TEMPcmsPlugin async - instance.save(), logged in', function(t
 
 });
 
-Tinytest.addAsync('TEMPcmsPlugin async - instance.save({ publish: true })', function(test, next) {
+Tinytest.addAsync('ReactiveConstructorCmsPlugin async - instance.save({ publish: true })', function(test, next) {
 
 	var docToSave = new Person();
 
@@ -563,7 +563,7 @@ Tinytest.addAsync('TEMPcmsPlugin async - instance.save({ publish: true })', func
 
 });
 
-Tinytest.addAsync('TEMPcmsPlugin async - instance.save(), remove backups', function(test, next) {
+Tinytest.addAsync('ReactiveConstructorCmsPlugin async - instance.save(), remove backups', function(test, next) {
 
 	// Let's first save a doc X times
 	var docToSave = new Person();
@@ -598,7 +598,7 @@ Tinytest.addAsync('TEMPcmsPlugin async - instance.save(), remove backups', funct
 
 });
 
-Tinytest.addAsync('TEMPcmsPlugin async - instance.deleteInstance(), not logged in', function(test, next) {
+Tinytest.addAsync('ReactiveConstructorCmsPlugin async - instance.deleteInstance(), not logged in', function(test, next) {
 
 	var docToSave = new Person();
 
@@ -619,7 +619,7 @@ Tinytest.addAsync('TEMPcmsPlugin async - instance.deleteInstance(), not logged i
 
 });
 
-Tinytest.addAsync('TEMPcmsPlugin async - instance.deleteInstance(), logged in', function(test, next) {
+Tinytest.addAsync('ReactiveConstructorCmsPlugin async - instance.deleteInstance(), logged in', function(test, next) {
 
 	loginOrCreateAccount(function() {
 
@@ -638,7 +638,7 @@ Tinytest.addAsync('TEMPcmsPlugin async - instance.deleteInstance(), logged in', 
 
 });
 
-Tinytest.addAsync('TEMPcmsPlugin async - Person.getLinkableInstances()', function(test, next) {
+Tinytest.addAsync('ReactiveConstructorCmsPlugin async - Person.getLinkableInstances()', function(test, next) {
 
 	startSubscription(function() {
 	
@@ -650,20 +650,20 @@ Tinytest.addAsync('TEMPcmsPlugin async - Person.getLinkableInstances()', functio
 			Person.getLinkableInstances( new Person() );
 		});
 
-		TEMPcmsPlugin.updateGlobalInstanceStore();
+		ReactiveConstructorCmsPlugin.updateGlobalInstanceStore();
 
 		var getGlobalPersons = function() {
-			return _.findWhere(TEMPcmsPlugin.getGlobalInstanceStore(), { constructorName: 'Person' }).items;
+			return _.findWhere(ReactiveConstructorCmsPlugin.getGlobalInstanceStore(), { constructorName: 'Person' }).items;
 		};
 
 		test.notEqual( getGlobalPersons().length, 0 );
 
-		Meteor.call('tempcms-test/cleanup-test-db', function( err ) {
+		Meteor.call('reactive-constructor-cms/cleanup-test-db', function( err ) {
 			if (err)
 				throw new Error('something went wrong?' + err );
 
 			// Update the "globale instance store"
-			TEMPcmsPlugin.updateGlobalInstanceStore();
+			ReactiveConstructorCmsPlugin.updateGlobalInstanceStore();
 			// Check that there are now 0 persons
 			test.equal( getGlobalPersons().length, 0 );
 
@@ -695,20 +695,20 @@ Tinytest.addAsync('TEMPcmsPlugin async - Person.getLinkableInstances()', functio
 
 });
 
-Tinytest.addAsync('TEMPcmsPlugin async - TEMPcmsPlugin.getGlobalInstanceStore() / TEMPcmsPlugin.updateGlobalInstanceStore()', function(test, next) {
-	var resultOfUpdate = TEMPcmsPlugin.updateGlobalInstanceStore();
-	test.equal( resultOfUpdate, TEMPcmsPlugin.getGlobalInstanceStore() );
+Tinytest.addAsync('ReactiveConstructorCmsPlugin async - ReactiveConstructorCmsPlugin.getGlobalInstanceStore() / ReactiveConstructorCmsPlugin.updateGlobalInstanceStore()', function(test, next) {
+	var resultOfUpdate = ReactiveConstructorCmsPlugin.updateGlobalInstanceStore();
+	test.equal( resultOfUpdate, ReactiveConstructorCmsPlugin.getGlobalInstanceStore() );
 	next();
 });
 
-Tinytest.addAsync('TEMPcmsPlugin async - TEMPcmsPlugin.getInstanceByTypeAndId()', function(test, next) {
+Tinytest.addAsync('ReactiveConstructorCmsPlugin async - ReactiveConstructorCmsPlugin.getInstanceByTypeAndId()', function(test, next) {
 
 	// Let's create a person to later look for
 	var person = new Person({ rcType: 'child' });
 
 	person.save({}, function(res) {
 		test.equal(
-			TEMPcmsPlugin.getInstanceByTypeAndId( 'Person', res.edit.insertedId ).getReactiveValue('_id'),
+			ReactiveConstructorCmsPlugin.getInstanceByTypeAndId( 'Person', res.edit.insertedId ).getReactiveValue('_id'),
 			person.getReactiveValue('_id')
 			);
 		next();

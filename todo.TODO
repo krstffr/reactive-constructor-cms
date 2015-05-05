@@ -1,18 +1,7 @@
- 
- ☐ Write tests!!!
-   Most methods now have tests. Yey!
 
- ☐ The god damn name!!!!
-   RCMS?
-   reactive-constructor-cms?
-
- ☐ Create a separate package for this!
-
- ✔ Security @done (15-05-05 15:51)
-   ✔ Require user to be logged in to do anything? (Should probably be setable! true by default) @done (15-05-05 15:51)
-
- ✔ Saving of data: @done (15-05-05 14:56)
-   ✔ Avoid 1000000000 backups per "main doc" @done (15-05-05 14:57)
+ ☐ Add status messages
+   After save/delete etc.
+   krstffr:msgs
  
  ☐ Keydown update of value (without messing with the input!)
 
@@ -42,24 +31,15 @@
 
  ☐ How to handle nested "pure" objects? Should that even be allowed? NAH. Not in the CMS! Or? Maybe…
 
- ✔ Handle deletes @done (15-04-30 09:51)
-   ✔ Needs security check @done (15-05-05 16:47)
-   ☐ Only show delete button for docs which are actually saved to DB (not new ones…)
+ ☐ Only show delete button for docs which are actually saved to DB (not new ones…)
 
  ☐ Handle links to existing DB objects
    ☐ Updating the link
-   ✔ Removing the link @done (15-05-05 14:57)
    ☐ How to display the object in the parent? The fields really are of no use for the user?
 
  ☐ Nested list (array) instances with it's own nested lists looks MESSY. Too much going on.
 
- ✔ Better "isListItem" support, now adds a field to linked items. @done (15-05-05 14:58)
-
  ☐ Change name of .type to .contstructorName, since that what it is (cause infinite loop right now though!)
-
- ✔ Ability to "go to" a nested object.  @done (15-05-04 14:18)
-
- ✔ Can't remove a linked child (which is not in a list) @done (15-04-30 14:24)
 
  ☐ Setting of dates, don't seem to work?
 
@@ -71,6 +51,22 @@
 
 ＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿
 Archive:
+ ✔ Write tests!!! @done (15-05-05 17:59)
+  Most methods now have tests. Yey!
+ ✔ Create a separate package for this! @done (15-05-05 17:59)
+ ✔ The god damn name!!!! @done (15-05-05 17:53)
+  RCMS?
+  reactive-constructor-cms?
+ ✔ Needs security check @done (15-05-05 16:47)
+ ✔ Security @done (15-05-05 15:51)
+ ✔ Require user to be logged in to do anything? (Should probably be setable! true by default) @done (15-05-05 15:51)
+ ✔ Better "isListItem" support, now adds a field to linked items. @done (15-05-05 14:58)
+ ✔ Removing the link @done (15-05-05 14:57)
+ ✔ Avoid 1000000000 backups per "main doc" @done (15-05-05 14:57)
+ ✔ Saving of data: @done (15-05-05 14:56)
+ ✔ Ability to "go to" a nested object.  @done (15-05-04 14:18)
+ ✔ Can't remove a linked child (which is not in a list) @done (15-04-30 14:24)
+ ✔ Handle deletes @done (15-04-30 09:51)
  ✔ Works now right? @done (15-04-28 21:55)
  ✔ Fixed right? @done (15-04-28 21:55)
  ✔ (Only "array children" should have duplicate) @done (15-04-28 21:54)

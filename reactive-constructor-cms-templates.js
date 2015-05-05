@@ -6,7 +6,7 @@ Template.editTemplate__selectOverview.events({
     // Execute the callback!
     return callback( this );
   },
-  'click .temp-select-overview__fader': function() {
+  'click .reactive-constructor-cms-select-overview__fader': function() {
     var removeTemplateCallback = Template.parentData(0).removeTemplateCallback;
     check( removeTemplateCallback, Function );
     // Execute the callback!
@@ -16,11 +16,11 @@ Template.editTemplate__selectOverview.events({
 
 Template.editTemplate__selectOverview.helpers({
   buttonValue: function() {
-    if (this.tempCmsName)
-      return this.tempCmsName;
+    if (this.reactiveConstructorCmsName)
+      return this.reactiveConstructorCmsName;
     if (this.value)
       return this.value;
-    throw new Error('temp-cms', 'No button text?');
+    throw new Error('reactive-constructor-cms', 'No button text?');
   }
 });
 
@@ -172,46 +172,46 @@ var updateInput = function ( value, key, type, instance ) {
 };
 
 Template.editTemplate__wrapper.events({
-  'click .temp-cms-close-button': function () {
-    return TEMPcmsPlugin.editPageRemove( this );
+  'click .reactive-constructor-cms-close-button': function () {
+    return ReactiveConstructorCmsPlugin.editPageRemove( this );
   },
-  'click .temp-cms-remove-button': function() {
+  'click .reactive-constructor-cms-remove-button': function() {
     this.deleteInstance( function( res ) {
       if (res > 0)
-        return TEMPcmsPlugin.editPageRemove();
-      throw new Error('temp-cms', 'No docs removed? ' + res );
+        return ReactiveConstructorCmsPlugin.editPageRemove();
+      throw new Error('reactive-constructor-cms', 'No docs removed? ' + res );
     });
   },
-  'click .temp-cms-publish-button': function () {
+  'click .reactive-constructor-cms-publish-button': function () {
     return this.save({ publish: true });
   },
-  'click .temp-cms-save-draft-button': function () {
+  'click .reactive-constructor-cms-save-draft-button': function () {
     return this.save();
   },
-  'click .temp-cms-duplicate-button': function() {
+  'click .reactive-constructor-cms-duplicate-button': function() {
     var instance = this;
     return instance.save({ duplicate: true }, function( res ) {
       if ( res.edit ){
-        var createdInstance = TEMPcmsPlugin.getInstanceByTypeAndId( instance.constructor.name, res.edit.insertedId );
-        return TEMPcmsPlugin.editPageGet( createdInstance );
+        var createdInstance = ReactiveConstructorCmsPlugin.getInstanceByTypeAndId( instance.constructor.name, res.edit.insertedId );
+        return ReactiveConstructorCmsPlugin.editPageGet( createdInstance );
       }
     });
   }
 });
 
 Template.editTemplate.events({
-  'click .temp-open-child-instance': function() {
+  'click .reactive-constructor-cms-open-child-instance': function() {
     // This is not a "linked" object, but a directly nested one
     if ( Match.test( this.getReactiveValue, Function ) )
-      return TEMPcmsPlugin.editPageGet( this );
-    var instance = (this.value && this.value.type === 'TEMPCMS-linked-item') ? this.value : this;
+      return ReactiveConstructorCmsPlugin.editPageGet( this );
+    var instance = (this.value && this.value.type === 'reactive-constructor-cms-linked-item') ? this.value : this;
     
-    instance = TEMPcmsPlugin.getInstanceByTypeAndId( instance.constructorName, instance._id );
-    return TEMPcmsPlugin.editPageGet( instance );
+    instance = ReactiveConstructorCmsPlugin.getInstanceByTypeAndId( instance.constructorName, instance._id );
+    return ReactiveConstructorCmsPlugin.editPageGet( instance );
     // if (this.value && this.value.type)
-    //   TEMPcmsPlugin.getInstanceByTypeAndId
+    //   ReactiveConstructorCmsPlugin.getInstanceByTypeAndId
   },
-  'click .temp-remove-collection-duplicate': function ( e ) {
+  'click .reactive-constructor-cms-duplicate-collection-item': function ( e ) {
 
     e.stopImmediatePropagation();
 
@@ -224,7 +224,7 @@ Template.editTemplate.events({
     parentInstance.arrayitemDuplicate( context.key, listItem.index() );
 
   },
-  'click .temp-remove-nested-rc-instance': function( e ) {
+  'click .reactive-constructor-cms-remove-nested-instance': function( e ) {
 
     e.stopImmediatePropagation();
 
@@ -237,7 +237,7 @@ Template.editTemplate.events({
     return parentInstance.unsetReactiveValue( this.key );
 
   },
-  'click .temp-remove-collection-item': function ( e ) {
+  'click .reactive-constructor-cms-remove-collection-item': function ( e ) {
 
     e.stopImmediatePropagation();
 
@@ -250,7 +250,7 @@ Template.editTemplate.events({
     parentInstance.arrayitemRemove( context.key, listItem.index() );
 
   },
-  'click .temp-cms-create-new-instance': function ( e ) {
+  'click .reactive-constructor-cms-create-new-instance': function ( e ) {
 
     e.stopImmediatePropagation();
 
@@ -261,13 +261,13 @@ Template.editTemplate.events({
 
     listItems = listItems.concat( ReactiveConstructors[ constructorName ].getLinkableInstances( instance, key ) );
 
-    return TEMPcmsPlugin.getSelectListOverview( listItems, constructorName, key, function( newItem, instance, key ) {
+    return ReactiveConstructorCmsPlugin.getSelectListOverview( listItems, constructorName, key, function( newItem, instance, key ) {
       return instance.setReactiveValue( key, newItem );
     }, instance );
 
   },
   // Method for adding new items to a collection
-  'click .temp-add-new-coll-item': function ( e ) {
+  'click .reactive-constructor-cms-add-new-coll-item': function ( e ) {
 
     e.stopImmediatePropagation();
 
@@ -278,7 +278,7 @@ Template.editTemplate.events({
 
     listItems = listItems.concat( ReactiveConstructors[ constructorName ].getLinkableInstances( instance, key ) );
 
-    return TEMPcmsPlugin.getSelectListOverview( listItems, constructorName, key, function( newItem, instance, key ) {
+    return ReactiveConstructorCmsPlugin.getSelectListOverview( listItems, constructorName, key, function( newItem, instance, key ) {
       var items = instance.getReactiveValue( key );
       items.push( newItem );
       instance.setReactiveValue( key, items );
@@ -294,7 +294,7 @@ Template.editTemplate.events({
     return updateInput( value, this.key, this.type, instance );
   },
   // Method for boolean values
-  'change .TEMP-bool-select': function ( e ) {
+  'change .reactive-constructor-cms-bool-select': function ( e ) {
 
     e.stopImmediatePropagation();
     
@@ -305,26 +305,26 @@ Template.editTemplate.events({
   }
 });
 
-Template.tempCMS__loadSavedDoc.onCreated(function() {
-  this.subscribe('temp-cms-publications', TEMPcmsPlugin.updateGlobalInstanceStore );
+Template.reactiveConstructorCms__loadSavedDoc.onCreated(function() {
+  this.subscribe('reactive-constructor-cms-publications', ReactiveConstructorCmsPlugin.updateGlobalInstanceStore );
 });
 
-Template.tempCMS__loadSavedDoc.helpers({
-  tempCms__constructors: function() {
-    return TEMPcmsPlugin.getGlobalInstanceStore();
+Template.reactiveConstructorCms__loadSavedDoc.helpers({
+  reactiveConstructorCms__constructors: function() {
+    return ReactiveConstructorCmsPlugin.getGlobalInstanceStore();
   }
 });
 
-Template.tempCMS__loadSavedDoc.events({
-  'click .temp-cms-edit-doc-from-list': function() {
-    return TEMPcmsPlugin.editPageGet( this );
+Template.reactiveConstructorCms__loadSavedDoc.events({
+  'click .reactive-constructor-cms-edit-doc-from-list': function() {
+    return ReactiveConstructorCmsPlugin.editPageGet( this );
   },
-  'click .temp-cms-create-doc-from-list': function() {
+  'click .reactive-constructor-cms-create-doc-from-list': function() {
 
     var listItems = ReactiveConstructors[ this.constructorName ].getCreatableTypes();
 
-    return TEMPcmsPlugin.getSelectListOverview( listItems, this.constructorName, false, function( newItem ) {
-      return TEMPcmsPlugin.editPageGet( newItem );
+    return ReactiveConstructorCmsPlugin.getSelectListOverview( listItems, this.constructorName, false, function( newItem ) {
+      return ReactiveConstructorCmsPlugin.editPageGet( newItem );
     });
 
   }

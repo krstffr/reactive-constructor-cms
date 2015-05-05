@@ -1,0 +1,10 @@
+{
+	"packages": {
+		"reactive-constructor-cms": {
+			"path": "../.."
+		},
+		"krstffr:reactive-constructor": {
+			"path": "../../../reactive-constructor"
+		}
+	}
+}

@@ -7,6 +7,6 @@
 meteor-platform
 krstffr:reactive-constructor
 reactive-var
-krstffr:temp-cms
 accounts-base
 accounts-password
+krstffr:reactive-constructor-cms

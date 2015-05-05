@@ -1,17 +1,17 @@
-tempCmsBackupsToKeep = 15;
+reactiveConstructorCmsBackupsToKeep = 15;
 
 var getCollectionFromConstructorName = function( constructorName ) {
 	var constructorCmsOptions = ReactiveConstructors[ constructorName ].constructorDefaults().cmsOptions;
 	if (!constructorCmsOptions || !constructorCmsOptions.collection)
-		throw new Meteor.Error('temp-cms-no-collection-defined', 'No collection defined for: ' + passedClass.name );
+		throw new Meteor.Error('reactive-constructor-cms', 'No collection defined for: ' + passedClass.name );
 	return constructorCmsOptions.collection;
 };
 
 Meteor.methods({
-	'rc-temp-cms/save': function( item, constructorName, saveOptions ) {
+	'reactive-constructor-cms/save': function( item, constructorName, saveOptions ) {
 
 		if (!this.userId)
-			throw new Meteor.Error('temp-cms', 'You need to be logged in.' );
+			throw new Meteor.Error('reactive-constructor-cms', 'You need to be logged in.' );
 
 		saveOptions = saveOptions || {};
 			
@@ -32,23 +32,23 @@ Meteor.methods({
 		var backupDoc = _.omit( _.clone( item ), '_id' );
 		backupDoc.mainId = item._id;
 		// TODO: Use proper name for CMS
-		backupDoc.tempCmsStatus = 'backup';
+		backupDoc.reactiveConstructorCmsStatus = 'backup';
 		updateResult.backup = collection.insert( backupDoc );
 
 		// Remove all backups after the last 15 ones
-		updateResult.backupsRemoved = Meteor.call('rc-temp-cms/delete-old-backups', backupDoc.mainId, tempCmsBackupsToKeep, constructorName );
+		updateResult.backupsRemoved = Meteor.call('reactive-constructor-cms/delete-old-backups', backupDoc.mainId, reactiveConstructorCmsBackupsToKeep, constructorName );
 
 		// Publish the doc if the saveOptions.publish was set to true
 		if ( saveOptions.publish ){
 			var publishDoc = _.clone( backupDoc );
-			publishDoc.tempCmsStatus = 'published';
+			publishDoc.reactiveConstructorCmsStatus = 'published';
 			updateResult.published = collection.upsert({
 				mainId: publishDoc.mainId,
-				tempCmsStatus: 'published'
+				reactiveConstructorCmsStatus: 'published'
 			}, publishDoc );
 		}
 
-		item.tempCmsStatus = 'edit';
+		item.reactiveConstructorCmsStatus = 'edit';
 
 		updateResult.edit = collection.upsert( item._id, _.omit( item, '_id'));
 
@@ -56,32 +56,32 @@ Meteor.methods({
 
 	},
 	// Method for removing all backups which are older than the numToKeep (number) latest
-	'rc-temp-cms/delete-old-backups': function( mainId, numToKeep, constructorName ) {
+	'reactive-constructor-cms/delete-old-backups': function( mainId, numToKeep, constructorName ) {
 
 		if (!this.userId)
-			throw new Meteor.Error('temp-cms', 'You need to be logged in.' );
+			throw new Meteor.Error('reactive-constructor-cms', 'You need to be logged in.' );
 
 		// Get the collection
 		var collection = getCollectionFromConstructorName( constructorName );
 		// Get the numToKeep latest backup (-1 since we're only removing docs AFTER this one)
-		var oldestDoc = collection.findOne({ mainId: mainId, tempCmsStatus: 'backup'}, { sort: { updateTime: -1 }, skip: (numToKeep-1) });
+		var oldestDoc = collection.findOne({ mainId: mainId, reactiveConstructorCmsStatus: 'backup'}, { sort: { updateTime: -1 }, skip: (numToKeep-1) });
 		// If there is not 15, then don't do nothing
 		if (!oldestDoc) return 0;
 		// Else get all the older docs and remove them!
-		return collection.remove({ mainId: mainId, tempCmsStatus: 'backup', updateTime: { $lt: oldestDoc.updateTime } });
+		return collection.remove({ mainId: mainId, reactiveConstructorCmsStatus: 'backup', updateTime: { $lt: oldestDoc.updateTime } });
 
 	},
-	'rc-temp-cms/delete': function( id, constructorName ) {
+	'reactive-constructor-cms/delete': function( id, constructorName ) {
 
 		if (!this.userId)
-			throw new Meteor.Error('temp-cms', 'You need to be logged in.' );
+			throw new Meteor.Error('reactive-constructor-cms', 'You need to be logged in.' );
 			
 		check( id, String );
 		check( constructorName, String );
 
 		var constructorCmsOptions = ReactiveConstructors[ constructorName ].constructorDefaults().cmsOptions;
 		if (!constructorCmsOptions || !constructorCmsOptions.collection)
-			throw new Meteor.Error('temp-cms-no-collection-defined', 'No collection defined for: ' + passedClass.name );
+			throw new Meteor.Error('reactive-constructor-cms', 'No collection defined for: ' + passedClass.name );
 
 		return constructorCmsOptions.collection.remove({ $or: [{ mainId: id }, { _id: id }] });
 
@@ -89,11 +89,11 @@ Meteor.methods({
 });
 
 
-Meteor.publish('temp-cms-publications', function() {
+Meteor.publish('reactive-constructor-cms-publications', function() {
 
 	// These should only be available to logged in users
 	if (!this.userId)
-		return this.error( new Meteor.Error('temp-cms', 'You need to login to subscribe to temp-cms-publications' ) );
+		return this.error( new Meteor.Error('reactive-constructor-cms', 'You need to login to subscribe to reactive-constructor-cms-publications' ) );
 	
 	// Get all the publications
 	return _.chain(ReactiveConstructors)
@@ -103,7 +103,7 @@ Meteor.publish('temp-cms-publications', function() {
 	})
 	.compact()
 	.map(function( collection ){
-		return collection.find({ tempCmsStatus: 'edit' });
+		return collection.find({ reactiveConstructorCmsStatus: 'edit' });
 	}).value();
 
 });
