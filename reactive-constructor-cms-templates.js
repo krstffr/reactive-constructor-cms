@@ -57,7 +57,7 @@ Handlebars.registerHelper('equals', function(a, b) {
   return a === b;
 });
 
-Template.editTemplate__Collection.rendered = function () {
+Template.editTemplate__Collection.onRendered(function () {
 
   // This is the wrapper for the elements which will be sortable
   var sortableWrapper = this.find('.collection__items');
@@ -93,14 +93,15 @@ Template.editTemplate__Collection.rendered = function () {
       // Update the array using the arrayitemMove method on the parent context
       parentContext.arrayitemMove( context.key, newIndex, oldIndex );
 
+      console.log( 'test' );
+
       // Super important! Return false to prevent jQuery UI from updating
       // the DOM and instead letting Meteor/Blaze do that.
-      // TODO: This is no longer needed as they SHOULD both be the same!!
-      // return false;
+      return false;
 
     }
   });
-};
+});
 
 Template.editTemplate.helpers({
   isSingleInstance: function() {
@@ -181,6 +182,10 @@ Template.editTemplate__wrapper.events({
       }
     });
   }
+});
+
+Template.editTemplate__wrapper.onRendered(function() {
+  $('.reactive-constructor-cms-wrapper').draggable();
 });
 
 Template.editTemplate.events({

@@ -3,6 +3,10 @@
    After save/delete etc.
    krstffr:msgs
  
+ ☐ Make a decision: should it be draggable or not??
+
+ ☐ When trying to set a value (from blur right now), don't try to set undefined values! Or: unset when trying that?
+   
  ☐ Keydown update of value (without messing with the input!)
 
  ☐ Nested children shuold not have _id, status etc.
@@ -57,6 +61,10 @@
 
 ＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿
 Archive:
+ ✔ Consider: drag and drop to move the admin overlay? @done (15-05-06 08:28)
+ ✔ Something is buggy with array moves! @done (15-05-06 08:23)
+ ✔ Manually test the UI til it works! @done (15-05-06 08:23)
+ ✔ Add tests with nested childrens arrays @done (15-05-06 08:20)
  ✔ Write tests!!! @done (15-05-05 17:59)
   Most methods now have tests. Yey!
  ✔ Create a separate package for this! @done (15-05-05 17:59)

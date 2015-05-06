@@ -370,6 +370,22 @@ Tinytest.add('ReactiveConstructorCmsPlugin instance methods - instance.arrayitem
 		person.arrayitemMove( 'wife', 1 );
 	});
 
+	var buddy = buddies[1];
+	buddy.setReactiveValue('children', [
+		new Person({ name: 'johns daughter'}),
+		new Person({ name: 'johs son' })
+		]);
+
+	test.equal( buddy.getReactiveValue('children')[0].getReactiveValue('name'), 'johns daughter');
+	test.notEqual( buddy.getReactiveValue('children')[1].getReactiveValue('name'), 'johns daughter');
+	test.equal( buddy.getReactiveValue('children')[1].getReactiveValue('name'), 'johs son');
+	test.equal( buddy.getReactiveValue('children').length, 2 );
+
+	buddy.arrayitemMove('children', 0, 1);
+	test.equal( buddy.getReactiveValue('children')[1].getReactiveValue('name'), 'johns daughter');
+	test.equal( buddy.getReactiveValue('children')[0].getReactiveValue('name'), 'johs son');
+	test.equal( buddy.getReactiveValue('children').length, 2 );
+
 });
 
 Tinytest.add('ReactiveConstructorCmsPlugin instance methods - instance.arrayitemRemove()', function(test) {
