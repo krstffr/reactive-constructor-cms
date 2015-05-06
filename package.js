@@ -11,7 +11,7 @@ Package.onUse(function (api) {
 	api.use([
 		"templating",
 		"reactive-var@1.0.4",
-		"krstffr:reactive-constructor@1.0.0",
+		"krstffr:reactive-constructor@1.0.1",
 		"mizzao:jquery-ui@1.11.2",
     "stevezhu:lodash@1.0.2"
 		], "client");
@@ -31,6 +31,10 @@ Package.onUse(function (api) {
 		"tempCMSInstances",
 		"ReactiveConstructorCmsPlugin"
 		], "client");
+
+	api.export([
+		// "ReactiveConstructors"
+		], ["client", "server"]);
 
 });
 

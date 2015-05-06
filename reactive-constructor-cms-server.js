@@ -1,6 +1,7 @@
 reactiveConstructorCmsBackupsToKeep = 15;
 
 var getCollectionFromConstructorName = function( constructorName ) {
+	console.log( ReactiveConstructors );
 	var constructorCmsOptions = ReactiveConstructors[ constructorName ].constructorDefaults().cmsOptions;
 	if (!constructorCmsOptions || !constructorCmsOptions.collection)
 		throw new Meteor.Error('reactive-constructor-cms', 'No collection defined for: ' + passedClass.name );
