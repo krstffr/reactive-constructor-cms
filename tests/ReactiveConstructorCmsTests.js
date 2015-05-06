@@ -1,5 +1,3 @@
-Persons = new Meteor.Collection('persons');
-
 Meteor.startup(function() {
 
 	Person = new ReactiveConstructor(function Person() {

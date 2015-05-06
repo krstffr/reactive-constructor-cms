@@ -1,7 +1,7 @@
 Package.describe({
 	name: "krstffr:reactive-constructor-cms",
 	summary: "CMS for krstffr:reactive-constructor instances.",
-	version: "0.1.8"
+	version: "0.1.9"
 });
 
 Package.onUse(function (api) {
@@ -48,8 +48,11 @@ Package.onTest(function (api) {
   	"accounts-password"
   	], ["client", "server"]);
 
-  api.export("ReactiveConstructors", ["server", "client"]);
+  api.export(["ReactiveConstructors", "Persons"], ["server", "client"]);
 
-  api.addFiles("tests/tempCMStests.js", ["client", "server"]);
+  api.addFiles([
+  	"tests/setupTests.js",
+  	"tests/ReactiveConstructorCmsTests.js"
+  	], ["client", "server"]);
 
 });
