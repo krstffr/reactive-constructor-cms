@@ -13,10 +13,22 @@ Meteor.methods({
 		if (!this.userId)
 			throw new Meteor.Error('reactive-constructor-cms', 'You need to be logged in.' );
 
+		check( constructorName, String );
+
 		saveOptions = saveOptions || {};
 			
 		// Get the collection to store the doc(s) in
 		var collection = getCollectionFromConstructorName( constructorName );
+
+		// Is the user passing a published doc?
+		// If so: use the actual edit doc!
+		if (item.reactiveConstructorCmsStatus === 'published' || item.reactiveConstructorCmsStatus === 'backup'){
+			// Get the actual edit doc
+			var editDoc = collection.findOne({ _id: item.mainId, reactiveConstructorCmsStatus: 'edit' });
+			if (!editDoc)
+				throw new Meteor.Error('reactive-constructor-cms', 'No edit doc found for published: ' + item._id );
+			item._id = editDoc._id;
+		}
 
 		// Save all succesful "saves" in this object, which will eventually be returned
 		var updateResult = {};
@@ -31,7 +43,7 @@ Meteor.methods({
 		// Save a backup of the doc
 		var backupDoc = _.omit( _.clone( item ), '_id' );
 		backupDoc.mainId = item._id;
-		// TODO: Use proper name for CMS
+
 		backupDoc.reactiveConstructorCmsStatus = 'backup';
 		updateResult.backup = collection.insert( backupDoc );
 
