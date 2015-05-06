@@ -1,4 +1,8 @@
 
+ ☐ MINIFICATION and names of constrcutors!!!!
+   This is really fucking annoying.
+   They won't match client/server since they for some reason don't get minified on the server (even if they did they probably would not get the same minified name?)
+
  ☐ Add status messages
    After save/delete etc.
    krstffr:msgs
