@@ -163,6 +163,10 @@ Template.editTemplate__wrapper.events({
     return ReactiveConstructorCmsPlugin.editPageRemove( this );
   },
   'click .reactive-constructor-cms-remove-button': function() {
+    
+    if (!confirm('Are you sure you want to remove this part?'))
+      return false;
+
     this.deleteInstance( function( res ) {
       if (res > 0)
         return ReactiveConstructorCmsPlugin.editPageRemove();
@@ -219,6 +223,9 @@ Template.editTemplate.events({
 
     e.stopImmediatePropagation();
 
+    if (!confirm('Are you sure you want to remove this part?'))
+      return false;
+
     var instanceItem = $( e.currentTarget ).closest('.wrap');
     var parentItem = instanceItem.parent().closest('.wrap')[0];
     var parentInstance = Blaze.getData( parentItem );
@@ -231,6 +238,9 @@ Template.editTemplate.events({
   'click .reactive-constructor-cms-remove-collection-item': function ( e ) {
 
     e.stopImmediatePropagation();
+
+    if (!confirm('Are you sure you want to remove this part?'))
+      return false;
 
     var listItem = $(e.currentTarget).closest('.wrap');
     var context = Blaze.getData( listItem.closest('.collection__items')[0] );
