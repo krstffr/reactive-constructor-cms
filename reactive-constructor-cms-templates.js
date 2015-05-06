@@ -31,7 +31,8 @@ Handlebars.registerHelper('getTemplateFromType', function () {
 
   // Is it a string? Return the basic template
   if (this.type === 'String' || this.type === 'Number' || this.type === 'Date'){
-    var userSpecifiedInput = Template.parentData(1).getInputType( this.key );
+    var instance = Template.parentData(1).value || Template.parentData(1);
+    var userSpecifiedInput = instance.getInputType( this.key );
     if (userSpecifiedInput === 'textarea')
       return 'editTemplate__Textarea';
     return 'editTemplate__String';
