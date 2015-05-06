@@ -282,7 +282,8 @@ ReactiveConstructorCmsPlugin = new ReactiveConstructorPlugin({
 			_id: String,
 			reactiveConstructorCmsName: String,
 			reactiveConstructorCmsStatus: String,
-			updateTime: ISODate
+			updateTime: ISODate,
+			mainId: String
 		};
 	}
 
