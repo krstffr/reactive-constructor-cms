@@ -4,8 +4,6 @@
    krstffr:msgs
  
  ☐ Make a decision: should it be draggable or not??
-
- ☐ When trying to set a value (from blur right now), don't try to set undefined values! Or: unset when trying that?
    
  ☐ Keydown update of value (without messing with the input!)
 
@@ -61,6 +59,7 @@
 
 ＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿
 Archive:
+ ✔ When trying to set a value (from blur right now), don't try to set undefined values! Or: unset when trying that? @done (15-05-06 08:31)
  ✔ Consider: drag and drop to move the admin overlay? @done (15-05-06 08:28)
  ✔ Something is buggy with array moves! @done (15-05-06 08:23)
  ✔ Manually test the UI til it works! @done (15-05-06 08:23)

@@ -93,8 +93,6 @@ Template.editTemplate__Collection.onRendered(function () {
       // Update the array using the arrayitemMove method on the parent context
       parentContext.arrayitemMove( context.key, newIndex, oldIndex );
 
-      console.log( 'test' );
-
       // Super important! Return false to prevent jQuery UI from updating
       // the DOM and instead letting Meteor/Blaze do that.
       return false;
@@ -151,6 +149,9 @@ var updateInput = function ( value, key, type, instance ) {
     value = parseFloat( value, 10 ) || 0;
 
   instance = instance || Template.currentData().value || Template.currentData();
+
+  if (!value)
+    return instance.unsetReactiveValue( key );
 
   return instance.setReactiveValue( key, value );
 
