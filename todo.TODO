@@ -5,6 +5,7 @@
 
  ☐ COULD contendeditable in tandem with Blaze.getDate() be something to explore??
    Avoid silly inputs and stuff. Just type away!
+   Maybe a little helper which the user can embed anywhere he likes (which contains the contents field of the reactive field), and whenever the user updates this (through blur event on the content editable field) the part will be updated in the actual instance??
 
  ☐ Add status messages
    After save/delete etc.
