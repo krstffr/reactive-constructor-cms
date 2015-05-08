@@ -60,8 +60,9 @@
  ☐ Only show delete button for docs which are actually saved to DB (not new ones…)
 
  ☐ Handle links to existing DB objects
-   ☐ Updating the link
-   ☐ How to display the object in the parent? The fields really are of no use for the user?
+   ✔ Updating the link @done (15-05-08 15:58)
+   ✔ How to display the object in the parent? The fields really are of no use for the user? @done (15-05-08 16:20)
+     Probably show the name of the linked instance!
    ☐ What doc to link to? Probably something like this:
      Show all published docs in the list.
      Use the mainId when doing the actual link.

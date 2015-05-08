@@ -150,6 +150,16 @@ Template.editTemplate.helpers({
     return instance.constructor.name;
   },
   getType: function() {
+
+    // Is it a linked instance?
+    // Then get the name of the linnked instance (as well as the type!)
+    if (this.value && this.value.type === 'reactive-constructor-cms-linked-item'){
+      var savedInstances = _.findWhere(ReactiveConstructorCmsPlugin.getGlobalInstanceStore(), {
+        constructorName: this.type
+      }).items;
+      return _.findWhere(savedInstances, { _id: this.value._id }).reactiveConstructorCmsName;
+    }
+
     var instance = this.value || this;
     var type = '';
     if (Match.test( instance.getType, Function ))
