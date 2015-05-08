@@ -32,6 +32,10 @@ Handlebars.registerHelper('getTemplateFromType', function () {
   // Is it a string? Return the basic template
   if (this.type === 'String' || this.type === 'Number' || this.type === 'Date'){
     var instance = Template.parentData(1).value || Template.parentData(1);
+    // If the instance (probably a linked instance) do not have a getInputType
+    // method, just return the String method.
+    if (!instance.getInputType)
+      return 'editTemplate__String';
     var userSpecifiedInput = instance.getInputType( this.key );
     if (userSpecifiedInput === 'textarea')
       return 'editTemplate__Textarea';
@@ -103,6 +107,19 @@ Template.editTemplate__Collection.onRendered(function () {
 });
 
 Template.editTemplate.helpers({
+  // This helper decides if the list of values for this instance should be shown or not.
+  // This is right now used for not showing fields of linked DB docs.
+  isLinkedInstance: function() {
+    // All values in this array should be tested
+    var testValues = [ this.type ];
+    // If we also have a this.value.type field, add it to the check
+    if (this.value && this.value.type)
+      testValues.push(this.value.type);
+    // All of them should pass!
+    return _.some(testValues, function(value){
+      return value === 'reactive-constructor-cms-linked-item';
+    });
+  },
   isSingleInstance: function() {
     return this.key && this.value && this.type;
   },
@@ -195,6 +212,55 @@ Template.editTemplate__wrapper.onRendered(function() {
 });
 
 Template.editTemplate.events({
+  'click .reactive-constructor-cms-relink-nested-instance': function( e ) {
+
+    if (!confirm('Are you sure you want to switch this item for a new one?'))
+      return false;
+    
+    e.stopImmediatePropagation();
+
+    if ( this.value ){
+      // If this.value is set, it's not an array item
+
+    } else {
+      // If there is no this.value, it's an array item
+
+      // This is the current list item
+      var listItem = $(e.currentTarget).closest('.wrap');
+      // This is the current list item's position in the list.
+      // This is used later when setting the new position of the substituted instance
+      var listItemPosition = listItem.index();
+      // This is the key for the list. Used for updating the list (selecting the list)
+      var contextKey = Blaze.getData( listItem.closest('.collection__items')[0] ).key;
+      // This is the parent, which is what get's updated
+      var parentInstance = Blaze.getData( listItem.closest('.collection').closest('.wrap')[0] );
+      // This is the constructor name. Depending on if it's a linked instance or an
+      // "ordinary" instance this will be stored in different places
+      var constructorName = this.constructorName || this.constructor.name;
+
+      // These are the listItems which the user can use among for this key.
+      var listItems = ReactiveConstructors[ constructorName ].getCreatableTypes( contextKey, parentInstance );
+      // Also add all linkable instances
+      listItems = listItems.concat( ReactiveConstructors[ constructorName ].getLinkableInstances( parentInstance, contextKey ) );
+
+      return ReactiveConstructorCmsPlugin.getSelectListOverview( listItems, constructorName, contextKey, function( newItem, instance, key ) {
+        
+        // First remove the current item
+        instance.arrayitemRemove( key, listItemPosition );
+
+        // Get the items, and add the new item
+        var items = instance.getReactiveValue( contextKey );
+        items.push( newItem );
+        parentInstance.setReactiveValue( key, items );
+
+        // Move the new item to the last items position
+        return parentInstance.arrayitemMove( key, listItemPosition, items.length - 1 );
+
+      }, parentInstance );
+
+    }
+
+  },
   'click .reactive-constructor-cms-open-child-instance': function() {
     // This is not a "linked" object, but a directly nested one
     if ( Match.test( this.getReactiveValue, Function ) )

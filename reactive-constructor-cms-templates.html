@@ -97,24 +97,44 @@
 		<h2>
 			
 			{{ getType }}
-			<span class="reactive-constructor-cms-constructor-name">{{ constructorName }}</span>
+			<span class="reactive-constructor-cms-constructor-name">
+				{{ constructorName }}
+			</span>
 			
-			<a class="reactive-constructor-cms-remove-collection-item">Remove</a>
-			<a class="reactive-constructor-cms-duplicate-collection-item">Duplicate</a>
-			<a class="reactive-constructor-cms-open-child-instance">Open</a>
+			<a class="reactive-constructor-cms-remove-collection-item">
+				Remove
+			</a>
+			<a class="reactive-constructor-cms-duplicate-collection-item">
+				Duplicate
+			</a>
+			<a class="reactive-constructor-cms-open-child-instance">
+				Open
+			</a>
 
 			{{#if isSingleInstance }}
-				<a class="reactive-constructor-cms-remove-nested-instance">Remove instance</a>
+				<a class="reactive-constructor-cms-remove-nested-instance">
+					Remove instance
+				</a>
 			{{/if}}
+
+			<a class="reactive-constructor-cms-relink-nested-instance">
+				Change
+			</a>
 
 		</h2>
 
-		{{! Iterate over all the fields, get the corresponding field }}
-		{{#each getReactiveValuesAsArray }}
+		{{#if isLinkedInstance }}
 
-			{{> Template.dynamic template=getTemplateFromType }}
+		{{else}}
 
-		{{/each }}
+			{{! Iterate over all the fields, get the corresponding field }}
+			{{#each getReactiveValuesAsArray }}
+
+				{{> Template.dynamic template=getTemplateFromType }}
+
+			{{/each }}
+
+		{{/if}}
 
 	</div>
 

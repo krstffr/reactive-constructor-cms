@@ -3,6 +3,12 @@
    This is really fucking annoying.
    They won't match client/server since they for some reason don't get minified on the server (even if they did they probably would not get the same minified name?)
 
+ ☐ Ability to "unpublish" documents
+   Mauybe you have a couple of webpages, and you notice that one of the pages is NOT supposed to be live yet. You need to be able to remove the live version!
+ 
+ ☐ Ability to go back to older backups
+   Check that saving etc. works the way it should also when going back.
+
  ☐ COULD contendeditable in tandem with Blaze.getDate() be something to explore??
    Avoid silly inputs and stuff. Just type away!
    Maybe a little helper which the user can embed anywhere he likes (which contains the contents field of the reactive field), and whenever the user updates this (through blur event on the content editable field) the part will be updated in the actual instance??
@@ -12,12 +18,11 @@
    krstffr:msgs
  
  ☐ Make a decision: should it be draggable or not??
+   Yes it probably should?
    
  ☐ Keydown update of value (without messing with the input!)
 
  ☐ Nested children shuold not have _id, status etc.
-
- ☐ Setting of global (override) of input types (for all types!), such as texareas.
 
  ☐ Images overview. Or overview with image previews.
 
@@ -34,6 +39,7 @@
       Keep it all in one place as defined by the plugin? Sort of like a global place for all reactive instances fetched from this plugin?
       ☐ Now there is a method for this, just pass constructor name and _id. Works right??
       ☐ Also use this for populating the list when selecting what part to add.
+        This is the case now right?
  
  ☐ Global filter method for filtering in lists etc.
 
@@ -41,6 +47,10 @@
    ☐ This works right? A Person->Husband can have a wife of type Person->Wife?
 
  ☐ Handling of various input types, text/textarea/disabled/select etc.
+   ☐ Setting of global (override) of input types (for all types!), such as texareas!
+   ✔ Textarea @done (15-05-08 13:20)
+   ☐ Select
+   ☐ Disabled
    ☐ Select boxes: this needs extra special attention I guess?
 
  ☐ What's the best way to get the current data context in the blur/update value event? Right now using Template.currentData() which means we have to add this event and method to every unique template we might come up with. Not cool!
@@ -52,6 +62,11 @@
  ☐ Handle links to existing DB objects
    ☐ Updating the link
    ☐ How to display the object in the parent? The fields really are of no use for the user?
+   ☐ What doc to link to? Probably something like this:
+     Show all published docs in the list.
+     Use the mainId when doing the actual link.
+     Use the publish/mainId when fetching the doc.
+     Use the mainId when getting the actual edit-doc for editing.
 
  ☐ Nested list (array) instances with it's own nested lists looks MESSY. Too much going on.
 
@@ -64,7 +79,6 @@
  
  ☐ Saving of "parent" instance, when editing a child instance
    ☐ Also a "go to parent" button?
-
 ＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿
 Archive:
  ✔ When trying to set a value (from blur right now), don't try to set undefined values! Or: unset when trying that? @done (15-05-06 08:31)
