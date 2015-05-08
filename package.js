@@ -51,7 +51,6 @@ Package.onTest(function (api) {
   api.export(["ReactiveConstructors", "Persons"], ["server", "client"]);
 
   api.addFiles([
-  	"tests/setupTests.js",
   	"tests/ReactiveConstructorCmsTests.js"
   	], ["client", "server"]);
 

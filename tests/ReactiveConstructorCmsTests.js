@@ -1,3 +1,5 @@
+Persons = new Meteor.Collection('persons');
+
 Meteor.startup(function() {
 
 	Person = new ReactiveConstructor(function Person() {
@@ -448,6 +450,16 @@ Tinytest.add('ReactiveConstructorCmsPlugin instance methods - instance.getInputT
 
 	test.equal( person.getInputType('title'), false );
 	test.equal( person.getInputType('name'), 'textarea' );
+
+});
+
+Tinytest.add('ReactiveConstructorCmsPlugin instance methods - instance.canBeSaved()', function(test) {
+
+	var person = new Person();
+	var nonSaveableInstance = new NonSaveableConstructor();
+	
+	test.isTrue( person.canBeSaved() );
+	test.isFalse( nonSaveableInstance.canBeSaved() );
 
 });
 

@@ -158,10 +158,14 @@
 
 		<div class="wrapper__buttons">
 
-			<button class="reactive-constructor-cms-publish-button">Publish</button>
-			<button class="reactive-constructor-cms-save-draft-button">Save draft</button>
-			<button class="reactive-constructor-cms-duplicate-button">Duplicate</button>
-			<button class="reactive-constructor-cms-remove-button">Remove</button>
+			{{#if canBeSaved }}
+
+				<button class="reactive-constructor-cms-publish-button">Publish</button>
+				<button class="reactive-constructor-cms-save-draft-button">Save draft</button>
+				<button class="reactive-constructor-cms-duplicate-button">Duplicate</button>
+				<button class="reactive-constructor-cms-remove-button">Remove</button>
+
+			{{/if}}
 			<button class="reactive-constructor-cms-close-button">Close</button>
 
 		</div>

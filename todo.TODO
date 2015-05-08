@@ -57,7 +57,7 @@
 
  ☐ How to handle nested "pure" objects? Should that even be allowed? NAH. Not in the CMS! Or? Maybe…
 
- ☐ Only show delete button for docs which are actually saved to DB (not new ones…)
+ ✔ Only show delete button for docs which are actually saved to DB (not new ones…) (Changed this to only show save/duplicate etc. for docs which can be saved!) @done (15-05-08 16:34)
 
  ☐ Handle links to existing DB objects
    ✔ Updating the link @done (15-05-08 15:58)

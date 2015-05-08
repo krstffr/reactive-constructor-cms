@@ -179,6 +179,12 @@ ReactiveConstructorCmsPlugin = new ReactiveConstructorPlugin({
 			}).cmsOptions || {};
 		};
 
+		// Method to check if an instance can be saved
+		// Has test: ✔
+		passedClass.prototype.canBeSaved = function() {
+			return this.getCollectionName() !== false;
+		};
+
 		// Method for returning all current instances (from the DB)
 		// which can be added to a one of this instances' fields (by key)
 		// Has test: ✔
