@@ -219,8 +219,29 @@ Template.editTemplate.events({
     
     e.stopImmediatePropagation();
 
+    var constructorName;
+    var listItems;
+    var parentInstance;
+    var contextKey;
+
     if ( this.value ){
       // If this.value is set, it's not an array item
+
+      // Get the key of the field which holds this nested instance
+      var key = this.key;
+      // Get the parent instance (might be stored in the value field!)
+      parentInstance = Blaze.getData( $(e.currentTarget).closest('.wrap').parent('.wrap')[0] );
+      parentInstance = parentInstance.value || parentInstance;
+      // Get the constructor name
+      constructorName = this.type.replace(/Collection_/g, '');
+      // Get all list items which the user can choose from.
+      listItems = ReactiveConstructors[ constructorName ].getCreatableTypes( key, parentInstance );
+      listItems = listItems.concat( ReactiveConstructors[ constructorName ].getLinkableInstances( parentInstance, key ) );
+
+      return ReactiveConstructorCmsPlugin.getSelectListOverview( listItems, constructorName, key, function( newItem, instance, key ) {
+        return instance.setReactiveValue( key, newItem );
+      }, parentInstance );
+
 
     } else {
       // If there is no this.value, it's an array item
@@ -231,15 +252,15 @@ Template.editTemplate.events({
       // This is used later when setting the new position of the substituted instance
       var listItemPosition = listItem.index();
       // This is the key for the list. Used for updating the list (selecting the list)
-      var contextKey = Blaze.getData( listItem.closest('.collection__items')[0] ).key;
+      contextKey = Blaze.getData( listItem.closest('.collection__items')[0] ).key;
       // This is the parent, which is what get's updated
-      var parentInstance = Blaze.getData( listItem.closest('.collection').closest('.wrap')[0] );
+      parentInstance = Blaze.getData( listItem.closest('.collection').closest('.wrap')[0] );
       // This is the constructor name. Depending on if it's a linked instance or an
       // "ordinary" instance this will be stored in different places
-      var constructorName = this.constructorName || this.constructor.name;
+      constructorName = this.constructorName || this.constructor.name;
 
       // These are the listItems which the user can use among for this key.
-      var listItems = ReactiveConstructors[ constructorName ].getCreatableTypes( contextKey, parentInstance );
+      listItems = ReactiveConstructors[ constructorName ].getCreatableTypes( contextKey, parentInstance );
       // Also add all linkable instances
       listItems = listItems.concat( ReactiveConstructors[ constructorName ].getLinkableInstances( parentInstance, contextKey ) );
 
