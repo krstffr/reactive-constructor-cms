@@ -24,6 +24,8 @@
  ☐ Keydown update of value (without messing with the input!)
 
  ☐ Nested children shuold not have _id, status etc.
+   Or should they? What if you want to move them out of their parent?
+   Probably add them at that stage right??
 
  ☐ Images overview. Or overview with image previews.
 
