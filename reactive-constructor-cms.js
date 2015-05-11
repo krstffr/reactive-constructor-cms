@@ -14,10 +14,11 @@ ReactiveConstructorCmsPlugin = new ReactiveConstructorPlugin({
 
 	initConstructor: function ( passedClass ) {
 
-		// console.log('ReactiveConstructorCmsPlugin: initConstructor() ', passedClass.name );
+		// console.log('ReactiveConstructorCmsPlugin: initConstructor() ', passedClass.constructorName );
 
 		// Method for returning the type of an item as a string.
 		var getTypeOfStructureItem = function ( item ) {
+			
 			// Does the item actaully have a name?
 			// Then it's probably a String or a Number or a Boolean, return it
 			if (item.name)
@@ -27,11 +28,13 @@ ReactiveConstructorCmsPlugin = new ReactiveConstructorPlugin({
 			if ( Match.test( item, Array ) ) {
 				
 				// Does it have any items?
-				if (item.length > 1)
+				if (item.length < 1)
 					return 'Array';
 
-				return 'Collection_'+item[0].name;
+				return 'Collection_'+item[0].constructorName;
+
 			}
+
 		};
 
 		// Method for returing an "overriding" inputtype, for example a textarea
@@ -135,7 +138,7 @@ ReactiveConstructorCmsPlugin = new ReactiveConstructorPlugin({
 				throw new Meteor.Error('reactive-constructor-cms', 'You need to be logged in.' );
 			
 			if ( !this.getCollection() )
-				throw new Meteor.Error('reactive-constructor-cms', 'No collection defined for: ' + passedClass.name );
+				throw new Meteor.Error('reactive-constructor-cms', 'No collection defined for: ' + passedClass.constructorName );
 
 			return Meteor.call('reactive-constructor-cms/save', this.getDataAsObject(), this.getCollectionName(), saveOptions, function(err, res) {
 				if ( res )
@@ -154,7 +157,7 @@ ReactiveConstructorCmsPlugin = new ReactiveConstructorPlugin({
 				throw new Meteor.Error('reactive-constructor-cms', 'You need to be logged in.' );
 			
 			if ( !this.getCollection() )
-				throw new Meteor.Error('reactive-constructor-cms', 'No collection defined for: ' + passedClass.name );
+				throw new Meteor.Error('reactive-constructor-cms', 'No collection defined for: ' + passedClass.constructorName );
 
 			var id = this.getDataAsObject()._id;
 
@@ -191,14 +194,14 @@ ReactiveConstructorCmsPlugin = new ReactiveConstructorPlugin({
 		passedClass.getLinkableInstances = function( instance, key ) {
 
 			if (!instance)
-				throw new Meteor.Error('reactive-constructor-cms', 'No instance passed to '+passedClass.name+' getLinkableInstances()');
+				throw new Meteor.Error('reactive-constructor-cms', 'No instance passed to '+passedClass.constructorName+' getLinkableInstances()');
 
 			if (!key)
-				throw new Meteor.Error('reactive-constructor-cms', 'No key passed to '+passedClass.name+' getLinkableInstances()');
+				throw new Meteor.Error('reactive-constructor-cms', 'No key passed to '+passedClass.constructorName+' getLinkableInstances()');
 
 			// Get the object which holds all instances (in the items fields)
 			// If there is no object, or no items-field, there are no items and return false
-			var instanceHolder = _.findWhere( ReactiveConstructorCmsPlugin.getGlobalInstanceStore(), { constructorName: passedClass.name });
+			var instanceHolder = _.findWhere( ReactiveConstructorCmsPlugin.getGlobalInstanceStore(), { constructorName: passedClass.constructorName });
 			if (!instanceHolder || !instanceHolder.items)
 				return [];
 
@@ -221,7 +224,7 @@ ReactiveConstructorCmsPlugin = new ReactiveConstructorPlugin({
 
 			// Make sure an instance is passed
 			if (!instance)
-				throw new Meteor.Error('reactive-constructor-cms', 'No instance passed to '+passedClass.name+' filterCreatableTypes()');
+				throw new Meteor.Error('reactive-constructor-cms', 'No instance passed to '+passedClass.constructorName+' filterCreatableTypes()');
 
 			// Check if this instance type has any filter
 	    var instanceCmsOptions = instance.getInstanceCmsOptions();
@@ -393,8 +396,8 @@ ReactiveConstructorCmsPlugin.setValueToCorrectType = function( instance, value, 
 			// Does the array item have a reactive constructor defined?
 			// If so: create a new instance from the constructor.
 			var constructorName = instance.getCurrentTypeStructure()[key];
-			if ( Match.test( arrayVal, Object ) && ReactiveConstructors[ constructorName[ 0 ].name ] )
-				return new ReactiveConstructors[ constructorName[ 0 ].name ]( arrayVal );
+			if ( Match.test( arrayVal, Object ) && ReactiveConstructors[ constructorName[ 0 ].constructorName ] )
+				return new ReactiveConstructors[ constructorName[ 0 ].constructorName ]( arrayVal );
 			
 			return arrayVal;
 
@@ -425,7 +428,7 @@ ReactiveConstructorCmsPlugin.getSelectListOverview = function( listItems, constr
     		// Handle linking of an exisiting object!
     		var linkedItem = {
     			type: 'reactive-constructor-cms-linked-item',
-    			constructorName: selectedItem.constructor.name,
+    			constructorName: selectedItem.constructor.constructorName,
     			_id: selectedItem._id
     		};
     		setCallback( linkedItem, instance, key );
@@ -487,9 +490,9 @@ ReactiveConstructorCmsPlugin.updateGlobalInstanceStore = function() {
   })
   .map(function( constructor ){
     return {
-      constructorName: constructor.name,
+      constructorName: constructor.constructorName,
       items: _.map( constructor.constructorDefaults().cmsOptions.collection.find({ reactiveConstructorCmsStatus: 'edit' }).fetch(), function( instanceData ) {
-        return new ReactiveConstructors[ constructor.name ]( instanceData );
+        return new ReactiveConstructors[ constructor.constructorName ]( instanceData );
       })
     };
   })
@@ -545,7 +548,7 @@ ReactiveConstructorCmsPlugin.editPageGet = function( instance ) {
 	if (!Meteor.userId())
 		throw new Meteor.Error('reactive-constructor-cms', 'You need to be logged in.' );
 
-	check( instance, ReactiveConstructors[ instance.constructor.name ] );
+	check( instance, ReactiveConstructors[ instance.constructor.constructorName ] );
 
 	// Remove any currently visible edit templates
 	return ReactiveConstructorCmsPlugin.editPageRemove( instance, function( instance ) {

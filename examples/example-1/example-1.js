@@ -8,11 +8,7 @@ Clients = new Meteor.Collection('clients');
 Persons = new Meteor.Collection('persons');
 
 // Create a reactive constructor which can be used in tests.
-Person = new ReactiveConstructor(function Person() {
-
-  this.initReactiveValues( arguments[0] );
-
-}, function () {
+Person = new ReactiveConstructor('Person', function () {
   return {
     cmsOptions: {
       collection: Persons
@@ -108,11 +104,7 @@ Person = new ReactiveConstructor(function Person() {
   }; 
 });
 
-Pet = new ReactiveConstructor(function Pet() {
-
-  this.initReactiveValues( arguments[0] );
-
-}, function() {
+Pet = new ReactiveConstructor('Pet', function() {
   return {
     typeStructure: [{
       type: 'cat',
@@ -126,11 +118,7 @@ Pet = new ReactiveConstructor(function Pet() {
   };
 });
 
-Client = new ReactiveConstructor( function Client() {
-
-  this.initReactiveValues( arguments[0] );
-
-}, function() {
+Client = new ReactiveConstructor('Client', function() {
   return {
     cmsOptions: {
       collection: Clients
@@ -150,26 +138,21 @@ Client = new ReactiveConstructor( function Client() {
 
 client = new Client();
 
-InvoiceListItem = new ReactiveConstructor(function InvoiceListItem () {
-
-  var that = this;
-
-  that.endPrice = function () {
-    return that.getReactiveValue('units') * that.getReactiveValue('unitPrice');
-  };
-
-  that.priceAfterTax = function () {
-    return that.endPrice() * (( that.getReactiveValue('tax') / 100)+1);
-  };
-
-  that.tax = function () {
-    return that.priceAfterTax() - that.endPrice();
-  };
-
-  this.initReactiveValues( arguments[0] );
-  
-}, function() {
+InvoiceListItem = new ReactiveConstructor('InvoiceListItem', function() {
   return {
+    globalValues: {
+      methods: {
+        endPrice: function () {
+          return this.getReactiveValue('units') * this.getReactiveValue('unitPrice');
+        },
+        priceAfterTax: function () {
+          return this.endPrice() * (( this.getReactiveValue('tax') / 100)+1);
+        },
+        tax: function () {
+          return this.priceAfterTax() - this.endPrice();
+        }
+      }
+    },
     typeStructure: [{
       type: 'invoiceListItem',
       fields: {
@@ -194,39 +177,31 @@ InvoiceListItem = new ReactiveConstructor(function InvoiceListItem () {
 
 var testInvoiceListItem = new InvoiceListItem({ tax: 30 });
 
-Invoice = new ReactiveConstructor(function Invoice () {
-
-  var that = this;
-
-  // Invoice items
-  that.items = {};
-
-  that.items.getTotal = function ( key ) {
-    var items = that.getReactiveValue( 'items' );
-    return _.reduce(items, function( memo, item ){
-      if (typeof item[key] === 'function')
-        return memo + item[key]();
-      return memo + item[key];
-    }, 0);
-  };
-
-  that.items.getTaxPercentage = function () {
-    return (
-      that.items.getTotal('tax') /
-      that.items.getTotal('endPrice') * 100 ||
-      0
-      ).toFixed(1);
-  };
-
-  that.saveInvoice = function () {
-    var dataToSave = that.getDataAsObject();
-    return Invoices.upsert( { _id: dataToSave._id }, dataToSave );
-  };
-
-  this.initReactiveValues( arguments[0] );
-
-}, function() {
+Invoice = new ReactiveConstructor('Invoice', function() {
   return {
+    globalValues: {
+      methods: {
+        'itemsGetTotal': function ( key ) {
+          var items = this.getReactiveValue( 'items' );
+          return _.reduce(items, function( memo, item ){
+            if (typeof item[key] === 'function')
+              return memo + item[key]();
+            return memo + item[key];
+          }, 0);
+        },
+        'itemsGetTaxPercentage': function () {
+          return (
+            this['itemsGetTotal']('tax') /
+            this['itemsGetTotal']('endPrice') * 100 ||
+            0
+            ).toFixed(1);
+        },
+        saveInvoice: function () {
+          var dataToSave = this.getDataAsObject();
+          return Invoices.upsert( { _id: dataToSave._id }, dataToSave );
+        }
+      }
+    },
     cmsOptions: {
       collection: Invoices
     },

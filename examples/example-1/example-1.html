@@ -71,16 +71,16 @@
 	  	{{/each}}
 
 	  	<p>
-	  		Total price: {{ items.getTotal 'endPrice' }} 
+	  		Total price: {{ itemsGetTotal 'endPrice' }} 
 	  		{{ getReactiveValue 'currency' }}
 	  	</p>
 	  	<p>
-	  		Total with taxes: {{ items.getTotal 'priceAfterTax' }} 
+	  		Total with taxes: {{ itemsGetTotal 'priceAfterTax' }} 
 	  		{{ getReactiveValue 'currency' }}
 	  	</p>
 	  	<p>
-	  		Taxes only: {{ items.getTotal 'tax' }} 
-	  		{{ getReactiveValue 'currency' }} (@ {{ items.getTaxPercentage }}%)
+	  		Taxes only: {{ itemsGetTotal 'tax' }} 
+	  		{{ getReactiveValue 'currency' }} (@ {{ itemsGetTaxPercentage }}%)
 	  	</p>
 
 		</ul>

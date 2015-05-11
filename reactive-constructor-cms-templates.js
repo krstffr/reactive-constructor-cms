@@ -145,9 +145,8 @@ Template.editTemplate.helpers({
   },
   constructorName: function () {
     var instance = this.value || this;
-    if (instance.constructor.name === 'Object')
-      return false;
-    return instance.constructor.name;
+    if (instance.constructor.constructorName)
+      return instance.constructor.constructorName;
   },
   getType: function() {
 
@@ -372,6 +371,7 @@ Template.editTemplate.events({
     e.stopImmediatePropagation();
 
     var constructorName = this.type.replace(/Collection_/g, '');
+
     var key = this.key;
     var instance = Template.currentData().value || Template.currentData();
     var listItems = ReactiveConstructors[ constructorName ].getCreatableTypes( key, instance );

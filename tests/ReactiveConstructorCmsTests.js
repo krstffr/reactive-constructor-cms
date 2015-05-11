@@ -2,11 +2,7 @@ Persons = new Meteor.Collection('persons');
 
 Meteor.startup(function() {
 
-	Person = new ReactiveConstructor(function Person() {
-
-		this.initReactiveValues( arguments[0] );
-
-	}, function () {
+	Person = new ReactiveConstructor('Person', function () {
 		return {
 			cmsOptions: {
 				collection: Persons
@@ -101,11 +97,7 @@ Meteor.startup(function() {
 		}; 
 	});
 
-NonSaveableConstructor = new ReactiveConstructor(function NonSaveableConstructor() {
-
-	this.initReactiveValues( arguments[0] );
-
-}, function() {
+NonSaveableConstructor = new ReactiveConstructor('NonSaveableConstructor', function() {
 	return {
 		typeStructure: [{
 			type: 'this is a non saveable instance'
@@ -683,7 +675,7 @@ Tinytest.addAsync('ReactiveConstructorCmsPlugin async - instance.deleteInstance(
 Tinytest.addAsync('ReactiveConstructorCmsPlugin async - Person.getLinkableInstances()', function(test, next) {
 
 	startSubscription(function() {
-	
+
 		// Should throw errors if no instance or key is passed
 		test.throws(function(){
 			Person.getLinkableInstances();
@@ -733,7 +725,7 @@ Tinytest.addAsync('ReactiveConstructorCmsPlugin async - Person.getLinkableInstan
 
 		});
 
-	});
+});
 
 });
 
