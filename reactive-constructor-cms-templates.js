@@ -244,7 +244,7 @@ Template.editTemplate.events({
       parentInstance = Blaze.getData( $(e.currentTarget).closest('.wrap').parent('.wrap')[0] );
       parentInstance = parentInstance.value || parentInstance;
       // Get the constructor name
-      constructorName = this.type.replace(/Collection_/g, '');
+      constructorName = parentInstance.constructor.constructorName;
       // Get all list items which the user can choose from.
       listItems = ReactiveConstructors[ constructorName ].getCreatableTypes( key, parentInstance );
       listItems = listItems.concat( ReactiveConstructors[ constructorName ].getLinkableInstances( parentInstance, key ) );
@@ -268,7 +268,7 @@ Template.editTemplate.events({
       parentInstance = Blaze.getData( listItem.closest('.collection').closest('.wrap')[0] );
       // This is the constructor name. Depending on if it's a linked instance or an
       // "ordinary" instance this will be stored in different places
-      constructorName = this.constructorName || this.constructor.name;
+      constructorName = this.constructorName || parentInstance.constructor.constructorName;
 
       // These are the listItems which the user can use among for this key.
       listItems = ReactiveConstructors[ constructorName ].getCreatableTypes( contextKey, parentInstance );
@@ -353,9 +353,9 @@ Template.editTemplate.events({
 
     e.stopImmediatePropagation();
 
-    var constructorName = this.type.replace(/Collection_/g, '');
-    var key = this.key;
     var instance = Template.currentData().value || Template.currentData();
+    var constructorName = instance.constructor.constructorName;
+    var key = this.key;
     var listItems = ReactiveConstructors[ constructorName ].getCreatableTypes( key, instance );
 
     listItems = listItems.concat( ReactiveConstructors[ constructorName ].getLinkableInstances( instance, key ) );
@@ -370,10 +370,9 @@ Template.editTemplate.events({
 
     e.stopImmediatePropagation();
 
-    var constructorName = this.type.replace(/Collection_/g, '');
-
     var key = this.key;
     var instance = Template.currentData().value || Template.currentData();
+    var constructorName = instance.constructor.constructorName;
     var listItems = ReactiveConstructors[ constructorName ].getCreatableTypes( key, instance );
 
     listItems = listItems.concat( ReactiveConstructors[ constructorName ].getLinkableInstances( instance, key ) );
