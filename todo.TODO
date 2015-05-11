@@ -2,6 +2,7 @@
  ☐ MINIFICATION and names of constrcutors!!!!
    This is really fucking annoying.
    They won't match client/server since they for some reason don't get minified on the server (even if they did they probably would not get the same minified name?)
+   Should work now right??
 
  ☐ Ability to "unpublish" documents
    Mauybe you have a couple of webpages, and you notice that one of the pages is NOT supposed to be live yet. You need to be able to remove the live version!

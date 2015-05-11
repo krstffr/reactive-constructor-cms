@@ -117,13 +117,6 @@ ReactiveConstructorCmsPlugin = new ReactiveConstructorPlugin({
 			return this.arrayitemMove( listKey, (indexToDuplicate+1), (this.getReactiveValue( listKey ).length - 1) );
 		};
 
-		passedClass.prototype.getCollectionName = function() {
-			var collection = this.getCollection();
-			if (!collection || !collection._name)
-				return false;
-			return collection._name.charAt(0).toUpperCase() + collection._name.slice(1); 
-		};
-
 		// Has test: ✔
 		passedClass.prototype.getCollection = function() {
 			if ( !passedClass.constructorDefaults().cmsOptions || !passedClass.constructorDefaults().cmsOptions.collection)
@@ -140,7 +133,7 @@ ReactiveConstructorCmsPlugin = new ReactiveConstructorPlugin({
 			if ( !this.getCollection() )
 				throw new Meteor.Error('reactive-constructor-cms', 'No collection defined for: ' + passedClass.constructorName );
 
-			return Meteor.call('reactive-constructor-cms/save', this.getDataAsObject(), this.getCollectionName(), saveOptions, function(err, res) {
+			return Meteor.call('reactive-constructor-cms/save', this.getDataAsObject(), passedClass.constructorName, saveOptions, function(err, res) {
 				if ( res )
 					ReactiveConstructorCmsPlugin.updateGlobalInstanceStore();
 				if ( callback )
@@ -162,9 +155,8 @@ ReactiveConstructorCmsPlugin = new ReactiveConstructorPlugin({
 			var id = this.getDataAsObject()._id;
 
 			check( id, String );
-			check( this.getCollectionName(), String );
 
-			return Meteor.call('reactive-constructor-cms/delete', id, this.getCollectionName(), function(err, res) {
+			return Meteor.call('reactive-constructor-cms/delete', id, passedClass.constructorName, function(err, res) {
 				if ( res )
 					ReactiveConstructorCmsPlugin.updateGlobalInstanceStore();
 				if ( callback )
@@ -185,7 +177,7 @@ ReactiveConstructorCmsPlugin = new ReactiveConstructorPlugin({
 		// Method to check if an instance can be saved
 		// Has test: ✔
 		passedClass.prototype.canBeSaved = function() {
-			return this.getCollectionName() !== false;
+			return this.getCollection() !== false;
 		};
 
 		// Method for returning all current instances (from the DB)

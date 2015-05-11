@@ -226,8 +226,6 @@ Tinytest.add('ReactiveConstructorCmsPlugin overrides - checkReactiveValues()', f
 		wife: new Person(),
 		something: 'hej'
 	};
-	
-	console.log( ordinaryInstance, ordinaryStructure );
 
 	ReactiveConstructorCmsPlugin.checkReactiveValues( ordinaryInstance, ordinaryStructure, function( dataToCheck, currentTypeStructure ) {
 		test.equal( ordinaryInstance, dataToCheck );
