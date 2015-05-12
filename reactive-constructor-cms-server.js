@@ -1,25 +1,39 @@
 reactiveConstructorCmsBackupsToKeep = 15;
 
-var globalThis = this;
+var getCollectionFromConstructorName = function( constructorName ) {
+	
+	check( constructorName, String );
+	check( ReactiveConstructors[ constructorName ], Function );
 
-var getCollectionFromName = function( collectionName ) {
+	if (!ReactiveConstructors[ constructorName ].constructorDefaults)
+		return false;
+
+	// Get the defaults defined by the user
+	var defaults = ReactiveConstructors[ constructorName ].constructorDefaults();
+
 	// Get the collection to store the doc(s) in
-	var collection = globalThis[ collectionName ];
+	if (!defaults.cmsOptions || !defaults.cmsOptions.collection)
+		return false;
+
+	var collection = defaults.cmsOptions.collection;
+
 	// Make sure we have a collection
 	check( collection, Meteor.Collection );
+
 	return collection;
+
 };
 
 Meteor.methods({
-	'reactive-constructor-cms/save': function( item, collectionName, saveOptions ) {
+	'reactive-constructor-cms/save': function( item, constructorName, saveOptions ) {
 
 		if (!this.userId)
 			throw new Meteor.Error('reactive-constructor-cms', 'You need to be logged in.' );
 
-		check( collectionName, String );
+		check( constructorName, String );
 			
 		// Get the collection to store the doc(s) in
-		var collection = getCollectionFromName( collectionName );
+		var collection = getCollectionFromConstructorName( constructorName );
 
 		saveOptions = saveOptions || {};
 
@@ -51,7 +65,7 @@ Meteor.methods({
 		updateResult.backup = collection.insert( backupDoc );
 
 		// Remove all backups after the last 15 ones
-		updateResult.backupsRemoved = Meteor.call('reactive-constructor-cms/delete-old-backups', backupDoc.mainId, reactiveConstructorCmsBackupsToKeep, collectionName );
+		updateResult.backupsRemoved = Meteor.call('reactive-constructor-cms/delete-old-backups', backupDoc.mainId, reactiveConstructorCmsBackupsToKeep, constructorName );
 
 		// Publish the doc if the saveOptions.publish was set to true
 		if ( saveOptions.publish ){
@@ -71,13 +85,13 @@ Meteor.methods({
 
 	},
 	// Method for removing all backups which are older than the numToKeep (number) latest
-	'reactive-constructor-cms/delete-old-backups': function( mainId, numToKeep, collectionName ) {
+	'reactive-constructor-cms/delete-old-backups': function( mainId, numToKeep, constructorName ) {
 
 		if (!this.userId)
 			throw new Meteor.Error('reactive-constructor-cms', 'You need to be logged in.' );
 
 		// Get the collection
-		var collection = getCollectionFromName( collectionName );
+		var collection = getCollectionFromConstructorName( constructorName );
 		// Get the numToKeep latest backup (-1 since we're only removing docs AFTER this one)
 		var oldestDoc = collection.findOne({ mainId: mainId, reactiveConstructorCmsStatus: 'backup'}, { sort: { updateTime: -1 }, skip: (numToKeep-1) });
 		// If there is not 15, then don't do nothing
@@ -86,15 +100,15 @@ Meteor.methods({
 		return collection.remove({ mainId: mainId, reactiveConstructorCmsStatus: 'backup', updateTime: { $lt: oldestDoc.updateTime } });
 
 	},
-	'reactive-constructor-cms/delete': function( id, collectionName ) {
+	'reactive-constructor-cms/delete': function( id, constructorName ) {
 
 		if (!this.userId)
 			throw new Meteor.Error('reactive-constructor-cms', 'You need to be logged in.' );
 			
 		check( id, String );
-		check( collectionName, String );
+		check( constructorName, String );
 
-		var collection = getCollectionFromName( collectionName );
+		var collection = getCollectionFromConstructorName( constructorName );
 
 		return collection.remove({ $or: [{ mainId: id }, { _id: id }] });
 

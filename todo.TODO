@@ -2,6 +2,7 @@
  ☐ MINIFICATION and names of constrcutors!!!!
    This is really fucking annoying.
    They won't match client/server since they for some reason don't get minified on the server (even if they did they probably would not get the same minified name?)
+   Should work now right??
 
  ☐ Ability to "unpublish" documents
    Mauybe you have a couple of webpages, and you notice that one of the pages is NOT supposed to be live yet. You need to be able to remove the live version!
@@ -23,6 +24,8 @@
  ☐ Keydown update of value (without messing with the input!)
 
  ☐ Nested children shuold not have _id, status etc.
+   Or should they? What if you want to move them out of their parent?
+   Probably add them at that stage right??
 
  ☐ Images overview. Or overview with image previews.
 
