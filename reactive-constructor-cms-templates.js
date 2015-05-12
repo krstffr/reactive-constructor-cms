@@ -159,7 +159,10 @@ Template.editTemplate.helpers({
       var savedInstances = _.findWhere(ReactiveConstructorCmsPlugin.getGlobalInstanceStore(), {
         constructorName: constructorName
       }).items;
-      return _.findWhere(savedInstances, { _id: instance._id }).reactiveConstructorCmsName;
+      var savedInstance = _.findWhere(savedInstances, { _id: instance._id });
+      // Did we find a saved instance? And does it have a cms-name? If yes: return it!
+      if (savedInstance && savedInstance.reactiveConstructorCmsName)
+        return savedInstance.reactiveConstructorCmsName;
     }
 
     var type = '';
@@ -236,6 +239,7 @@ Template.editTemplate.events({
     var contextKey;
 
     if ( this.value ){
+
       // If this.value is set, it's not an array item
 
       // Get the key of the field which holds this nested instance
@@ -244,7 +248,7 @@ Template.editTemplate.events({
       parentInstance = Blaze.getData( $(e.currentTarget).closest('.wrap').parent('.wrap')[0] );
       parentInstance = parentInstance.value || parentInstance;
       // Get the constructor name
-      constructorName = parentInstance.constructor.constructorName;
+      constructorName = this.type.replace(/Collection_/g, '');
       // Get all list items which the user can choose from.
       listItems = ReactiveConstructors[ constructorName ].getCreatableTypes( key, parentInstance );
       listItems = listItems.concat( ReactiveConstructors[ constructorName ].getLinkableInstances( parentInstance, key ) );
@@ -268,6 +272,7 @@ Template.editTemplate.events({
       parentInstance = Blaze.getData( listItem.closest('.collection').closest('.wrap')[0] );
       // This is the constructor name. Depending on if it's a linked instance or an
       // "ordinary" instance this will be stored in different places
+      return console.log( this );
       constructorName = this.constructorName || parentInstance.constructor.constructorName;
 
       // These are the listItems which the user can use among for this key.
@@ -294,15 +299,16 @@ Template.editTemplate.events({
 
   },
   'click .reactive-constructor-cms-open-child-instance': function() {
+
+    var instance = this.value || this;
+
     // This is not a "linked" object, but a directly nested one
-    if ( Match.test( this.getReactiveValue, Function ) )
-      return ReactiveConstructorCmsPlugin.editPageGet( this );
-    var instance = (this.value && this.value.type === 'reactive-constructor-cms-linked-item') ? this.value : this;
+    if ( Match.test( instance.getReactiveValue, Function ) )
+      return ReactiveConstructorCmsPlugin.editPageGet( instance );
     
     instance = ReactiveConstructorCmsPlugin.getInstanceByTypeAndId( instance.constructorName, instance._id );
     return ReactiveConstructorCmsPlugin.editPageGet( instance );
-    // if (this.value && this.value.type)
-    //   ReactiveConstructorCmsPlugin.getInstanceByTypeAndId
+
   },
   'click .reactive-constructor-cms-duplicate-collection-item': function ( e ) {
 
@@ -354,7 +360,7 @@ Template.editTemplate.events({
     e.stopImmediatePropagation();
 
     var instance = Template.currentData().value || Template.currentData();
-    var constructorName = instance.constructor.constructorName;
+    var constructorName = this.type.replace(/Collection_/g, '');;
     var key = this.key;
     var listItems = ReactiveConstructors[ constructorName ].getCreatableTypes( key, instance );
 
@@ -372,7 +378,7 @@ Template.editTemplate.events({
 
     var key = this.key;
     var instance = Template.currentData().value || Template.currentData();
-    var constructorName = instance.constructor.constructorName;
+    var constructorName = this.type.replace(/Collection_/g, '');
     var listItems = ReactiveConstructors[ constructorName ].getCreatableTypes( key, instance );
 
     listItems = listItems.concat( ReactiveConstructors[ constructorName ].getLinkableInstances( instance, key ) );

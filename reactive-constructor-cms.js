@@ -18,6 +18,11 @@ ReactiveConstructorCmsPlugin = new ReactiveConstructorPlugin({
 
 		// Method for returning the type of an item as a string.
 		var getTypeOfStructureItem = function ( item ) {
+
+			// Is is a reactive constructor?
+			// Return the constructor name!
+			if (item.constructorName)
+				return item.constructorName;
 			
 			// Does the item actaully have a name?
 			// Then it's probably a String or a Number or a Boolean, return it
