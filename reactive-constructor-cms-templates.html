@@ -99,33 +99,46 @@
 		<h2>
 
 			{{#if isLinkedInstance }}
-				Linked: 
+				{{ key }}
+				<span class="reactive-constructor-cms-constructor-name">
+					links to:
+				</span>
+				<a class="reactive-constructor-cms-open-child-instance">
+					{{ getType }}
+				</a>
+			{{else}}
+				{{ getType }}
 			{{/if}}
-			
-			{{ getType }}
+
 			<span class="reactive-constructor-cms-constructor-name">
 				{{ constructorName }}
 			</span>
+
+			<span class="rc-cms-links">
 			
-			<a class="reactive-constructor-cms-remove-collection-item">
-				Remove
-			</a>
-			<a class="reactive-constructor-cms-duplicate-collection-item">
-				Duplicate
-			</a>
-			<a class="reactive-constructor-cms-open-child-instance">
-				Open
-			</a>
-
-			{{#if isSingleInstance }}
-				<a class="reactive-constructor-cms-remove-nested-instance">
-					Remove instance
+				<a class="reactive-constructor-cms-remove-collection-item">
+					Remove
 				</a>
-			{{/if}}
 
-			<a class="reactive-constructor-cms-relink-nested-instance">
-				Change
-			</a>
+				<a class="reactive-constructor-cms-duplicate-collection-item">
+					Duplicate
+				</a>
+
+				<a class="reactive-constructor-cms-open-child-instance">
+					Open
+				</a>
+
+				{{#if isSingleInstance }}
+					<a class="reactive-constructor-cms-remove-nested-instance">
+						Remove instance
+					</a>
+				{{/if}}
+
+				<a class="reactive-constructor-cms-relink-nested-instance">
+					Change
+				</a>
+
+			</span>
 
 		</h2>
 
@@ -158,15 +171,29 @@
 
 		<div class="wrapper__buttons">
 
+			<div class="reactive-constructor-cms__msgs">
+				{{> msgs }}
+			</div>
+
 			{{#if canBeSaved }}
 
-				<button class="reactive-constructor-cms-publish-button">Publish</button>
-				<button class="reactive-constructor-cms-save-draft-button">Save draft</button>
-				<button class="reactive-constructor-cms-duplicate-button">Duplicate</button>
-				<button class="reactive-constructor-cms-remove-button">Remove</button>
+				<button class="reactive-constructor-cms-publish-button">
+					Publish
+				</button>
+				<button class="reactive-constructor-cms-save-draft-button">
+					Save draft
+				</button>
+				<button class="reactive-constructor-cms-duplicate-button">
+					Duplicate
+				</button>
+				<button class="reactive-constructor-cms-remove-button">
+					Remove
+				</button>
 
 			{{/if}}
-			<button class="reactive-constructor-cms-close-button">Close</button>
+			<button class="reactive-constructor-cms-close-button">
+				Close
+			</button>
 
 		</div>
 

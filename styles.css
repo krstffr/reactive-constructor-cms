@@ -45,6 +45,7 @@
 .reactive-constructor-cms-wrapper .wrapper__editable-fields{
 	height: 100%;
 	overflow: auto;
+	padding-bottom: 2em;
 }
 
 .reactive-constructor-cms-wrapper .wrap {
@@ -85,26 +86,24 @@
 	display: inline-block;
 }
 
-.reactive-constructor-cms-wrapper > .wrapper__editable-fields > .wrap > h2 a {
+.reactive-constructor-cms-wrapper > .wrapper__editable-fields > .wrap > h2 .rc-cms-links a {
 	display: none;
 }
 
-.reactive-constructor-cms-wrapper .wrap > h2 a {
+.reactive-constructor-cms-wrapper a{
+	cursor: pointer;
+}
+.reactive-constructor-cms-wrapper a:hover{
+	color: #8ED8B6;
+}
+
+
+.reactive-constructor-cms-wrapper .wrap > h2 .rc-cms-links a {
 	display: inline-block;
   float: right;
   font-size: 0.6em;
   line-height: 2.1;
   margin-left: 1em;
-}
-
-.reactive-constructor-cms-wrapper .wrap h2,
-.reactive-constructor-cms-wrapper .wrap h3 {
-  padding: 0 0 0.6em;
-  margin: 0;
-}
-
-.reactive-constructor-cms-wrapper .wrap h3 {
-	text-align: center;
 }
 
 .reactive-constructor-cms-wrapper label {
@@ -159,13 +158,38 @@
 }
 
 .reactive-constructor-cms-wrapper .wrapper__buttons button {
-	width: 25%;
+	width: 20%;
 	float: left;
+	border-right: 1px solid;
+}
+.reactive-constructor-cms-wrapper .wrapper__buttons button:last-child {
+	border-right: none;
 }
 
 .reactive-constructor-cms-wrapper .reactive-constructor-cms-constructor-name,
 .reactive-constructor-cms-wrapper .reactive-constructor-cms-input-value-type{
 	opacity: 0.35;
+	font-weight: normal;
+}
+
+.reactive-constructor-cms-wrapper h2,
+.reactive-constructor-cms-wrapper h3{
+	padding: 0 0 0.6em;
+  margin: 0;
+}
+
+.reactive-constructor-cms-wrapper h2{
+	font-size: 1.6em;
+	font-weight: bold;
+}
+.reactive-constructor-cms-wrapper .wrap .wrap h2{
+	font-size: 1.3em;
+}
+
+.reactive-constructor-cms-wrapper h3 {
+	font-size: 1.2em;
+	font-weight: normal;
+	text-align: center;
 }
 
 .reactive-constructor-cms-select-overview{
@@ -206,3 +230,21 @@
 	background: black;
 	opacity: 0.4;
 }
+
+.reactive-constructor-cms__msgs .msgs__message{
+	background: white;
+	text-align: center;
+	margin: 5px;
+	padding: 0.7em;
+	color: black;
+	font-weight: bold;
+	border: 1px solid;
+}
+.reactive-constructor-cms__msgs .msgs__message--rc-cms__message--success{
+	color: #8ED8B6;
+}
+.reactive-constructor-cms__msgs .msgs__message--rc-cms__message--error{
+	color: #D88EB6;
+}
+				
+				

@@ -12,6 +12,7 @@ Package.onUse(function (api) {
 		"templating",
 		"reactive-var@1.0.4",
 		"krstffr:reactive-constructor@1.1.0-alpha-3",
+		"krstffr:msgs@0.0.6",
 		"mizzao:jquery-ui@1.11.2",
     "stevezhu:lodash@1.0.2"
 		], "client");

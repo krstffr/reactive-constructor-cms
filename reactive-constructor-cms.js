@@ -138,9 +138,16 @@ ReactiveConstructorCmsPlugin = new ReactiveConstructorPlugin({
 			if ( !this.getCollection() )
 				throw new Meteor.Error('reactive-constructor-cms', 'No collection defined for: ' + passedClass.constructorName );
 
+			var firstMessage = Msgs.addMessage('Saving…', 'rc-cms__message--info');
+
 			return Meteor.call('reactive-constructor-cms/save', this.getDataAsObject(), passedClass.constructorName, saveOptions, function(err, res) {
-				if ( res )
+				if (err)
+					return Msgs.addMessage( err.reason, 'rc-cms__message--error');
+				if ( res ){
+					Msgs.removeMessage( firstMessage );
+					Msgs.addMessage('Saved!', 'rc-cms__message--success');
 					ReactiveConstructorCmsPlugin.updateGlobalInstanceStore();
+				}
 				if ( callback )
 					return callback( res, err );
 				return true;
@@ -309,7 +316,7 @@ ReactiveConstructorCmsPlugin = new ReactiveConstructorPlugin({
 ReactiveConstructorCmsPlugin.checkReactiveValueType = function( passedValue, currentTypeToCheck, ordinaryCheckReactiveValueType ) {
 
 	// Make sure the correct values are passed
-	if (!passedValue || !currentTypeToCheck)
+	if (passedValue === undefined || !currentTypeToCheck)
 		throw new Meteor.Error('reactive-constructor-cms', 'No value passed to ReactiveConstructorCmsPlugin.checkReactiveValueType()');
 
 	check( ordinaryCheckReactiveValueType, Function );

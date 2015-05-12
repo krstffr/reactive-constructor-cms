@@ -110,6 +110,7 @@ Template.editTemplate.helpers({
   // This helper decides if the list of values for this instance should be shown or not.
   // This is right now used for not showing fields of linked DB docs.
   isLinkedInstance: function() {
+    console.log( this );
     // All values in this array should be tested
     var testValues = [ this.type ];
     // If we also have a this.value.type field, add it to the check
@@ -214,7 +215,7 @@ Template.editTemplate__wrapper.events({
     var instance = this;
     return instance.save({ duplicate: true }, function( res ) {
       if ( res.edit ){
-        var createdInstance = ReactiveConstructorCmsPlugin.getInstanceByTypeAndId( instance.constructor.name, res.edit.insertedId );
+        var createdInstance = ReactiveConstructorCmsPlugin.getInstanceByTypeAndId( instance.constructor.constructorName, res.edit.insertedId );
         return ReactiveConstructorCmsPlugin.editPageGet( createdInstance );
       }
     });
@@ -263,17 +264,22 @@ Template.editTemplate.events({
 
       // This is the current list item
       var listItem = $(e.currentTarget).closest('.wrap');
+      
       // This is the current list item's position in the list.
       // This is used later when setting the new position of the substituted instance
       var listItemPosition = listItem.index();
+      
       // This is the key for the list. Used for updating the list (selecting the list)
       contextKey = Blaze.getData( listItem.closest('.collection__items')[0] ).key;
+      
       // This is the parent, which is what get's updated
       parentInstance = Blaze.getData( listItem.closest('.collection').closest('.wrap')[0] );
+
+      parentInstance = parentInstance.value || parentInstance;
+
       // This is the constructor name. Depending on if it's a linked instance or an
       // "ordinary" instance this will be stored in different places
-      return console.log( this );
-      constructorName = this.constructorName || parentInstance.constructor.constructorName;
+      constructorName = this.constructorName || this.constructor.constructorName;
 
       // These are the listItems which the user can use among for this key.
       listItems = ReactiveConstructors[ constructorName ].getCreatableTypes( contextKey, parentInstance );
