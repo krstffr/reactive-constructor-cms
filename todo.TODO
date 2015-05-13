@@ -4,6 +4,8 @@
    They won't match client/server since they for some reason don't get minified on the server (even if they did they probably would not get the same minified name?)
    Should work now right??
 
+ ☐ BUG: 1. Create new person 2. Add three different linked object 3. Drag the top object downwards. 4. WONT UPDATE or will update in a buggy way!
+
  ☐ Ability to "unpublish" documents
    Mauybe you have a couple of webpages, and you notice that one of the pages is NOT supposed to be live yet. You need to be able to remove the live version!
  
@@ -14,11 +16,11 @@
    Avoid silly inputs and stuff. Just type away!
    Maybe a little helper which the user can embed anywhere he likes (which contains the contents field of the reactive field), and whenever the user updates this (through blur event on the content editable field) the part will be updated in the actual instance??
 
- ☐ Add status messages
+ ✔ Add status messages @done (15-05-12 16:38)
    After save/delete etc.
    krstffr:msgs
  
- ☐ Make a decision: should it be draggable or not??
+ ✔ Make a decision: should it be draggable or not?? @done (15-05-12 16:38)
    Yes it probably should?
    
  ☐ Keydown update of value (without messing with the input!)

@@ -21,7 +21,7 @@
 </template>
 
 <template name="editTemplate__noReactiveInstanceSet">
-	<label>
+	<label title="{{ key }}">
 		{{> editTemplate__labelString }}
 		<button class="reactive-constructor-cms-create-new-instance">
 			Create new {{ key }}
@@ -38,7 +38,7 @@
 
 <template name="editTemplate__String">
 	
-	<label>
+	<label title="{{ key }}">
 		{{> editTemplate__labelString }}
 		<input type="text" value="{{ value }}">
 	</label>
@@ -47,7 +47,7 @@
 
 <template name="editTemplate__Textarea">
 	
-	<label>
+	<label title="{{ key }}">
 		{{> editTemplate__labelString }}
 		<textarea>{{ value }}</textarea>
 	</label>
@@ -56,7 +56,7 @@
 
 <template name="editTemplate__Boolean">
 
-	<label>
+	<label title="{{ key }}">
 		{{> editTemplate__labelString }}
 		<select class="reactive-constructor-cms-bool-select">
 				<option value="true" selected="{{#if equals value true }}selected{{/if}}">True</option>
@@ -68,11 +68,15 @@
 
 <template name="editTemplate__Collection">
 
+	<label title="{{ key }}">
+		{{> editTemplate__labelString }}
+	</label>
+
 	<div class="collection">
 
-		<h3>
+		<!-- <h3>
 			{{ key }}
-		</h3>
+		</h3> -->
 
 		<div class="collection__items">
 
@@ -116,14 +120,6 @@
 
 			<span class="rc-cms-links">
 			
-				<a class="reactive-constructor-cms-remove-collection-item">
-					Remove
-				</a>
-
-				<a class="reactive-constructor-cms-duplicate-collection-item">
-					Duplicate
-				</a>
-
 				<a class="reactive-constructor-cms-open-child-instance">
 					Open
 				</a>
@@ -131,6 +127,14 @@
 				{{#if isSingleInstance }}
 					<a class="reactive-constructor-cms-remove-nested-instance">
 						Remove instance
+					</a>
+				{{else}}
+					<a class="reactive-constructor-cms-remove-collection-item">
+						Remove
+					</a>
+
+					<a class="reactive-constructor-cms-duplicate-collection-item">
+						Duplicate
 					</a>
 				{{/if}}
 

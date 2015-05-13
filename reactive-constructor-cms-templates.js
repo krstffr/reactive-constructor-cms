@@ -110,7 +110,6 @@ Template.editTemplate.helpers({
   // This helper decides if the list of values for this instance should be shown or not.
   // This is right now used for not showing fields of linked DB docs.
   isLinkedInstance: function() {
-    console.log( this );
     // All values in this array should be tested
     var testValues = [ this.type ];
     // If we also have a this.value.type field, add it to the check

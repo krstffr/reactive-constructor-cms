@@ -56,19 +56,21 @@
 
 .reactive-constructor-cms-wrapper .wrap .collection,
 .reactive-constructor-cms-wrapper .wrap > .wrap {
-	background: rgba(220, 220, 255, 0.1);
-	padding: 1em 0.5em 0.5em;
-	margin: 0.7em 0;
+	background: rgba(220, 235, 255, 0.15);
+	padding: 0.5em;
+	margin: 0;
+	border-bottom: 1px dashed rgba(255,255,255,0.15);
+}
+
+.reactive-constructor-cms-wrapper .wrap > .wrap {
+	padding: 1.15em 1em 0.2em;
 }
 
 .reactive-constructor-cms-wrapper .wrap .collection__items > .wrap {
 	background: #112;
-	padding: 1.2em 0.7em 0.7em;
+	padding: 1.2em 0.7em 0.3em;
 	margin: 0;
-}
-
-.reactive-constructor-cms-wrapper .wrap .collection__items > .wrap + .wrap {
-	border-top: 1px dashed #333;
+	border-bottom: 0.2em solid rgba(220, 235, 255, 0.3);
 }
 
 .reactive-constructor-cms-wrapper .wrap .collection button {
@@ -110,11 +112,21 @@
 	display: inline-block;
 	width: 100%;
 	overflow: hidden;
+	padding: 0.45em 0 0.35em;
+}
+
+.reactive-constructor-cms-wrapper label + label {
+	border-top: 1px dashed rgba(255,255,255,0.15);
 }
 
 .reactive-constructor-cms-wrapper label span {
 	padding: 0.4em 0 0;
 	display: inline-block;
+	max-width: 28%;
+	text-overflow: ellipsis;
+  /* Required for text-overflow to do anything */
+  white-space: nowrap;
+  overflow: hidden;
 }
 
 .reactive-constructor-cms-wrapper button {
