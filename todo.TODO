@@ -92,6 +92,9 @@
  
  ☐ Saving of "parent" instance, when editing a child instance
    ☐ Also a "go to parent" button?
+ 
+ ☐ An expand/hide button for all listde instances?
+   To unclutter the UI a bit!
 ＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿
 Archive:
  ✔ When trying to set a value (from blur right now), don't try to set undefined values! Or: unset when trying that? @done (15-05-06 08:31)
