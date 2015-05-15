@@ -473,6 +473,9 @@ ReactiveConstructorCmsPlugin.getSelectListOverview = function( listItems, constr
     }
   };
 
+  // Remove any existing templates!
+	overviewSelectData.removeTemplateCallback();
+
   // If there is only on selectable item, just create an instance from that!
   if ( listItems.length === 1 )
     return overviewSelectData.callback( listItems[0] );

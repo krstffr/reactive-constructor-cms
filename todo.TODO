@@ -83,6 +83,8 @@
 
  ☐ Change name of .type to .contstructorName, since that what it is (cause infinite loop right now though!)
 
+ ✔ When adding a new "select" overview, remove existing! @done (15-05-15 15:28)
+
  ☐ Setting of dates, don't seem to work?
 
  ☐ Ability to define how "deep" nested objects should run.

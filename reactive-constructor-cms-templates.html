@@ -97,15 +97,20 @@
 </template>
 
 <template name="editTemplate">
+	
+	{{#if isSingleInstance }}
+		<label title="{{ key }}">
+			{{> editTemplate__labelString }}
+		</label>
+	{{/if}}
 
 	<div class="wrap">
 
 		<h2>
 
 			{{#if isLinkedInstance }}
-				{{ key }}
 				<span class="reactive-constructor-cms-constructor-name">
-					links to:
+					{{ key }} links to:
 				</span>
 				<a class="reactive-constructor-cms-open-child-instance">
 					{{ getType }}
