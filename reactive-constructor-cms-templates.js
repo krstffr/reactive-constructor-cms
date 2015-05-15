@@ -226,6 +226,21 @@ Template.editTemplate__wrapper.onRendered(function() {
 });
 
 Template.editTemplate.events({
+  'click .reactive-constructor-cms-move-collection-item': function( e ) {
+
+    e.stopImmediatePropagation();
+
+    var clickedBtn = $( e.currentTarget );
+    var moveTo = (clickedBtn.data('move') === 'up') ? -1 : 1;
+    var listItem = $(e.currentTarget).closest('.wrap');
+    var context = Blaze.getData( listItem.closest('.collection__items')[0] );
+    var parentInstance = Blaze.getData( listItem.closest('.collection').closest('.wrap')[0] );
+
+    parentInstance = parentInstance.value || parentInstance;
+
+    return parentInstance.arrayitemMove( context.key, listItem.index()+(moveTo), listItem.index() );
+
+  },
   'click .reactive-constructor-cms-relink-nested-instance': function( e ) {
 
     if (!confirm('Are you sure you want to switch this item for a new one?'))

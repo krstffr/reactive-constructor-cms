@@ -82,13 +82,22 @@ ReactiveConstructorCmsPlugin = new ReactiveConstructorPlugin({
 		// (an array in the reactive object, found from the passed key)
 		// Has test: ✔
 		passedClass.prototype.arrayitemMove = function ( listKey, newIndex, oldIndex ) {
+			
 			// If new and old index are the same, just return true
 			if (newIndex === oldIndex)
 				return true;
+			
 			var instance = this;
+			
 			// Get the array…
 			var arr = instance.getReactiveValue( listKey );
 			check( arr, Array );
+			
+			// Is the move within the size of the array?
+			// If not: return true!
+			if (newIndex < 0 || newIndex > (arr.length-1))
+				return true;
+
 			// …move the item…
 			arr.splice( newIndex, 0, arr.splice( oldIndex, 1 )[0] );
 			// …and update the array.

@@ -39,7 +39,7 @@
      ☐ No router!!
      ☐ Maybe the user can add a {{> HERE }} wherever she wants to have it?
 
- ☐ Buttons for move up/down
+ ✔ Buttons for move up/down @done (15-05-15 15:18)
    Sometimes easier than dragging and dropping
 
  ☐ Fetching of data from DB
