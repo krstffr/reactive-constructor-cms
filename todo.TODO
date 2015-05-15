@@ -4,7 +4,8 @@
    They won't match client/server since they for some reason don't get minified on the server (even if they did they probably would not get the same minified name?)
    Should work now right??
 
- ☐ BUG: 1. Create new person 2. Add three different linked object 3. Drag the top object downwards. 4. WONT UPDATE or will update in a buggy way!
+ ✔ BUG: 1. Create new person 2. Add three different linked object 3. Drag the top object downwards. 4. WONT UPDATE or will update in a buggy way! @done (15-05-15 15:06)
+   So the bug is in that the view of the CMS is not updating. Other views do update.
 
  ☐ Ability to "unpublish" documents
    Mauybe you have a couple of webpages, and you notice that one of the pages is NOT supposed to be live yet. You need to be able to remove the live version!
@@ -30,12 +31,16 @@
    Probably add them at that stage right??
 
  ☐ Images overview. Or overview with image previews.
+   Probably create switch button which toggles view between LIST or OVERVIEW, where OVERIEW have image previews as well (taken from a previewImg field?)
 
  ☐ Main UI! 
    ☐ The look and feel of this thing. 
    ☐ Also: how does the user reach the UI?
      ☐ No router!!
      ☐ Maybe the user can add a {{> HERE }} wherever she wants to have it?
+
+ ☐ Buttons for move up/down
+   Sometimes easier than dragging and dropping
 
  ☐ Fetching of data from DB
    ☐ UI

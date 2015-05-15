@@ -339,9 +339,9 @@ Tinytest.add('ReactiveConstructorCmsPlugin instance methods - instance.arrayitem
 
 });
 
-Tinytest.add('ReactiveConstructorCmsPlugin instance methods - instance.arrayitemMove()', function(test) {
+Tinytest.addAsync('ReactiveConstructorCmsPlugin instance methods - instance.arrayitemMove()', function(test, next) {
 	
-	var person = new Person({ rcType: 'husband', buddies: [{}, { name: 'john' }, {}]});
+	var person = new Person({ rcType: 'husband', buddies: [{ name: 'mr. first' }, { name: 'john' }, {}]});
 	var buddies = person.getReactiveValue('buddies');
 
 	test.equal( buddies[1].getReactiveValue('name'), 'john');
@@ -351,30 +351,47 @@ Tinytest.add('ReactiveConstructorCmsPlugin instance methods - instance.arrayitem
 	// Move John! Now he should be at place 2 instead of 1
 	person.arrayitemMove( 'buddies', 2, 1 );
 
-	test.notEqual( buddies[1].getReactiveValue('name'), 'john');
-	test.equal( buddies[2].getReactiveValue('name'), 'john');
-	test.equal( buddies.length, 3 );
+	Meteor.setTimeout(function() {
+		test.notEqual( buddies[1].getReactiveValue('name'), 'john');
+		test.equal( buddies[2].getReactiveValue('name'), 'john');
+		test.equal( buddies.length, 3 );
+		test.equal( buddies[0].getReactiveValue('name'), 'mr. first');
 
-	test.throws(function() {
-		// 'wife' is not an array, so it should throw an error
-		person.arrayitemMove( 'wife', 1 );
-	});
+		Meteor.setTimeout(function() {
+			person.arrayitemMove( 'buddies', 0, 1 );
 
-	var buddy = buddies[1];
-	buddy.setReactiveValue('children', [
-		new Person({ name: 'johns daughter'}),
-		new Person({ name: 'johs son' })
-		]);
+			test.notEqual( buddies[0].getReactiveValue('name'), 'mr. first');
+			test.equal( buddies[1].getReactiveValue('name'), 'mr. first');
 
-	test.equal( buddy.getReactiveValue('children')[0].getReactiveValue('name'), 'johns daughter');
-	test.notEqual( buddy.getReactiveValue('children')[1].getReactiveValue('name'), 'johns daughter');
-	test.equal( buddy.getReactiveValue('children')[1].getReactiveValue('name'), 'johs son');
-	test.equal( buddy.getReactiveValue('children').length, 2 );
+			test.throws(function() {
+				// 'wife' is not an array, so it should throw an error
+				person.arrayitemMove( 'wife', 1 );
+			});
 
-	buddy.arrayitemMove('children', 0, 1);
-	test.equal( buddy.getReactiveValue('children')[1].getReactiveValue('name'), 'johns daughter');
-	test.equal( buddy.getReactiveValue('children')[0].getReactiveValue('name'), 'johs son');
-	test.equal( buddy.getReactiveValue('children').length, 2 );
+			var buddy = buddies[1];
+			buddy.setReactiveValue('children', [
+				new Person({ name: 'johns daughter'}),
+				new Person({ name: 'johs son' })
+				]);
+
+			test.equal( buddy.getReactiveValue('children')[0].getReactiveValue('name'), 'johns daughter');
+			test.notEqual( buddy.getReactiveValue('children')[1].getReactiveValue('name'), 'johns daughter');
+			test.equal( buddy.getReactiveValue('children')[1].getReactiveValue('name'), 'johs son');
+			test.equal( buddy.getReactiveValue('children').length, 2 );
+			
+			buddy.arrayitemMove('children', 0, 1);
+
+			Meteor.setTimeout(function() {
+
+				test.equal( buddy.getReactiveValue('children')[1].getReactiveValue('name'), 'johns daughter');
+				test.equal( buddy.getReactiveValue('children')[0].getReactiveValue('name'), 'johs son');
+				test.equal( buddy.getReactiveValue('children').length, 2 );
+
+				next();
+
+			}, 5);
+		}, 5);
+	}, 5);	
 
 });
 

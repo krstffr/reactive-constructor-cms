@@ -82,13 +82,22 @@ ReactiveConstructorCmsPlugin = new ReactiveConstructorPlugin({
 		// (an array in the reactive object, found from the passed key)
 		// Has test: ✔
 		passedClass.prototype.arrayitemMove = function ( listKey, newIndex, oldIndex ) {
+			// If new and old index are the same, just return true
+			if (newIndex === oldIndex)
+				return true;
+			var instance = this;
 			// Get the array…
-			var arr = this.getReactiveValue( listKey );
+			var arr = instance.getReactiveValue( listKey );
 			check( arr, Array );
 			// …move the item…
 			arr.splice( newIndex, 0, arr.splice( oldIndex, 1 )[0] );
 			// …and update the array.
-			return this.setReactiveValue( listKey, arr );
+			// This extra "reset" to an empty array is because the DOM would not 
+			// update correctly sometimes with complex nested instances.
+			instance.setReactiveValue( listKey, [] );
+			return _.defer(function(){
+				return instance.setReactiveValue( listKey, arr );
+			});
 		};
 
 		// Method for duplicating an item in an array,
