@@ -107,7 +107,8 @@ Meteor.startup(function() {
 				type: 'dog',
 				fields: {
 					name: String,
-					hungry: Boolean
+					hungry: Boolean,
+					owner: Person
 				}
 			}]
 		};
@@ -486,6 +487,23 @@ Tinytest.add('ReactiveConstructorCmsPlugin instance methods - instance.canBeSave
 
 });
 
+Tinytest.add('ReactiveConstructorCmsPlugin instance methods - instance.filterCreatableTypes()', function(test) {
+
+	var testPerson = new Person({ rcType: 'husband' });
+	var testAnimal = new Animal();
+	var listOfPersons = [ new Person({ rcType: 'wife' }), new Person({ rcType: 'worker' }), new Person({ rcType: 'husband' })];
+
+	// One person can be wife…
+	test.equal( testPerson.filterCreatableTypes( 'wife', listOfPersons, 'rcType' ).length, 1 );
+	// …two can be buddies…
+	test.equal( testPerson.filterCreatableTypes( 'buddies', listOfPersons, 'rcType' ).length, 2 );
+	// …and all three can be owners…
+	test.equal( testAnimal.filterCreatableTypes( 'owner', listOfPersons, 'rcType' ).length, 3 );
+	// …as well as the testPerson
+	test.equal( testAnimal.filterCreatableTypes( 'owner', [testPerson], 'rcType' ).length, 1 );
+
+});
+
 Tinytest.add('ReactiveConstructorCmsPlugin constructor methods - getCreatableTypes()', function(test) {
 
 	// Return all when no instance is passed
@@ -703,7 +721,7 @@ Tinytest.addAsync('ReactiveConstructorCmsPlugin async - instance.deleteInstance(
 
 });
 
-Tinytest.addAsync('ReactiveConstructorCmsPlugin async - Person.getLinkableInstances()', function(test, next) {
+Tinytest.addAsync('ReactiveConstructorCmsPlugin async - instance.getLinkableInstances()', function(test, next) {
 
 	startSubscription(function() {
 
@@ -763,7 +781,7 @@ Tinytest.addAsync('ReactiveConstructorCmsPlugin async - Person.getLinkableInstan
 
 		});
 
-});
+	});
 
 });
 

@@ -233,19 +233,18 @@ ReactiveConstructorCmsPlugin = new ReactiveConstructorPlugin({
 				return item._id === instance.getReactiveValue('_id');
 			});
 
-			return passedClass.filterCreatableTypes( key, items, instance, 'rcType' );
+			return instance.filterCreatableTypes( key, items, 'rcType' );
 
 		};
 
 		// Method for filtering a list of types by types defined for the instance
-		passedClass.filterCreatableTypes = function( key, typeNames, instance, typeNameKey ) {
+		// Has test: ✔
+		passedClass.prototype.filterCreatableTypes = function( key, typeNames, typeNameKey ) {
 
 			// Make sure typeNames are passed
 			check( typeNames, Array );
 
-			// Make sure an instance is passed
-			if (!instance)
-				throw new Meteor.Error('reactive-constructor-cms', 'No instance passed to '+passedClass.constructorName+' filterCreatableTypes()');
+			var instance = this;
 
 			// Check if this instance type has any filter
 	    var instanceCmsOptions = instance.getInstanceCmsOptions();
@@ -279,7 +278,7 @@ ReactiveConstructorCmsPlugin = new ReactiveConstructorPlugin({
 
 	    // If no instance is passed, just return all the type names
 	    if (instance)
-	    	return passedClass.filterCreatableTypes( key, typeNames, instance, 'value' );
+	    	return instance.filterCreatableTypes( key, typeNames, 'value' );
 	    
 	    return typeNames;
 
