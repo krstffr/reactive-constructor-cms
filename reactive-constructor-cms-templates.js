@@ -266,7 +266,7 @@ Template.editTemplate.events({
       constructorName = this.type.replace(/Collection_/g, '');
       // Get all list items which the user can choose from.
       listItems = ReactiveConstructors[ constructorName ].getCreatableTypes( key, parentInstance );
-      listItems = listItems.concat( ReactiveConstructors[ constructorName ].getLinkableInstances( parentInstance, key ) );
+      listItems = listItems.concat( parentInstance.getLinkableInstances( key ) );
 
       return ReactiveConstructorCmsPlugin.getSelectListOverview( listItems, constructorName, key, function( newItem, instance, key ) {
         return instance.setReactiveValue( key, newItem );
@@ -298,7 +298,7 @@ Template.editTemplate.events({
       // These are the listItems which the user can use among for this key.
       listItems = ReactiveConstructors[ constructorName ].getCreatableTypes( contextKey, parentInstance );
       // Also add all linkable instances
-      listItems = listItems.concat( ReactiveConstructors[ constructorName ].getLinkableInstances( parentInstance, contextKey ) );
+      listItems = listItems.concat( parentInstance.getLinkableInstances( contextKey ) );
 
       return ReactiveConstructorCmsPlugin.getSelectListOverview( listItems, constructorName, contextKey, function( newItem, instance, key ) {
         
@@ -380,11 +380,11 @@ Template.editTemplate.events({
     e.stopImmediatePropagation();
 
     var instance = Template.currentData().value || Template.currentData();
-    var constructorName = this.type.replace(/Collection_/g, '');;
+    var constructorName = this.type.replace(/Collection_/g, '');
     var key = this.key;
     var listItems = ReactiveConstructors[ constructorName ].getCreatableTypes( key, instance );
 
-    listItems = listItems.concat( ReactiveConstructors[ constructorName ].getLinkableInstances( instance, key ) );
+    listItems = listItems.concat( instance.getLinkableInstances( key ) );
 
     return ReactiveConstructorCmsPlugin.getSelectListOverview( listItems, constructorName, key, function( newItem, instance, key ) {
       return instance.setReactiveValue( key, newItem );
@@ -401,7 +401,7 @@ Template.editTemplate.events({
     var constructorName = this.type.replace(/Collection_/g, '');
     var listItems = ReactiveConstructors[ constructorName ].getCreatableTypes( key, instance );
 
-    listItems = listItems.concat( ReactiveConstructors[ constructorName ].getLinkableInstances( instance, key ) );
+    listItems = listItems.concat( instance.getLinkableInstances( key ) );
 
     return ReactiveConstructorCmsPlugin.getSelectListOverview( listItems, constructorName, key, function( newItem, instance, key ) {
       var items = instance.getReactiveValue( key );

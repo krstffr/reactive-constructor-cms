@@ -213,17 +213,16 @@ ReactiveConstructorCmsPlugin = new ReactiveConstructorPlugin({
 		// Method for returning all current instances (from the DB)
 		// which can be added to a one of this instances' fields (by key)
 		// Has test: ✔
-		passedClass.getLinkableInstances = function( instance, key ) {
+		passedClass.prototype.getLinkableInstances = function( key ) {
 
-			if (!instance)
-				throw new Meteor.Error('reactive-constructor-cms', 'No instance passed to '+passedClass.constructorName+' getLinkableInstances()');
+			check( key, String );
 
-			if (!key)
-				throw new Meteor.Error('reactive-constructor-cms', 'No key passed to '+passedClass.constructorName+' getLinkableInstances()');
+			var instance = this;
+			var constructorName = instance.getConstructorNameOfKey( key );
 
 			// Get the object which holds all instances (in the items fields)
 			// If there is no object, or no items-field, there are no items and return false
-			var instanceHolder = _.findWhere( ReactiveConstructorCmsPlugin.getGlobalInstanceStore(), { constructorName: passedClass.constructorName });
+			var instanceHolder = _.findWhere( ReactiveConstructorCmsPlugin.getGlobalInstanceStore(), { constructorName: constructorName });
 			if (!instanceHolder || !instanceHolder.items)
 				return [];
 

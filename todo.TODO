@@ -1,28 +1,9 @@
 
- ✔ MINIFICATION and names of constrcutors!!!! @done (15-05-12 16:15)
-   This is really fucking annoying.
-   They won't match client/server since they for some reason don't get minified on the server (even if they did they probably would not get the same minified name?)
-   Should work now right??
-
- ✔ BUG: 1. Create new person 2. Add three different linked object 3. Drag the top object downwards. 4. WONT UPDATE or will update in a buggy way! @done (15-05-15 15:06)
-   So the bug is in that the view of the CMS is not updating. Other views do update.
-
  ☐ Ability to "unpublish" documents
    Mauybe you have a couple of webpages, and you notice that one of the pages is NOT supposed to be live yet. You need to be able to remove the live version!
  
  ☐ Ability to go back to older backups
    Check that saving etc. works the way it should also when going back.
-
- ☐ COULD contendeditable in tandem with Blaze.getDate() be something to explore??
-   Avoid silly inputs and stuff. Just type away!
-   Maybe a little helper which the user can embed anywhere he likes (which contains the contents field of the reactive field), and whenever the user updates this (through blur event on the content editable field) the part will be updated in the actual instance??
-
- ✔ Add status messages @done (15-05-12 16:38)
-   After save/delete etc.
-   krstffr:msgs
- 
- ✔ Make a decision: should it be draggable or not?? @done (15-05-12 16:38)
-   Yes it probably should?
    
  ☐ Keydown update of value (without messing with the input!)
 
@@ -32,6 +13,7 @@
 
  ☐ Images overview. Or overview with image previews.
    Probably create switch button which toggles view between LIST or OVERVIEW, where OVERIEW have image previews as well (taken from a previewImg field?)
+   See the "Fetching of data from DB>UI" below!
 
  ☐ Main UI! 
    ☐ The look and feel of this thing. 
@@ -39,12 +21,10 @@
      ☐ No router!!
      ☐ Maybe the user can add a {{> HERE }} wherever she wants to have it?
 
- ✔ Buttons for move up/down @done (15-05-15 15:18)
-   Sometimes easier than dragging and dropping
-
  ☐ Fetching of data from DB
    ☐ UI
      ☐ Make is a list instead of buttons! See the problem which arose in Matryoshka. Not good!
+     ☐ Make two different views of this, one with images, one list view
    ☐ How to handle the "problem" of getting a DB object in multiple places, which created multiple instances of the same data?
       Keep it all in one place as defined by the plugin? Sort of like a global place for all reactive instances fetched from this plugin?
       ☐ Now there is a method for this, just pass constructor name and _id. Works right??
@@ -53,50 +33,61 @@
  
  ☐ Global filter method for filtering in lists etc.
 
- ☐ Ability to filter for specific type (within a constructor) when defining what can be "nested" in an instance. For example: maybe a pagePart only should be able to have nested pagePart->images, and not pagePart->menuItems. Etc.
-   ☐ This works right? A Person->Husband can have a wife of type Person->Wife?
-
  ☐ Handling of various input types, text/textarea/disabled/select etc.
    ☐ Setting of global (override) of input types (for all types!), such as texareas!
-   ✔ Textarea @done (15-05-08 13:20)
    ☐ Select
    ☐ Disabled
    ☐ Select boxes: this needs extra special attention I guess?
 
  ☐ What's the best way to get the current data context in the blur/update value event? Right now using Template.currentData() which means we have to add this event and method to every unique template we might come up with. Not cool!
 
- ☐ How to handle nested "pure" objects? Should that even be allowed? NAH. Not in the CMS! Or? Maybe…
-
- ✔ Only show delete button for docs which are actually saved to DB (not new ones…) (Changed this to only show save/duplicate etc. for docs which can be saved!) @done (15-05-08 16:34)
-
  ☐ Handle links to existing DB objects
-   ✔ Updating the link @done (15-05-08 15:58)
-   ✔ How to display the object in the parent? The fields really are of no use for the user? @done (15-05-08 16:20)
-     Probably show the name of the linked instance!
    ☐ What doc to link to? Probably something like this:
      Show all published docs in the list.
      Use the mainId when doing the actual link.
      Use the publish/mainId when fetching the doc.
      Use the mainId when getting the actual edit-doc for editing.
 
- ☐ Nested list (array) instances with it's own nested lists looks MESSY. Too much going on.
-
  ☐ Change name of .type to .contstructorName, since that what it is (cause infinite loop right now though!)
-
- ✔ When adding a new "select" overview, remove existing! @done (15-05-15 15:28)
-
- ☐ Setting of dates, don't seem to work?
-
- ☐ Ability to define how "deep" nested objects should run.
-   ☐ Maybe a "load more" button? Or the "go to" ability mentioned above?
  
  ☐ Saving of "parent" instance, when editing a child instance
    ☐ Also a "go to parent" button?
- 
+
+Not prio:
+ ☐ Setting of dates, don't seem to work?
+ ☐ Ability to define how "deep" nested objects should run.
+   ☐ Maybe a "load more" button? Or the "go to" ability mentioned above?
  ☐ An expand/hide button for all listde instances?
    To unclutter the UI a bit!
+ ☐ Nested list (array) instances with it's own nested lists looks MESSY. Too much going on.
+ ☐ How to handle nested "pure" objects? Should that even be allowed? NAH. Not in the CMS! Or? Maybe…
+ ☐ COULD contendeditable in tandem with Blaze.getDate() be something to explore??
+   Avoid silly inputs and stuff. Just type away!
+   Maybe a little helper which the user can embed anywhere he likes (which contains the contents field of the reactive field), and whenever the user updates this (through blur event on the content editable field) the part will be updated in the actual instance??
 ＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿
 Archive:
+ ✔ Are there tests for this? @done (15-05-18 11:25)
+ ✔ Ability to filter for specific type (within a constructor) when defining what can be "nested" in an instance. For example: maybe a pagePart only should be able to have nested pagePart->images, and not pagePart->menuItems. Etc. @done (15-05-18 11:25)
+ ✔ This works right? A Person->Husband can have a wife of type Person->Wife? @done (15-05-18 10:13)
+ ✔ When adding a new "select" overview, remove existing! @done (15-05-15 15:28)
+ ✔ Buttons for move up/down @done (15-05-15 15:18)
+  Sometimes easier than dragging and dropping
+ ✔ BUG: 1. Create new person 2. Add three different linked object 3. Drag the top object downwards. 4. WONT UPDATE or will update in a buggy way! @done (15-05-15 15:06)
+  So the bug is in that the view of the CMS is not updating. Other views do update.
+ ✔ Make a decision: should it be draggable or not?? @done (15-05-12 16:38)
+  Yes it probably should?
+ ✔ Add status messages @done (15-05-12 16:38)
+  After save/delete etc.
+  krstffr:msgs
+ ✔ MINIFICATION and names of constrcutors!!!! @done (15-05-12 16:15)
+  This is really fucking annoying.
+  They won't match client/server since they for some reason don't get minified on the server (even if they did they probably would not get the same minified name?)
+  Should work now right??
+ ✔ Only show delete button for docs which are actually saved to DB (not new ones…) (Changed this to only show save/duplicate etc. for docs which can be saved!) @done (15-05-08 16:34)
+ ✔ How to display the object in the parent? The fields really are of no use for the user? @done (15-05-08 16:20)
+  Probably show the name of the linked instance!
+ ✔ Updating the link @done (15-05-08 15:58)
+ ✔ Textarea @done (15-05-08 13:20)
  ✔ When trying to set a value (from blur right now), don't try to set undefined values! Or: unset when trying that? @done (15-05-06 08:31)
  ✔ Consider: drag and drop to move the admin overlay? @done (15-05-06 08:28)
  ✔ Something is buggy with array moves! @done (15-05-06 08:23)

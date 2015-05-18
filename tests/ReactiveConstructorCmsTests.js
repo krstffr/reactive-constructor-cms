@@ -1,4 +1,5 @@
 Persons = new Meteor.Collection('persons');
+Animals = new Meteor.Collection('animals');
 
 Meteor.startup(function() {
 
@@ -97,13 +98,28 @@ Meteor.startup(function() {
 		}; 
 	});
 
-NonSaveableConstructor = new ReactiveConstructor('NonSaveableConstructor', function() {
-	return {
-		typeStructure: [{
-			type: 'this is a non saveable instance'
-		}]
-	};
-});
+	Animal = new ReactiveConstructor('Animal', function() {
+		return {
+			cmsOptions: {
+				collection: Animals
+			},
+			typeStructure: [{
+				type: 'dog',
+				fields: {
+					name: String,
+					hungry: Boolean
+				}
+			}]
+		};
+	});
+
+	NonSaveableConstructor = new ReactiveConstructor('NonSaveableConstructor', function() {
+		return {
+			typeStructure: [{
+				type: 'this is a non saveable instance'
+			}]
+		};
+	});
 
 });
 
@@ -391,7 +407,7 @@ Tinytest.addAsync('ReactiveConstructorCmsPlugin instance methods - instance.arra
 
 			}, 5);
 		}, 5);
-	}, 5);	
+}, 5);	
 
 });
 
@@ -691,12 +707,11 @@ Tinytest.addAsync('ReactiveConstructorCmsPlugin async - Person.getLinkableInstan
 
 	startSubscription(function() {
 
-		// Should throw errors if no instance or key is passed
+		var testPerson = new Person({ rcType: 'husband' });
+
+		// Should throw errors if no key is passed
 		test.throws(function(){
-			Person.getLinkableInstances();
-		});
-		test.throws(function(){
-			Person.getLinkableInstances( new Person() );
+			testPerson.getLinkableInstances();
 		});
 
 		ReactiveConstructorCmsPlugin.updateGlobalInstanceStore();
@@ -720,21 +735,29 @@ Tinytest.addAsync('ReactiveConstructorCmsPlugin async - Person.getLinkableInstan
 			var testPerson = new Person({ rcType: 'husband' });
 
 			// There should be no "wives" available
-			test.equal( Person.getLinkableInstances( testPerson, 'wife' ).length, 0 );
+			test.equal( testPerson.getLinkableInstances( 'wife' ).length, 0 );
 
-			// Now: let's add one wife and one worker
+			// Now: let's add one wife, one worker and one husband
 			var wife = new Person({ rcType: 'wife' });
 			var worker = new Person({ rcType: 'worker' });
+			var husband = new Person({ rcType:  'husband' });
 
-			wife.save({}, function() {
-				worker.save({}, function() {
-					// Now there should be 2 persons
-					test.equal( getGlobalPersons().length, 2 );
-					// And there should be one wife available
-					test.equal( Person.getLinkableInstances( testPerson, 'wife' ).length, 1 );
-					// And one buddy
-					test.equal( Person.getLinkableInstances( testPerson, 'buddies' ).length, 1 );
-					next();
+			// Let's also add an animal just to make sure that don't affect things
+			var dog = new Animal();
+
+			dog.save({}, function() {
+				wife.save({}, function() {
+					worker.save({}, function() {
+						husband.save({}, function() {
+							// Now there should be 2 persons
+							test.equal( getGlobalPersons().length, 3 );
+							// And there should be one wife available
+							test.equal( testPerson.getLinkableInstances( 'wife' ).length, 1 );
+							// And one buddy
+							test.equal( testPerson.getLinkableInstances( 'buddies' ).length, 2 );
+							next();
+						});
+					});
 				});
 			});
 
