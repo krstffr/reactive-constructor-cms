@@ -18,6 +18,8 @@
  ☐ Nested children shuold not have _id, status etc.
    Or should they? What if you want to move them out of their parent?
    Probably add them at that stage right??
+   ☐ Problem is: ALL new instances from the reactive constructors add these fields to the instances after instantiation. There should be some kind of explicit check for adding these!
+     Maybe add it (if it's not already there) when opening the doc in the CMS editor view??
 
  ☐ Images overview. Or overview with image previews.
    Probably create switch button which toggles view between LIST or OVERVIEW, where OVERIEW have image previews as well (taken from a previewImg field?)

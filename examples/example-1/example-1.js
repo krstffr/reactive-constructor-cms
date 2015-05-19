@@ -242,7 +242,8 @@ if (Meteor.isServer)
 
 Template.login.events({
   'click button': function() {
-    return Accounts.createUser({username: '1', password: '1'}) && Meteor.loginWithPassword('1', '1');
+    Accounts.createUser({username: '1', password: '1'});
+    Meteor.loginWithPassword('1', '1');
   }
 });
 
