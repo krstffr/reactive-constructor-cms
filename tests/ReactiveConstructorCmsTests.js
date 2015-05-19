@@ -98,29 +98,29 @@ Meteor.startup(function() {
 		}; 
 	});
 
-	Animal = new ReactiveConstructor('Animal', function() {
-		return {
-			cmsOptions: {
-				collection: Animals
-			},
-			typeStructure: [{
-				type: 'dog',
-				fields: {
-					name: String,
-					hungry: Boolean,
-					owner: Person
-				}
-			}]
-		};
-	});
+Animal = new ReactiveConstructor('Animal', function() {
+	return {
+		cmsOptions: {
+			collection: Animals
+		},
+		typeStructure: [{
+			type: 'dog',
+			fields: {
+				name: String,
+				hungry: Boolean,
+				owner: Person
+			}
+		}]
+	};
+});
 
-	NonSaveableConstructor = new ReactiveConstructor('NonSaveableConstructor', function() {
-		return {
-			typeStructure: [{
-				type: 'this is a non saveable instance'
-			}]
-		};
-	});
+NonSaveableConstructor = new ReactiveConstructor('NonSaveableConstructor', function() {
+	return {
+		typeStructure: [{
+			type: 'this is a non saveable instance'
+		}]
+	};
+});
 
 });
 
@@ -618,44 +618,6 @@ Tinytest.addAsync('ReactiveConstructorCmsPlugin async - instance.save(), logged 
 
 });
 
-Tinytest.add('ReactiveConstructorCmsPlugin instance methods - instance.unpublish(), throw error for non saveable', function(test) {
-
-	var docToFail = new NonSaveableConstructor();
-
-	test.throws(function() {
-		docToFail.unpublish();
-	});
-
-});
-
-Tinytest.addAsync('ReactiveConstructorCmsPlugin async - instance.unpublish(), not logged in', function(test, next) {
-
-	var docToSave = new Person();
-
-	Meteor.logout(function() {
-		test.throws(function() {
-			docToSave.save({});
-		});
-		next();
-	});
-
-});
-
-Tinytest.addAsync('ReactiveConstructorCmsPlugin async - instance.unpublish(), logged in', function(test, next) {
-
-	var docToSave = new Person();
-
-	loginOrCreateAccount(function() {
-		docToSave.save({ publish: true }, function(){
-			docToSave.unpublish(function( err, res ) {
-				test.equal( res, 1 );
-				next();
-			});
-		});
-	});
-
-});
-
 Tinytest.addAsync('ReactiveConstructorCmsPlugin async - instance.save({ publish: true })', function(test, next) {
 
 	var docToSave = new Person();
@@ -716,6 +678,83 @@ Tinytest.addAsync('ReactiveConstructorCmsPlugin async - instance.save(), remove 
 	};
 
 	return saveRecurse( saveTimes, docToSave );
+
+});
+
+Tinytest.add('ReactiveConstructorCmsPlugin instance methods - instance.unpublish(), throw error for non saveable', function(test) {
+
+	var docToFail = new NonSaveableConstructor();
+
+	test.throws(function() {
+		docToFail.unpublish();
+	});
+
+});
+
+Tinytest.addAsync('ReactiveConstructorCmsPlugin async - instance.unpublish(), not logged in', function(test, next) {
+
+	var docToSave = new Person();
+
+	Meteor.logout(function() {
+		test.throws(function() {
+			docToSave.save({});
+		});
+		next();
+	});
+
+});
+
+Tinytest.addAsync('ReactiveConstructorCmsPlugin async - instance.unpublish(), logged in', function(test, next) {
+
+	var docToSave = new Person();
+
+	loginOrCreateAccount(function() {
+		docToSave.save({ publish: true }, function(){
+			docToSave.unpublish(function( err, res ) {
+				test.equal( res, 1 );
+				next();
+			});
+		});
+	});
+
+});
+
+Tinytest.addAsync('ReactiveConstructorCmsPlugin async - instance.getPublishedDoc()', function(test, next) {
+
+	var docToSave = new Person();
+
+	loginOrCreateAccount(function() {
+		docToSave.save({ publish: true }, function(){
+			docToSave.getPublishedDoc(function( err, res ) {
+				test.equal( docToSave.getType(), res.rcType );
+				test.equal( docToSave.getReactiveValue('name'), res.name );
+				test.equal( docToSave.getReactiveValue('title'), res.title );
+				test.equal( res.reactiveConstructorCmsStatus, 'published' );
+				next();
+			});
+		});
+	});
+
+});
+
+Tinytest.addAsync('ReactiveConstructorCmsPlugin async - instance.getPublishedDoc() and instance.unpublish()', function(test, next) {
+	
+	var docToSave = new Person();
+
+	loginOrCreateAccount(function() {
+		docToSave.save({ publish: true }, function(){
+			docToSave.getPublishedDoc(function( err, res ) {
+				test.equal( res.reactiveConstructorCmsStatus, 'published' );
+				docToSave.unpublish(function( err, res ) {
+					test.equal( res, 1 );
+					docToSave.getPublishedDoc(function( err, res ) {
+						test.isUndefined( res );
+						next();
+					});
+				});
+			});
+		});
+	});
 
 });
 
@@ -819,7 +858,7 @@ Tinytest.addAsync('ReactiveConstructorCmsPlugin async - instance.getLinkableInst
 
 		});
 
-	});
+});
 
 });
 

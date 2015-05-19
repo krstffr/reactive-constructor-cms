@@ -173,6 +173,7 @@ ReactiveConstructorCmsPlugin = new ReactiveConstructorPlugin({
 
 		};
 
+		// Has test: ✔
 		passedClass.prototype.unpublish = function( callback ) {
 
 			if ( !Meteor.userId() )
@@ -216,6 +217,31 @@ ReactiveConstructorCmsPlugin = new ReactiveConstructorPlugin({
 					ReactiveConstructorCmsPlugin.updateGlobalInstanceStore();
 				if ( callback )
 					return callback( res, err );
+				return true;
+			});
+
+		};
+
+		// Method for getting the currently published version of this instance
+		// Has test: 
+		passedClass.prototype.getPublishedDoc = function( callback ) {
+
+			// Should this method be protected behind login?
+			// Probably not since "published" should mean "open to everyone"?
+			
+			if ( !this.getCollection() )
+				throw new Meteor.Error('reactive-constructor-cms', 'No collection defined for: ' + passedClass.constructorName );
+
+			var id = this.getDataAsObject()._id;
+
+			check( id, String );
+
+			return Meteor.call('reactive-constructor-cms/get-published-doc', id, passedClass.constructorName, function(err, res) {
+				if ( err ){
+					Msgs.addMessage('Error while getting published doc: ' + err.reason, 'rc-cms__message--error');
+				}	
+				if ( callback )
+					return callback( err, res );
 				return true;
 			});
 

@@ -25,6 +25,15 @@ var getCollectionFromConstructorName = function( constructorName ) {
 };
 
 Meteor.methods({
+	'reactive-constructor-cms/get-published-doc': function( mainId, constructorName ) {
+
+		check( constructorName, String );
+
+		var collection = getCollectionFromConstructorName( constructorName );
+
+		return collection.findOne({ mainId: mainId, reactiveConstructorCmsStatus: 'published' });
+
+	},
 	'reactive-constructor-cms/unpublish': function( mainId, constructorName ) {
 
 		if (!this.userId)

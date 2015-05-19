@@ -1,8 +1,9 @@
  ☐ "Correct" err/res sending in callbacks of some methods 
    Passed in wrong order in some places!
-   
- ☐ Ability to "unpublish" documents
+
+ ✔ Ability to "unpublish" documents @done (15-05-19 10:25)
    Mauybe you have a couple of webpages, and you notice that one of the pages is NOT supposed to be live yet. You need to be able to remove the live version!
+   WORKS NOW RIGHT?
  
  ☐ Ability to go back to older backups
    Check that saving etc. works the way it should also when going back.
