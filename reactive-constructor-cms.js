@@ -163,7 +163,10 @@ ReactiveConstructorCmsPlugin = new ReactiveConstructorPlugin({
 					return Msgs.addMessage( err.reason, 'rc-cms__message--error');
 				if ( res ){
 					Msgs.removeMessage( firstMessage );
-					Msgs.addMessage('Saved!', 'rc-cms__message--success');
+					if( res.published )
+						Msgs.addMessage('Saved and published!', 'rc-cms__message--success');
+					else
+						Msgs.addMessage('Saved!', 'rc-cms__message--success');
 					ReactiveConstructorCmsPlugin.updateGlobalInstanceStore();
 				}
 				if ( callback )
@@ -173,6 +176,7 @@ ReactiveConstructorCmsPlugin = new ReactiveConstructorPlugin({
 
 		};
 
+		// Method for removing the published version of a doc
 		// Has test: ✔
 		passedClass.prototype.unpublish = function( callback ) {
 
@@ -192,6 +196,10 @@ ReactiveConstructorCmsPlugin = new ReactiveConstructorPlugin({
 					Msgs.removeMessage( firstMessage );
 					Msgs.addMessage('Unpublished!', 'rc-cms__message--success');
 				}
+				if ( res < 1 ) {
+					Msgs.removeMessage( firstMessage );
+					Msgs.addMessage('There was nothing to unpublish.', 'rc-cms__message--info');
+				}
 				if ( callback )
 					return callback( err, res );
 				return true;
@@ -199,6 +207,7 @@ ReactiveConstructorCmsPlugin = new ReactiveConstructorPlugin({
 
 		};
 
+		// Method for removing a saved instance (and all backups!)
 		// Has test: ✔
 		passedClass.prototype.deleteInstance = function( callback ) {
 
@@ -212,7 +221,13 @@ ReactiveConstructorCmsPlugin = new ReactiveConstructorPlugin({
 
 			check( id, String );
 
+			Msgs.addMessage('Removing doc…', 'rc-cms__message--info');
+
 			return Meteor.call('reactive-constructor-cms/delete', id, passedClass.constructorName, function( err, res ) {
+				if ( err )
+					Msgs.addMessage( err.reason, 'rc-cms__message--error');
+				if ( res < 1)
+					Msgs.addMessage( 'Error: no docs removed.', 'rc-cms__message--error');
 				if ( res )
 					ReactiveConstructorCmsPlugin.updateGlobalInstanceStore();
 				if ( callback )
@@ -223,7 +238,7 @@ ReactiveConstructorCmsPlugin = new ReactiveConstructorPlugin({
 		};
 
 		// Method for getting the currently published version of this instance
-		// Has test: 
+		// Has test: ✔
 		passedClass.prototype.getPublishedDoc = function( callback ) {
 
 			// Should this method be protected behind login?
@@ -623,6 +638,9 @@ ReactiveConstructorCmsPlugin.editPageGet = function( instance ) {
 		throw new Meteor.Error('reactive-constructor-cms', 'You need to be logged in.' );
 
 	check( instance, ReactiveConstructors[ instance.constructor.constructorName ] );
+
+	// Remove all currently visible messages
+	Msgs.removeAllMessages();
 
 	// Remove any currently visible edit templates
 	return ReactiveConstructorCmsPlugin.editPageRemove( instance, function( instance ) {

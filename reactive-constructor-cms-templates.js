@@ -193,15 +193,24 @@ Template.editTemplate__wrapper.events({
   'click .reactive-constructor-cms-close-button': function () {
     return ReactiveConstructorCmsPlugin.editPageRemove( this );
   },
+  'click .reactive-constructor-cms-unpublish-button': function() {
+    
+    if (!confirm('Are you sure you want to unpublish this ' + this.getType() + '?'))
+      return false;
+
+    return this.unpublish(function(err, res) {
+      console.log( err, res );
+    });
+  },
   'click .reactive-constructor-cms-remove-button': function() {
     
-    if (!confirm('Are you sure you want to remove this part?'))
+    if (!confirm('Are you sure you want to remove this ' + this.getType() + '?'))
       return false;
 
     this.deleteInstance( function( err, res ) {
+      // If at least one doc was removed, then remove the edit page.
       if (res > 0)
         return ReactiveConstructorCmsPlugin.editPageRemove();
-      throw new Error('reactive-constructor-cms', 'No docs removed? ' + res );
     });
   },
   'click .reactive-constructor-cms-publish-button': function () {
