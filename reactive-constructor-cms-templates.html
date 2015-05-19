@@ -10,7 +10,7 @@
 	{{#each selectableItems }}
 
 		<li>
-			<a>{{ buttonValue }}</a>
+			<a>{{{ buttonValue }}}</a>
 		</li>
 
 	{{/each}}
@@ -24,7 +24,7 @@
 	<label title="{{ key }}">
 		{{> editTemplate__labelString }}
 		<button class="reactive-constructor-cms-create-new-instance">
-			Create new {{ key }}
+			Add new {{ key }}
 		</button>
 	</label>
 </template>
@@ -107,6 +107,12 @@
 	<div class="wrap">
 
 		<h2>
+
+			{{#if isBackup }}
+				<span class="reactive-constructor-cms-constructor-name">
+					Backup of:
+				</span>
+			{{/if}}
 
 			{{#if isLinkedInstance }}
 				<span class="reactive-constructor-cms-constructor-name">
@@ -209,6 +215,9 @@
 				<button class="reactive-constructor-cms-unpublish-button">
 					Unpublish
 				</button>
+				<button class="reactive-constructor-cms-go-back-one-backup-version">
+					Back one version
+				</button>
 
 			{{/if}}
 			<button class="reactive-constructor-cms-close-button">
@@ -247,7 +256,7 @@
 
 					<li>
 						<a class="reactive-constructor-cms-create-doc-from-list">
-						Create new {{ constructorName }}</a>
+						Add new {{ constructorName }}</a>
 					</li>
 
 				</ul>

@@ -16,10 +16,11 @@ Template.editTemplate__selectOverview.events({
 
 Template.editTemplate__selectOverview.helpers({
   buttonValue: function() {
-    if (this.reactiveConstructorCmsName)
-      return this.reactiveConstructorCmsName;
+    if (this.reactiveConstructorCmsName){
+      return 'Link to: <strong>' + this.reactiveConstructorCmsName + '</strong> ('+ this.getType() +')';
+    }
     if (this.value)
-      return this.value;
+      return 'Create new: <strong>' + this.value + '</strong>';
     throw new Error('reactive-constructor-cms', 'No button text?');
   }
 });
@@ -107,6 +108,11 @@ Template.editTemplate__Collection.onRendered(function () {
 });
 
 Template.editTemplate.helpers({
+  isBackup: function() {
+    if (this.getReactiveValue)
+      return this.getReactiveValue('reactiveConstructorCmsStatus') === 'backup';
+    return false;
+  },
   // This helper decides if the list of values for this instance should be shown or not.
   // This is right now used for not showing fields of linked DB docs.
   isLinkedInstance: function() {
@@ -190,6 +196,13 @@ var updateInput = function ( value, key, type, instance ) {
 };
 
 Template.editTemplate__wrapper.events({
+  'click .reactive-constructor-cms-go-back-one-backup-version': function() {
+    var instance = this;
+    return instance.getBackupDoc(0, function(err, res) {
+      if (res)
+        return ReactiveConstructorCmsPlugin.editPageGet( new instance.constructor( res ) );
+    });
+  },
   'click .reactive-constructor-cms-close-button': function () {
     return ReactiveConstructorCmsPlugin.editPageRemove( this );
   },
@@ -198,9 +211,8 @@ Template.editTemplate__wrapper.events({
     if (!confirm('Are you sure you want to unpublish this ' + this.getType() + '?'))
       return false;
 
-    return this.unpublish(function(err, res) {
-      console.log( err, res );
-    });
+    return this.unpublish();
+
   },
   'click .reactive-constructor-cms-remove-button': function() {
     
@@ -217,7 +229,7 @@ Template.editTemplate__wrapper.events({
     return this.save({ publish: true });
   },
   'click .reactive-constructor-cms-save-draft-button': function () {
-    return this.save();
+    return this.save({});
   },
   'click .reactive-constructor-cms-duplicate-button': function() {
     var instance = this;

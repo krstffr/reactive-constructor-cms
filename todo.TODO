@@ -8,8 +8,10 @@
  
  ✔ Hide the CMS fields from the CMS view. @done (15-05-19 11:19)
 
- ☐ Ability to go back to older backups
+ ✔ Ability to go back to older backups @done (15-05-19 14:29)
    Check that saving etc. works the way it should also when going back.
+   ✔ Test saves etc! @done (15-05-19 14:03)
+   ✔ Also show the version of the backup in the template somehow? @done (15-05-19 14:29)
    
  ☐ Keydown update of value (without messing with the input!)
 
@@ -58,6 +60,8 @@
  
  ☐ Saving of "parent" instance, when editing a child instance
    ☐ Also a "go to parent" button?
+
+ ☐ Bug: Setting 0 for number sets val to false
 
 Not prio:
  ☐ BUG: Can't set superCool to false in Invoice in example 1

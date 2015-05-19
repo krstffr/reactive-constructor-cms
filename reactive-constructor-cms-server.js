@@ -25,8 +25,33 @@ var getCollectionFromConstructorName = function( constructorName ) {
 };
 
 Meteor.methods({
+	// Method for getting a backup version of an instance
+	'reactive-constructor-cms/get-backup-doc': function( mainId, constructorName, updateTime, version ) {
+
+		check( constructorName, String );
+		check( mainId, String );
+		check( updateTime, Date );
+		check( version, Number );
+
+		var collection = getCollectionFromConstructorName( constructorName );
+
+		// Return the "version" latest version of the backups which are older
+		// than the passed updateTime
+		return collection.findOne({
+			mainId: mainId,
+			reactiveConstructorCmsStatus: 'backup',
+			updateTime: {
+				$lt: updateTime
+			}
+		}, {
+			sort: { updateTime: -1 },
+			skip: version
+		});
+
+	},
 	'reactive-constructor-cms/get-published-doc': function( mainId, constructorName ) {
 
+		check( mainId, String );
 		check( constructorName, String );
 
 		var collection = getCollectionFromConstructorName( constructorName );
@@ -39,6 +64,7 @@ Meteor.methods({
 		if (!this.userId)
 			throw new Meteor.Error('reactive-constructor-cms', 'You need to be logged in.' );
 
+		check( mainId, String );
 		check( constructorName, String );
 
 		var collection = getCollectionFromConstructorName( constructorName );
@@ -78,9 +104,10 @@ Meteor.methods({
 		if (saveOptions.duplicate)
 			item._id = Meteor.uuid();
 
+		item.mainId = item._id;
+
 		// Save a backup of the doc
 		var backupDoc = _.omit( _.clone( item ), '_id' );
-		backupDoc.mainId = item._id;
 
 		backupDoc.reactiveConstructorCmsStatus = 'backup';
 		updateResult.backup = collection.insert( backupDoc );

@@ -61,12 +61,15 @@ ReactiveConstructorCmsPlugin = new ReactiveConstructorPlugin({
 		};
 
 		// Method for returning the data for the CMS frontend basically
+		// Will not return the fields in reactiveConstructorCmsExtraInstanceFields
+		// EXCEPT the reactiveConstructorCmsName
 		// Has test: ✔
 		passedClass.prototype.getReactiveValuesAsArray = function () {
 			var typeStructure = this.getCurrentTypeStructure();
 			return _(this.reactiveData.get())
 			.map(function( value, key ) {
-				if ( reactiveConstructorCmsExtraInstanceFields[key] === undefined )
+				// Only return the non CMS fields (EXCEPT reactiveConstructorCmsName!)
+				if ( reactiveConstructorCmsExtraInstanceFields[key] === undefined || key === 'reactiveConstructorCmsName' )
 					return {
 						key: key,
 						value: value,
@@ -162,6 +165,10 @@ ReactiveConstructorCmsPlugin = new ReactiveConstructorPlugin({
 		// Has test: ✔
 		passedClass.prototype.save = function( saveOptions, callback ) {
 
+			check( saveOptions, Object );
+			if (callback)
+				check( callback, Function );
+
 			if ( !Meteor.userId() )
 				throw new Meteor.Error('reactive-constructor-cms', 'You need to be logged in.' );
 			
@@ -199,9 +206,11 @@ ReactiveConstructorCmsPlugin = new ReactiveConstructorPlugin({
 				throw new Meteor.Error('reactive-constructor-cms', 'No collection defined for: ' + passedClass.constructorName );
 
 			var firstMessage = Msgs.addMessage('Removing published doc…', 'rc-cms__message--info');
-			var id = this.getDataAsObject()._id;
 
-			return Meteor.call('reactive-constructor-cms/unpublish', id, passedClass.constructorName, function( err, res ) {
+			var mainId = this.getReactiveValue('mainId');
+			check( mainId, String );
+
+			return Meteor.call('reactive-constructor-cms/unpublish', mainId, passedClass.constructorName, function( err, res ) {
 				if (err)
 					return Msgs.addMessage( err.reason, 'rc-cms__message--error');
 				if ( res ){
@@ -259,14 +268,55 @@ ReactiveConstructorCmsPlugin = new ReactiveConstructorPlugin({
 			if ( !this.getCollection() )
 				throw new Meteor.Error('reactive-constructor-cms', 'No collection defined for: ' + passedClass.constructorName );
 
-			var id = this.getDataAsObject()._id;
+			var mainId = this.getReactiveValue('mainId');
 
-			check( id, String );
+			check( mainId, String );
 
-			return Meteor.call('reactive-constructor-cms/get-published-doc', id, passedClass.constructorName, function( err, res ) {
+			return Meteor.call('reactive-constructor-cms/get-published-doc', mainId, passedClass.constructorName, function( err, res ) {
 				if ( err ){
 					Msgs.addMessage('Error while getting published doc: ' + err.reason, 'rc-cms__message--error');
 				}	
+				if ( callback )
+					return callback( err, res );
+				return true;
+			});
+
+		};
+
+		// Method for getting a backup of a doc
+		// Has test: ✔
+		passedClass.prototype.getBackupDoc = function( version, callback ) {
+			
+			if ( !Meteor.userId() )
+				throw new Meteor.Error('reactive-constructor-cms', 'You need to be logged in.' );
+
+			if ( !this.getCollection() )
+				throw new Meteor.Error('reactive-constructor-cms', 'No collection defined for: ' + passedClass.constructorName );
+
+			if (callback)
+				check( callback, Function );
+
+			// What version of the backup to get.
+			// Default is the last one (1)
+			version = version || 0;
+
+			check( version, Number );
+
+			var mainId = this.getReactiveValue('mainId');
+			var updateTime = this.getReactiveValue('updateTime') || new Date();
+
+			check( mainId, String );
+			check( updateTime, Date );
+
+			var firstMessage = Msgs.addMessage('Fetching last backup…', 'rc-cms__message--info');
+
+			return Meteor.call('reactive-constructor-cms/get-backup-doc', mainId, passedClass.constructorName, updateTime, version, function( err, res ) {
+				Msgs.removeMessage( firstMessage );
+				if ( err ){
+					Msgs.addMessage('Error while getting backup: ' + err.reason, 'rc-cms__message--error');
+				}
+				if ( !res )
+					Msgs.addMessage('Can not find more backups of this instance.', 'rc-cms__message--error');
 				if ( callback )
 					return callback( err, res );
 				return true;
@@ -373,8 +423,11 @@ ReactiveConstructorCmsPlugin = new ReactiveConstructorPlugin({
 		// If a collection is defined for this constructor, make sure this
 		// instance has an _id field
 		if (instance.getCollection()) {
-			if ( !instance.getReactiveValue('_id') )
-				instance.setReactiveValue('_id', Meteor.uuid() );
+			if ( !instance.getReactiveValue('_id') ){
+				var _id = Meteor.uuid();
+				instance.setReactiveValue('_id', _id );
+				instance.setReactiveValue('mainId', _id );
+			}
 
 			if ( !instance.getReactiveValue('reactiveConstructorCmsName') )
 				instance.setReactiveValue('reactiveConstructorCmsName', 'New ' + instance.getType() );
@@ -510,7 +563,7 @@ ReactiveConstructorCmsPlugin.getSelectListOverview = function( listItems, constr
 
   // This is the data which gets passed to the select overview
   var overviewSelectData = {
-    headline: 'Select type of ' + constructorName,
+    headline: 'Select ' + constructorName,
     selectableItems: listItems,
     // This callback accepts a selectedItem which either consists of an object with a .value
     // field, which is used to create a new instance. OR the selectedItem IS the new actual

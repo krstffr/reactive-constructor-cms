@@ -318,7 +318,7 @@ Tinytest.add('ReactiveConstructorCmsPlugin instance methods - instance.save(), t
 	var docToFail = new NonSaveableConstructor();
 
 	test.throws(function() {
-		docToFail.save();
+		docToFail.save({});
 	});
 
 });
@@ -356,7 +356,7 @@ Tinytest.add('ReactiveConstructorCmsPlugin instance methods - instance.arrayitem
 
 });
 
-Tinytest.addAsync('ReactiveConstructorCmsPlugin instance methods - instance.arrayitemMove()', function(test, next) {
+Tinytest.addAsync('ReactiveConstructorCmsPlugin async - instance.arrayitemMove()', function(test, next) {
 	
 	var person = new Person({ rcType: 'husband', buddies: [{ name: 'mr. first' }, { name: 'john' }, {}]});
 	var buddies = person.getReactiveValue('buddies');
@@ -408,7 +408,7 @@ Tinytest.addAsync('ReactiveConstructorCmsPlugin instance methods - instance.arra
 
 			}, 5);
 		}, 5);
-}, 5);	
+	}, 5);	
 
 });
 
@@ -711,6 +711,7 @@ Tinytest.addAsync('ReactiveConstructorCmsPlugin async - instance.unpublish(), lo
 	loginOrCreateAccount(function() {
 		docToSave.save({ publish: true }, function(){
 			docToSave.unpublish(function( err, res ) {
+				console.log( res );
 				test.equal( res, 1 );
 				next();
 			});
@@ -798,67 +799,131 @@ Tinytest.addAsync('ReactiveConstructorCmsPlugin async - instance.deleteInstance(
 
 });
 
-Tinytest.addAsync('ReactiveConstructorCmsPlugin async - instance.getLinkableInstances()', function(test, next) {
+Tinytest.addAsync('ReactiveConstructorCmsPlugin async - instance.getBackupDoc(), not logged in', function(test, next) {
 
-	startSubscription(function() {
+	var docToFail = new Person();
 
-		var testPerson = new Person({ rcType: 'husband' });
-
-		// Should throw errors if no key is passed
-		test.throws(function(){
-			testPerson.getLinkableInstances();
+	Meteor.logout(function() {
+		test.throws(function() {
+			docToFail.getBackupDoc();
 		});
+		next();
+	});
 
-		ReactiveConstructorCmsPlugin.updateGlobalInstanceStore();
+});
 
-		var getGlobalPersons = function() {
-			return _.findWhere(ReactiveConstructorCmsPlugin.getGlobalInstanceStore(), { constructorName: 'Person' }).items;
-		};
+Tinytest.addAsync('ReactiveConstructorCmsPlugin async - instance.getBackupDoc(), logged in', function(test, next) {
 
-		test.notEqual( getGlobalPersons().length, 0 );
+	// This tests saves two versions of the doc, then gets two backusp (and makes sure they are fetched)
+	// and then tries to get a third one which is expected to return undefined.
 
-		Meteor.call('reactive-constructor-cms/cleanup-test-db', function( err ) {
-			if (err)
-				throw new Error('something went wrong?' + err );
-
-			// Update the "globale instance store"
-			ReactiveConstructorCmsPlugin.updateGlobalInstanceStore();
-			// Check that there are now 0 persons
-			test.equal( getGlobalPersons().length, 0 );
-
-			// Let's create a person
-			var testPerson = new Person({ rcType: 'husband' });
-
-			// There should be no "wives" available
-			test.equal( testPerson.getLinkableInstances( 'wife' ).length, 0 );
-
-			// Now: let's add one wife, one worker and one husband
-			var wife = new Person({ rcType: 'wife' });
-			var worker = new Person({ rcType: 'worker' });
-			var husband = new Person({ rcType:  'husband' });
-
-			// Let's also add an animal just to make sure that don't affect things
-			var dog = new Animal();
-
-			dog.save({}, function() {
-				wife.save({}, function() {
-					worker.save({}, function() {
-						husband.save({}, function() {
-							// Now there should be 2 persons
-							test.equal( getGlobalPersons().length, 3 );
-							// And there should be one wife available
-							test.equal( testPerson.getLinkableInstances( 'wife' ).length, 1 );
-							// And one buddy
-							test.equal( testPerson.getLinkableInstances( 'buddies' ).length, 2 );
-							next();
+	loginOrCreateAccount(function() {
+		var docToGetBackupsFrom = new Person();
+		docToGetBackupsFrom.setReactiveValue('name', 'name v. 1');
+		docToGetBackupsFrom.save({ publish: true }, function( err, res ) {
+			test.equal( res.backupsRemoved, 0 );
+			// Make sure the correct doc is the published one!
+			docToGetBackupsFrom.getPublishedDoc(function( err, res ) {
+				test.equal( res.reactiveConstructorCmsStatus, 'published' );
+				test.equal( res.name, 'name v. 1' );
+				docToGetBackupsFrom.setReactiveValue('name', 'name v. 2');
+				docToGetBackupsFrom.save({}, function( err, res ) {
+					test.equal( res.backupsRemoved, 0 );
+					docToGetBackupsFrom.getBackupDoc(0, function( err, res ) {
+						test.equal( res.reactiveConstructorCmsStatus, 'backup' );
+						test.equal( res.name, 'name v. 2' );
+						docToGetBackupsFrom.getBackupDoc(1, function( err, res ) {
+							test.equal( res.reactiveConstructorCmsStatus, 'backup' );
+							test.equal( res.name, 'name v. 1' );
+							var backupPerson = new Person( res );
+							docToGetBackupsFrom.getBackupDoc(2, function( err, res ) {
+								test.isUndefined( res );
+								// Save (publish!) the backup and ake sure the correct doc is the published one afterwards!
+								backupPerson.save({ publish: true }, function( err, res ) {
+									test.equal( res.backupsRemoved, 0 );
+									// Let's use the original doc to get the published, just to make
+									// sure it gets the correct one as well
+									docToGetBackupsFrom.getPublishedDoc(function( err, res ) {
+										test.equal( res.reactiveConstructorCmsStatus, 'published' );
+										test.equal( res.name, 'name v. 1' );
+										next();
+									});
+								});
+							});
 						});
 					});
 				});
 			});
+		});
+	});
+
+});
+
+Tinytest.addAsync('ReactiveConstructorCmsPlugin async - instance.getLinkableInstances()', function(test, next) {
+
+	loginOrCreateAccount(function() {
+
+		startSubscription(function() {
+
+			var testPerson = new Person({ rcType: 'husband' });
+
+			// Should throw errors if no key is passed
+			test.throws(function(){
+				testPerson.getLinkableInstances();
+			});
+
+			ReactiveConstructorCmsPlugin.updateGlobalInstanceStore();
+
+			var getGlobalPersons = function() {
+				return _.findWhere(ReactiveConstructorCmsPlugin.getGlobalInstanceStore(), { constructorName: 'Person' }).items;
+			};
+
+			test.notEqual( getGlobalPersons().length, 0 );
+
+			Meteor.call('reactive-constructor-cms/cleanup-test-db', function( err ) {
+				if (err)
+					throw new Error('something went wrong?' + err );
+
+				// Update the "globale instance store"
+				ReactiveConstructorCmsPlugin.updateGlobalInstanceStore();
+				// Check that there are now 0 persons
+				test.equal( getGlobalPersons().length, 0 );
+
+				// Let's create a person
+				var testPerson = new Person({ rcType: 'husband' });
+
+				// There should be no "wives" available
+				test.equal( testPerson.getLinkableInstances( 'wife' ).length, 0 );
+
+				// Now: let's add one wife, one worker and one husband
+				var wife = new Person({ rcType: 'wife' });
+				var worker = new Person({ rcType: 'worker' });
+				var husband = new Person({ rcType:  'husband' });
+
+				// Let's also add an animal just to make sure that don't affect things
+				var dog = new Animal();
+
+				dog.save({}, function() {
+					wife.save({}, function() {
+						worker.save({}, function() {
+							husband.save({}, function() {
+								// Now there should be 2 persons
+								test.equal( getGlobalPersons().length, 3 );
+								// And there should be one wife available
+								test.equal( testPerson.getLinkableInstances( 'wife' ).length, 1 );
+								// And one buddy
+								test.equal( testPerson.getLinkableInstances( 'buddies' ).length, 2 );
+								next();
+							});
+						});
+					});
+				});
+
+			});
 
 		});
 
-});
+	});
 
 });
 
