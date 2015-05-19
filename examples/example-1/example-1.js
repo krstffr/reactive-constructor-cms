@@ -240,6 +240,12 @@ new Person({ age: 50, rcType: 'worker', children: [{ age: 25, rcType: 'child' }]
 if (Meteor.isServer)
   return false;
 
+Template.login.events({
+  'click button': function() {
+    return Accounts.createUser({username: '1', password: '1'}) && Meteor.loginWithPassword('1', '1');
+  }
+});
+
 Template.invoiceTestTemplate.helpers({
   person: function () {
     return person;

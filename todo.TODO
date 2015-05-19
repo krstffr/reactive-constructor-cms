@@ -1,4 +1,6 @@
-
+ ☐ "Correct" err/res sending in callbacks of some methods 
+   Passed in wrong order in some places!
+   
  ☐ Ability to "unpublish" documents
    Mauybe you have a couple of webpages, and you notice that one of the pages is NOT supposed to be live yet. You need to be able to remove the live version!
  

@@ -431,7 +431,7 @@ Template.editTemplate.events({
 });
 
 Template.reactiveConstructorCms__loadSavedDoc.onCreated(function() {
-  this.subscribe('reactive-constructor-cms-publications', ReactiveConstructorCmsPlugin.updateGlobalInstanceStore );
+  this.subscribe('reactive-constructor-cms__editable-docs', ReactiveConstructorCmsPlugin.updateGlobalInstanceStore );
 });
 
 Template.reactiveConstructorCms__loadSavedDoc.helpers({

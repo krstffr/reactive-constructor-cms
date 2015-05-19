@@ -173,6 +173,31 @@ ReactiveConstructorCmsPlugin = new ReactiveConstructorPlugin({
 
 		};
 
+		passedClass.prototype.unpublish = function( callback ) {
+
+			if ( !Meteor.userId() )
+				throw new Meteor.Error('reactive-constructor-cms', 'You need to be logged in.' );
+			
+			if ( !this.getCollection() )
+				throw new Meteor.Error('reactive-constructor-cms', 'No collection defined for: ' + passedClass.constructorName );
+
+			var firstMessage = Msgs.addMessage('Removing published doc…', 'rc-cms__message--info');
+			var id = this.getDataAsObject()._id;
+
+			return Meteor.call('reactive-constructor-cms/unpublish', id, passedClass.constructorName, function(err, res) {
+				if (err)
+					return Msgs.addMessage( err.reason, 'rc-cms__message--error');
+				if ( res ){
+					Msgs.removeMessage( firstMessage );
+					Msgs.addMessage('Unpublished!', 'rc-cms__message--success');
+				}
+				if ( callback )
+					return callback( err, res );
+				return true;
+			});
+
+		};
+
 		// Has test: ✔
 		passedClass.prototype.deleteInstance = function( callback ) {
 

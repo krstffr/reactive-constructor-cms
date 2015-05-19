@@ -4,11 +4,22 @@
 
 <body>
 
+	{{#if currentUser }}
+	{{else}}
+		{{> login }}
+	{{/if}}
+
   {{> invoiceTestTemplate }}
 
   {{> reactiveConstructorCms__loadSavedDoc }}
 
 </body>
+
+<template name="login">
+
+	<button>Login</button>
+	
+</template>
 
 <template name="personTestTemplate">
 

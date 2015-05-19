@@ -156,7 +156,7 @@ var loginOrCreateAccount = function( cb ) {
 };
 
 var startSubscription = function( cb ) {
-	Meteor.subscribe('reactive-constructor-cms-publications', {
+	Meteor.subscribe('reactive-constructor-cms__editable-docs', {
 		onReady: function() {
 			cb();
 		}
@@ -570,7 +570,7 @@ Tinytest.addAsync('ReactiveConstructorCmsPlugin async - check subscription witho
 
 	// Make sure we're logged out
 	Meteor.logout(function() {
-		Meteor.subscribe('reactive-constructor-cms-publications', {
+		Meteor.subscribe('reactive-constructor-cms__editable-docs', {
 			onStop: function( err ) {
 				test.equal(err.errorType, 'Meteor.Error');
 				next();
@@ -613,6 +613,44 @@ Tinytest.addAsync('ReactiveConstructorCmsPlugin async - instance.save(), logged 
 				numberAffected: Number
 			}));
 			next();
+		});
+	});
+
+});
+
+Tinytest.add('ReactiveConstructorCmsPlugin instance methods - instance.unpublish(), throw error for non saveable', function(test) {
+
+	var docToFail = new NonSaveableConstructor();
+
+	test.throws(function() {
+		docToFail.unpublish();
+	});
+
+});
+
+Tinytest.addAsync('ReactiveConstructorCmsPlugin async - instance.unpublish(), not logged in', function(test, next) {
+
+	var docToSave = new Person();
+
+	Meteor.logout(function() {
+		test.throws(function() {
+			docToSave.save({});
+		});
+		next();
+	});
+
+});
+
+Tinytest.addAsync('ReactiveConstructorCmsPlugin async - instance.unpublish(), logged in', function(test, next) {
+
+	var docToSave = new Person();
+
+	loginOrCreateAccount(function() {
+		docToSave.save({ publish: true }, function(){
+			docToSave.unpublish(function( err, res ) {
+				test.equal( res, 1 );
+				next();
+			});
 		});
 	});
 

@@ -25,6 +25,18 @@ var getCollectionFromConstructorName = function( constructorName ) {
 };
 
 Meteor.methods({
+	'reactive-constructor-cms/unpublish': function( mainId, constructorName ) {
+
+		if (!this.userId)
+			throw new Meteor.Error('reactive-constructor-cms', 'You need to be logged in.' );
+
+		check( constructorName, String );
+
+		var collection = getCollectionFromConstructorName( constructorName );
+
+		return collection.remove({ mainId: mainId, reactiveConstructorCmsStatus: 'published' });
+
+	},
 	'reactive-constructor-cms/save': function( item, constructorName, saveOptions ) {
 
 		if (!this.userId)
@@ -116,11 +128,11 @@ Meteor.methods({
 });
 
 
-Meteor.publish('reactive-constructor-cms-publications', function() {
+Meteor.publish('reactive-constructor-cms__editable-docs', function() {
 
 	// These should only be available to logged in users
 	if (!this.userId)
-		return this.error( new Meteor.Error('reactive-constructor-cms', 'You need to login to subscribe to reactive-constructor-cms-publications' ) );
+		return this.error( new Meteor.Error('reactive-constructor-cms', 'You need to login to subscribe to reactive-constructor-cms__editable-docs' ) );
 	
 	// Get all the publications
 	return _.chain(ReactiveConstructors)
