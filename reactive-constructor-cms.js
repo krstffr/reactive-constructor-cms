@@ -10,6 +10,14 @@ renderedCMSSelectOverview = false;
 // Fetched instances, use this source to update/get a doc "globally"!
 tempCMSInstances = new ReactiveVar([]);
 
+var reactiveConstructorCmsExtraInstanceFields = {
+	_id: String,
+	reactiveConstructorCmsName: String,
+	reactiveConstructorCmsStatus: String,
+	updateTime: ISODate,
+	mainId: String
+};
+
 ReactiveConstructorCmsPlugin = new ReactiveConstructorPlugin({
 
 	initConstructor: function ( passedClass ) {
@@ -56,13 +64,17 @@ ReactiveConstructorCmsPlugin = new ReactiveConstructorPlugin({
 		// Has test: ✔
 		passedClass.prototype.getReactiveValuesAsArray = function () {
 			var typeStructure = this.getCurrentTypeStructure();
-			return _.map( this.reactiveData.get(), function( value, key ) {
-				return {
-					key: key,
-					value: value,
-					type: getTypeOfStructureItem( typeStructure[key] )
-				};
-			});
+			return _(this.reactiveData.get())
+			.map(function( value, key ) {
+				if ( reactiveConstructorCmsExtraInstanceFields[key] === undefined )
+					return {
+						key: key,
+						value: value,
+						type: getTypeOfStructureItem( typeStructure[key] )
+					};
+			})
+			.compact()
+			.value();
 		};
 
 		// Method for removing item from an array
@@ -380,13 +392,7 @@ ReactiveConstructorCmsPlugin = new ReactiveConstructorPlugin({
 		// Else don't assign any extra fields
 		if ( !instance.getCollection() )
 			return {};
-		return {
-			_id: String,
-			reactiveConstructorCmsName: String,
-			reactiveConstructorCmsStatus: String,
-			updateTime: ISODate,
-			mainId: String
-		};
+		return reactiveConstructorCmsExtraInstanceFields;
 	}
 
 });

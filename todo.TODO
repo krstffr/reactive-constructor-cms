@@ -1,13 +1,13 @@
  ✔ "Correct" err/res sending in callbacks of some methods  @done (15-05-19 10:40)
    Passed in wrong order in some places!
 
- ☐ Can't set superCool to false in Invoice in example 1
-
  ✔ Ability to "unpublish" documents @done (15-05-19 10:25)
    Mauybe you have a couple of webpages, and you notice that one of the pages is NOT supposed to be live yet. You need to be able to remove the live version!
    WORKS NOW RIGHT?
    ✔ Add to template! @done (15-05-19 11:04)
  
+ ✔ Hide the CMS fields from the CMS view. @done (15-05-19 11:19)
+
  ☐ Ability to go back to older backups
    Check that saving etc. works the way it should also when going back.
    
@@ -60,6 +60,7 @@
    ☐ Also a "go to parent" button?
 
 Not prio:
+ ☐ BUG: Can't set superCool to false in Invoice in example 1
  ☐ Setting of dates, don't seem to work?
  ☐ Ability to define how "deep" nested objects should run.
    ☐ Maybe a "load more" button? Or the "go to" ability mentioned above?
