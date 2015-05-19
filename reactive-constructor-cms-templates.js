@@ -198,7 +198,7 @@ Template.editTemplate__wrapper.events({
     if (!confirm('Are you sure you want to remove this part?'))
       return false;
 
-    this.deleteInstance( function( res ) {
+    this.deleteInstance( function( err, res ) {
       if (res > 0)
         return ReactiveConstructorCmsPlugin.editPageRemove();
       throw new Error('reactive-constructor-cms', 'No docs removed? ' + res );
@@ -212,7 +212,7 @@ Template.editTemplate__wrapper.events({
   },
   'click .reactive-constructor-cms-duplicate-button': function() {
     var instance = this;
-    return instance.save({ duplicate: true }, function( res ) {
+    return instance.save({ duplicate: true }, function( err, res ) {
       if ( res.edit ){
         var createdInstance = ReactiveConstructorCmsPlugin.getInstanceByTypeAndId( instance.constructor.constructorName, res.edit.insertedId );
         return ReactiveConstructorCmsPlugin.editPageGet( createdInstance );

@@ -158,7 +158,7 @@ ReactiveConstructorCmsPlugin = new ReactiveConstructorPlugin({
 
 			var firstMessage = Msgs.addMessage('Saving…', 'rc-cms__message--info');
 
-			return Meteor.call('reactive-constructor-cms/save', this.getDataAsObject(), passedClass.constructorName, saveOptions, function(err, res) {
+			return Meteor.call('reactive-constructor-cms/save', this.getDataAsObject(), passedClass.constructorName, saveOptions, function( err, res ) {
 				if (err)
 					return Msgs.addMessage( err.reason, 'rc-cms__message--error');
 				if ( res ){
@@ -167,7 +167,7 @@ ReactiveConstructorCmsPlugin = new ReactiveConstructorPlugin({
 					ReactiveConstructorCmsPlugin.updateGlobalInstanceStore();
 				}
 				if ( callback )
-					return callback( res, err );
+					return callback( err, res );
 				return true;
 			});
 
@@ -185,7 +185,7 @@ ReactiveConstructorCmsPlugin = new ReactiveConstructorPlugin({
 			var firstMessage = Msgs.addMessage('Removing published doc…', 'rc-cms__message--info');
 			var id = this.getDataAsObject()._id;
 
-			return Meteor.call('reactive-constructor-cms/unpublish', id, passedClass.constructorName, function(err, res) {
+			return Meteor.call('reactive-constructor-cms/unpublish', id, passedClass.constructorName, function( err, res ) {
 				if (err)
 					return Msgs.addMessage( err.reason, 'rc-cms__message--error');
 				if ( res ){
@@ -212,11 +212,11 @@ ReactiveConstructorCmsPlugin = new ReactiveConstructorPlugin({
 
 			check( id, String );
 
-			return Meteor.call('reactive-constructor-cms/delete', id, passedClass.constructorName, function(err, res) {
+			return Meteor.call('reactive-constructor-cms/delete', id, passedClass.constructorName, function( err, res ) {
 				if ( res )
 					ReactiveConstructorCmsPlugin.updateGlobalInstanceStore();
 				if ( callback )
-					return callback( res, err );
+					return callback( err, res );
 				return true;
 			});
 
@@ -236,7 +236,7 @@ ReactiveConstructorCmsPlugin = new ReactiveConstructorPlugin({
 
 			check( id, String );
 
-			return Meteor.call('reactive-constructor-cms/get-published-doc', id, passedClass.constructorName, function(err, res) {
+			return Meteor.call('reactive-constructor-cms/get-published-doc', id, passedClass.constructorName, function( err, res ) {
 				if ( err ){
 					Msgs.addMessage('Error while getting published doc: ' + err.reason, 'rc-cms__message--error');
 				}	

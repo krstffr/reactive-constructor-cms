@@ -520,7 +520,7 @@ Tinytest.add('ReactiveConstructorCmsPlugin constructor methods - getCreatableTyp
 
 Tinytest.addAsync('ReactiveConstructorCmsPlugin async - cleanup, remove all collections', function(test, next) {
 
-	Meteor.call('reactive-constructor-cms/cleanup-test-db', function(err, res) {
+	Meteor.call('reactive-constructor-cms/cleanup-test-db', function( err, res ) {
 		if (!err){
 			console.log( 'Removed: ', res, ' docs from DB.' );
 			next();
@@ -605,7 +605,7 @@ Tinytest.addAsync('ReactiveConstructorCmsPlugin async - instance.save(), logged 
 
 	loginOrCreateAccount(function() {
 		var docToSave = new Person();
-		docToSave.save({}, function(res){
+		docToSave.save({}, function( err, res ){
 			test.equal( res.backupsRemoved, 0 );
 			test.isTrue( Match.test( res.backup, String ) );
 			test.isTrue( Match.test( res.edit, {
@@ -622,7 +622,7 @@ Tinytest.addAsync('ReactiveConstructorCmsPlugin async - instance.save({ publish:
 
 	var docToSave = new Person();
 
-	docToSave.save({ publish: true }, function(res){
+	docToSave.save({ publish: true }, function( err, res ){
 
 		test.equal( res.backupsRemoved, 0 );
 		
@@ -654,7 +654,7 @@ Tinytest.addAsync('ReactiveConstructorCmsPlugin async - instance.save(), remove 
 	var backupsShouldBeRemovedAfter = saveTimes-15;
 
 	var saveRecurse = function( num, instance ) {
-		instance.save({ publish: true }, function( res ){
+		instance.save({ publish: true }, function( err, res ){
 
 			test.isTrue( Match.test( res, {
 				published: Object,
@@ -787,7 +787,7 @@ Tinytest.addAsync('ReactiveConstructorCmsPlugin async - instance.deleteInstance(
 
 		// First save the doc, so we know we have one
 		docToSave.save({}, function(){
-			docToSave.deleteInstance(function(res){
+			docToSave.deleteInstance(function( err, res ){
 				test.isTrue( Match.test( res, Number ) );
 				test.isTrue( res > 0 );
 				next();
@@ -873,7 +873,7 @@ Tinytest.addAsync('ReactiveConstructorCmsPlugin async - ReactiveConstructorCmsPl
 	// Let's create a person to later look for
 	var person = new Person({ rcType: 'child' });
 
-	person.save({}, function(res) {
+	person.save({}, function( err, res ) {
 		test.equal(
 			ReactiveConstructorCmsPlugin.getInstanceByTypeAndId( 'Person', res.edit.insertedId ).getReactiveValue('_id'),
 			person.getReactiveValue('_id')
