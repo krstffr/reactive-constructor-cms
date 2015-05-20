@@ -1,32 +1,4 @@
- ✔ "Correct" err/res sending in callbacks of some methods  @done (15-05-19 10:40)
-   Passed in wrong order in some places!
-
- ✔ Ability to "unpublish" documents @done (15-05-19 10:25)
-   Mauybe you have a couple of webpages, and you notice that one of the pages is NOT supposed to be live yet. You need to be able to remove the live version!
-   WORKS NOW RIGHT?
-   ✔ Add to template! @done (15-05-19 11:04)
- 
- ✔ Hide the CMS fields from the CMS view. @done (15-05-19 11:19)
-
- ✔ Ability to go back to older backups @done (15-05-19 14:29)
-   Check that saving etc. works the way it should also when going back.
-   ✔ Test saves etc! @done (15-05-19 14:03)
-   ✔ Also show the version of the backup in the template somehow? @done (15-05-19 14:29)
-   
  ☐ Keydown update of value (without messing with the input!)
-
- ✔ Nested children shuold not have _id, status etc. @done (15-05-20 10:20)
-   Or should they? What if you want to move them out of their parent?
-   Probably add them at that stage right??
-   ✔ Problem is: ALL new instances from the reactive constructors add these fields to the instances after instantiation. There should be some kind of explicit check for adding these! @done (15-05-20 10:20)
-     Maybe add it (if it's not already there) when opening the doc in the CMS editor view??
-     ✔ SHOULD WORK NOW! Do extensive testing in the example UI @done (15-05-20 10:20)
-       ✔ Move nested children around @done (15-05-20 10:18)
-       ✔ Move nested linked and "ordinary children around" @done (15-05-20 10:18)
-       ✔ Create new instances from children @done (15-05-20 10:19)
-       ✔ Test going via "Open" from instance to instance in a three way loop @done (15-05-20 10:19)
-       ✔ Add nested objects @done (15-05-20 10:20)
-       ✔ Do all the above methods to the nested object (which apply!) @done (15-05-20 10:20)
 
  ☐ Update the reactive-constructor package to be able to handle objects which have additional fields to them (#24 on github)
 
@@ -34,7 +6,7 @@
    Probably create switch button which toggles view between LIST or OVERVIEW, where OVERIEW have image previews as well (taken from a previewImg field?)
    See the "Fetching of data from DB>UI" below!
 
- ☐ Main UI! 
+ ☐ Main UI!
    ☐ The look and feel of this thing. 
    ☐ Also: how does the user reach the UI?
      ☐ No router!!
@@ -69,13 +41,11 @@
 
  ☐ Change name of .type to .contstructorName, since that what it is (cause infinite loop right now though!)
  
- ☐ Saving of "parent" instance, when editing a child instance
-   ☐ Also a "go to parent" button?
-
- ☐ Bug: Setting 0 for number sets val to false
 
 Not prio:
- ☐ BUG: Can't set superCool to false in Invoice in example 1
+ ☐ Saving of "parent" instance, when editing a child instance
+  ☐ Also a "go to parent" button?
+
  ☐ Setting of dates, don't seem to work?
  ☐ Ability to define how "deep" nested objects should run.
    ☐ Maybe a "load more" button? Or the "go to" ability mentioned above?
@@ -88,6 +58,31 @@ Not prio:
    Maybe a little helper which the user can embed anywhere he likes (which contains the contents field of the reactive field), and whenever the user updates this (through blur event on the content editable field) the part will be updated in the actual instance??
 ＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿
 Archive:
+ ✔ Bug: Setting 0 for number sets val to false @done (15-05-20 15:54)
+ ✔ BUG: Can't set superCool to false in Invoice in example 1 @done (15-05-20 15:52)
+ ✔ SHOULD WORK NOW! Do extensive testing in the example UI @done (15-05-20 10:20)
+ ✔ Problem is: ALL new instances from the reactive constructors add these fields to the instances after instantiation. There should be some kind of explicit check for adding these! @done (15-05-20 10:20)
+  Maybe add it (if it's not already there) when opening the doc in the CMS editor view??
+ ✔ Nested children shuold not have _id, status etc. @done (15-05-20 10:20)
+  Or should they? What if you want to move them out of their parent?
+  Probably add them at that stage right??
+ ✔ Do all the above methods to the nested object (which apply!) @done (15-05-20 10:20)
+ ✔ Add nested objects @done (15-05-20 10:20)
+ ✔ Test going via "Open" from instance to instance in a three way loop @done (15-05-20 10:19)
+ ✔ Create new instances from children @done (15-05-20 10:19)
+ ✔ Move nested linked and "ordinary children around" @done (15-05-20 10:18)
+ ✔ Move nested children around @done (15-05-20 10:18)
+ ✔ Also show the version of the backup in the template somehow? @done (15-05-19 14:29)
+ ✔ Ability to go back to older backups @done (15-05-19 14:29)
+  Check that saving etc. works the way it should also when going back.
+ ✔ Test saves etc! @done (15-05-19 14:03)
+ ✔ Hide the CMS fields from the CMS view. @done (15-05-19 11:19)
+ ✔ Add to template! @done (15-05-19 11:04)
+ ✔ "Correct" err/res sending in callbacks of some methods  @done (15-05-19 10:40)
+  Passed in wrong order in some places!
+ ✔ Ability to "unpublish" documents @done (15-05-19 10:25)
+  Mauybe you have a couple of webpages, and you notice that one of the pages is NOT supposed to be live yet. You need to be able to remove the live version!
+  WORKS NOW RIGHT?
  ✔ Are there tests for this? @done (15-05-18 11:25)
  ✔ Ability to filter for specific type (within a constructor) when defining what can be "nested" in an instance. For example: maybe a pagePart only should be able to have nested pagePart->images, and not pagePart->menuItems. Etc. @done (15-05-18 11:25)
  ✔ This works right? A Person->Husband can have a wife of type Person->Wife? @done (15-05-18 10:13)

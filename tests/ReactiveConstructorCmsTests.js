@@ -179,9 +179,21 @@ Tinytest.add('ReactiveConstructorCmsPlugin - init: main object and all methods e
 
 });
 
+Tinytest.add('ReactiveConstructorCmsPlugin - init: new instances should be able to have Boolean fields set to false', function(test) {
+
+	var fedAnimal = new Animal({ hungry: false });
+	var hungryAnimal = new Animal({ hungry: true });
+		
+	console.log( hungryAnimal.getReactiveValue('hungry') );
+	console.log( fedAnimal.getReactiveValue('hungry') );
+
+	test.isTrue( hungryAnimal.getReactiveValue('hungry') );
+	test.isFalse( fedAnimal.getReactiveValue('hungry') );
+
+});
+
 Tinytest.add('ReactiveConstructorCmsPlugin overrides - checkReactiveValueType()', function(test) {
 
-	var incorrectLinkObject = {type: 'reactive-constructor-cms-linked-item', constructorName: Person, _id: 456 };
 	var correctLinkObject = {type: 'reactive-constructor-cms-linked-item', constructorName: 'Person', _id: 'a proper id' };
 
 	// Should fail if not passing correct arguments
@@ -527,7 +539,7 @@ Tinytest.addAsync('ReactiveConstructorCmsPlugin async - cleanup, remove all coll
 
 });
 
-Tinytest.addAsync('ReactiveConstructorCmsPlugin async - not logged in method call: rc-temp-cms/save', function(test, next) {
+Tinytest.addAsync('ReactiveConstructorCmsPlugin async - not logged in method call: reactive-constructor-cms/save', function(test, next) {
 
 	Meteor.logout(function() {
 		Meteor.call('reactive-constructor-cms/save', function( err, res ) {
@@ -539,7 +551,7 @@ Tinytest.addAsync('ReactiveConstructorCmsPlugin async - not logged in method cal
 
 });
 
-Tinytest.addAsync('ReactiveConstructorCmsPlugin async - not logged in method call: rc-temp-cms/delete-old-backups', function(test, next) {
+Tinytest.addAsync('ReactiveConstructorCmsPlugin async - not logged in method call: reactive-constructor-cms/delete-old-backups', function(test, next) {
 
 	Meteor.logout(function() {
 		Meteor.call('reactive-constructor-cms/delete-old-backups', function( err, res ) {
@@ -551,10 +563,10 @@ Tinytest.addAsync('ReactiveConstructorCmsPlugin async - not logged in method cal
 
 });
 
-Tinytest.addAsync('ReactiveConstructorCmsPlugin async - not logged in method call: rc-temp-cms/rc-temp-cms/delete', function(test, next) {
+Tinytest.addAsync('ReactiveConstructorCmsPlugin async - not logged in method call: reactive-constructor-cms/delete', function(test, next) {
 
-	Meteor.logout(function() {
-		Meteor.call('reactive-constructor-cms/rc-temp-cms/delete', function( err, res ) {
+	Meteor.logout(function() {	
+		Meteor.call('reactive-constructor-cms/delete', function( err, res ) {
 			test.isUndefined( res );
 			test.isTrue( Match.test( err.reason, String ) );
 			next();

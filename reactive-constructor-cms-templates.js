@@ -188,7 +188,9 @@ var updateInput = function ( value, key, type, instance ) {
 
   instance = instance || Template.currentData().value || Template.currentData();
 
-  if (!value)
+  console.log( value, type );
+
+  if (!value && type !== 'Number' && type !== 'Boolean')
     return instance.unsetReactiveValue( key );
 
   return instance.setReactiveValue( key, value );

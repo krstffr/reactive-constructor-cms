@@ -463,8 +463,8 @@ ReactiveConstructorCmsPlugin = new ReactiveConstructorPlugin({
 ReactiveConstructorCmsPlugin.checkReactiveValueType = function( key, passedValue, ordinaryCheckReactiveValueType ) {
 
 	// Make sure the correct values are passed
-	if (!key || !passedValue)
-		throw new Meteor.Error('reactive-constructor-cms', 'No key or passedValue passed to ReactiveConstructorCmsPlugin.checkReactiveValueType()');
+	if (passedValue === undefined)
+		throw new Meteor.Error('reactive-constructor-cms', 'No passedValue passed to ReactiveConstructorCmsPlugin.checkReactiveValueType()');
 
 	check( key, String );
 	check( ordinaryCheckReactiveValueType, Function );

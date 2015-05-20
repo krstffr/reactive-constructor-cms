@@ -177,8 +177,6 @@ InvoiceListItem = new ReactiveConstructor('InvoiceListItem', function() {
   };
 });
 
-var testInvoiceListItem = new InvoiceListItem({ tax: 30 });
-
 Invoice = new ReactiveConstructor('Invoice', function() {
   return {
     globalValues: {
@@ -226,21 +224,11 @@ Invoice = new ReactiveConstructor('Invoice', function() {
   };
 });
 
-invoice1 = new Invoice({ invoiceName: 'KK001', items: [ new InvoiceListItem() ] });
-
-// invoice1.setReactiveValue('client', client );
-
-person = new Person({ name: 'Stoffe K' });
-
-person2 = new Person({ age: 17, rcType: 'child' });
-
-person3 = new Person({ age: 50, rcType: 'child' });
-// person4 = new Person();
-
-new Person({ age: 50, rcType: 'worker', children: [{ age: 25, rcType: 'child' }] });
-
 if (Meteor.isServer)
   return false;
+
+
+person = new Person({ name: 'Stoffe K' });
 
 Template.login.events({
   'click button': function() {
@@ -252,12 +240,6 @@ Template.login.events({
 Template.invoiceTestTemplate.helpers({
   person: function () {
     return person;
-  },
-  invoice: function () {
-    return invoice1;
-  },
-  client: function () {
-    return client;
   },
   invoices: function () {
     var constructorType = _.findWhere( tempCMSInstances.get(), { constructorName: 'Invoice' });
