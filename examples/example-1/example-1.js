@@ -25,17 +25,19 @@ Person = new ReactiveConstructor('Person', function () {
     typeStructure: [{
       type: 'worker',
       fields: {
-        title: String
+        title: String,
+        bio: String
       },
       defaultData: {
         name: 'Kristoffer Klintberg',
+        bio: 'Miner for 30 years…',
         title: 'Designer',
         age: 30,
         children: []
       },
       cmsOptions: {
         inputs: {
-          name: {
+          bio: {
             type: 'textarea'
           }
         },
