@@ -60,12 +60,37 @@ ReactiveConstructorCmsPlugin = new ReactiveConstructorPlugin({
 			return false;
 		};
 
+		// If a collection is defined for this constructor, make sure this
+		// instance has an _id field
+		passedClass.prototype.setupCmsFields = function() {
+
+			if (this.getCollection()) {
+
+				if ( !this.getReactiveValue('_id') ){
+					var _id = Meteor.uuid();
+					this.setReactiveValue('_id', _id );
+					this.setReactiveValue('mainId', _id );
+				}
+
+				if ( !this.getReactiveValue('reactiveConstructorCmsName') )
+					this.setReactiveValue('reactiveConstructorCmsName', 'New ' + this.getType() );
+
+				this._id = this.getReactiveValue('_id');
+				this.reactiveConstructorCmsName = this.getReactiveValue('reactiveConstructorCmsName');
+
+			}
+
+			return true;
+
+		};
+		
+
 		// Method for returning the data for the CMS frontend basically
 		// Will not return the fields in reactiveConstructorCmsExtraInstanceFields
 		// EXCEPT the reactiveConstructorCmsName
 		// Has test: ✔
 		passedClass.prototype.getReactiveValuesAsArray = function () {
-			var typeStructure = this.getCurrentTypeStructure();
+			var typeStructure = _.assign( this.getCurrentTypeStructure(), reactiveConstructorCmsExtraInstanceFields );
 			return _(this.reactiveData.get())
 			.map(function( value, key ) {
 				// Only return the non CMS fields (EXCEPT reactiveConstructorCmsName!)
@@ -174,6 +199,8 @@ ReactiveConstructorCmsPlugin = new ReactiveConstructorPlugin({
 			
 			if ( !this.getCollection() )
 				throw new Meteor.Error('reactive-constructor-cms', 'No collection defined for: ' + passedClass.constructorName );
+
+			this.setupCmsFields();
 
 			var firstMessage = Msgs.addMessage('Saving…', 'rc-cms__message--info');
 
@@ -418,34 +445,13 @@ ReactiveConstructorCmsPlugin = new ReactiveConstructorPlugin({
 
 	initInstance: function ( instance ) {
 
-		// console.log('ReactiveConstructorCmsPlugin: initInstance() ', instance.getType() );
-
-		// If a collection is defined for this constructor, make sure this
-		// instance has an _id field
-		if (instance.getCollection()) {
-			if ( !instance.getReactiveValue('_id') ){
-				var _id = Meteor.uuid();
-				instance.setReactiveValue('_id', _id );
-				instance.setReactiveValue('mainId', _id );
-			}
-
-			if ( !instance.getReactiveValue('reactiveConstructorCmsName') )
-				instance.setReactiveValue('reactiveConstructorCmsName', 'New ' + instance.getType() );
-
-			instance._id = instance.getReactiveValue('_id');
-			instance.reactiveConstructorCmsName = instance.getReactiveValue('reactiveConstructorCmsName');
-		}
-
 		return instance;
 
 	},
 
-	pluginTypeStructure: function ( instance ) {
-		// Does the instance have a collection?
-		// Else don't assign any extra fields
-		if ( !instance.getCollection() )
-			return {};
-		return reactiveConstructorCmsExtraInstanceFields;
+	pluginTypeStructure: function () {
+		// Since we don't want to add any fields to ALL new instances, just return an empty object
+		return {};
 	}
 
 });
@@ -454,12 +460,13 @@ ReactiveConstructorCmsPlugin = new ReactiveConstructorPlugin({
 // This overriding is needed due to the nesting of "linked instances"
 // which are not of the correct types by default.
 // Has test: ✔
-ReactiveConstructorCmsPlugin.checkReactiveValueType = function( passedValue, currentTypeToCheck, ordinaryCheckReactiveValueType ) {
+ReactiveConstructorCmsPlugin.checkReactiveValueType = function( key, passedValue, ordinaryCheckReactiveValueType ) {
 
 	// Make sure the correct values are passed
-	if (passedValue === undefined || !currentTypeToCheck)
-		throw new Meteor.Error('reactive-constructor-cms', 'No value passed to ReactiveConstructorCmsPlugin.checkReactiveValueType()');
+	if (!key || !passedValue)
+		throw new Meteor.Error('reactive-constructor-cms', 'No key or passedValue passed to ReactiveConstructorCmsPlugin.checkReactiveValueType()');
 
+	check( key, String );
 	check( ordinaryCheckReactiveValueType, Function );
 
 	// It could be a linked object! If so: accept it!
@@ -475,7 +482,14 @@ ReactiveConstructorCmsPlugin.checkReactiveValueType = function( passedValue, cur
 		});
 	}
 
-	return ordinaryCheckReactiveValueType( passedValue, currentTypeToCheck );
+	// Is it a key specific to this plugins added fields?
+	// If so: check it against this structure
+	if ( reactiveConstructorCmsExtraInstanceFields[ key ] ){
+		check( passedValue, reactiveConstructorCmsExtraInstanceFields[ key ] );
+		return true;
+	}
+
+	return ordinaryCheckReactiveValueType( key, passedValue );
 
 };
 
@@ -509,8 +523,10 @@ ReactiveConstructorCmsPlugin.checkReactiveValues = function( dataToCheck, curren
 		return item;
 
 	}).pick( _.identity ).value();
+
+
 	
-	return ordinaryCheckReactiveValues( dataToCheck, currentTypeStructure );
+	return ordinaryCheckReactiveValues( dataToCheck, _.assign( currentTypeStructure, reactiveConstructorCmsExtraInstanceFields ) );
 
 };
 
@@ -640,7 +656,9 @@ ReactiveConstructorCmsPlugin.updateGlobalInstanceStore = function() {
     return {
       constructorName: constructor.constructorName,
       items: _.map( constructor.constructorDefaults().cmsOptions.collection.find({ reactiveConstructorCmsStatus: 'edit' }).fetch(), function( instanceData ) {
-        return new ReactiveConstructors[ constructor.constructorName ]( instanceData );
+        var instance = new ReactiveConstructors[ constructor.constructorName ]( instanceData );
+        instance.setupCmsFields();
+        return instance;
       })
     };
   })
@@ -703,6 +721,9 @@ ReactiveConstructorCmsPlugin.editPageGet = function( instance ) {
 
 	// Remove any currently visible edit templates
 	return ReactiveConstructorCmsPlugin.editPageRemove( instance, function( instance ) {
+
+		// Make sure the instance has all the required fields
+		instance.setupCmsFields();
 
 		// Render the edit template
 		renderedCMSView = Blaze.renderWithData( Template.editTemplate__wrapper, instance, document.body );

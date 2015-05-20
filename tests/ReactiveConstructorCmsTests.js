@@ -197,25 +197,23 @@ Tinytest.add('ReactiveConstructorCmsPlugin overrides - checkReactiveValueType()'
 	test.throws(function () {
 		ReactiveConstructorCmsPlugin.checkReactiveValueType('firstVal', Object, 'Wrong type');
 	});
-	test.throws(function() {
-		ReactiveConstructorCmsPlugin.checkReactiveValueType(incorrectLinkObject, 'shit', function() {});
-	});
 
 	// Passing a proper linked object should return true
-	test.isTrue( ReactiveConstructorCmsPlugin.checkReactiveValueType(correctLinkObject, 'shit', function() {}) );
+	test.isTrue( ReactiveConstructorCmsPlugin.checkReactiveValueType('shit', correctLinkObject, function() {}) );
 
 	// Passing an array with a linked object should pass an empty array to the default method
-	ReactiveConstructorCmsPlugin.checkReactiveValueType([ correctLinkObject ], 'shit', function( passedValue ) {
+	ReactiveConstructorCmsPlugin.checkReactiveValueType('shit', [ correctLinkObject ], function( key, passedValue ) {
+		test.equal(key, 'shit');
 		test.equal(passedValue, []);
 	});
 
 	// Passing an array with an "ordinary" constructor should pass an array with the constructor
-	 // to the default method
-	 ReactiveConstructorCmsPlugin.checkReactiveValueType([ Person ], 'shit', function( passedValue ) {
-	 	test.equal(passedValue, [Person]);
-	 });
-
+	// to the default method
+	ReactiveConstructorCmsPlugin.checkReactiveValueType('shit', [ Person ], function( key, passedValue ) {
+		test.equal(passedValue, [Person]);
 	});
+
+});
 
 Tinytest.add('ReactiveConstructorCmsPlugin overrides - checkReactiveValues()', function(test) {
 
@@ -408,7 +406,7 @@ Tinytest.addAsync('ReactiveConstructorCmsPlugin async - instance.arrayitemMove()
 
 			}, 5);
 		}, 5);
-	}, 5);	
+}, 5);	
 
 });
 
@@ -918,11 +916,8 @@ Tinytest.addAsync('ReactiveConstructorCmsPlugin async - instance.getLinkableInst
 						});
 					});
 				});
-
 			});
-
 		});
-
 	});
 
 });
@@ -940,7 +935,7 @@ Tinytest.addAsync('ReactiveConstructorCmsPlugin async - ReactiveConstructorCmsPl
 
 	person.save({}, function( err, res ) {
 		test.equal(
-			ReactiveConstructorCmsPlugin.getInstanceByTypeAndId( 'Person', res.edit.insertedId ).getReactiveValue('_id'),
+			ReactiveConstructorCmsPlugin.getInstanceByTypeAndId( 'Person', res.edit.insertedId )._id,
 			person.getReactiveValue('_id')
 			);
 		next();

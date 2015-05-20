@@ -15,9 +15,20 @@
    
  ☐ Keydown update of value (without messing with the input!)
 
- ☐ Nested children shuold not have _id, status etc.
+ ✔ Nested children shuold not have _id, status etc. @done (15-05-20 10:20)
    Or should they? What if you want to move them out of their parent?
    Probably add them at that stage right??
+   ✔ Problem is: ALL new instances from the reactive constructors add these fields to the instances after instantiation. There should be some kind of explicit check for adding these! @done (15-05-20 10:20)
+     Maybe add it (if it's not already there) when opening the doc in the CMS editor view??
+     ✔ SHOULD WORK NOW! Do extensive testing in the example UI @done (15-05-20 10:20)
+       ✔ Move nested children around @done (15-05-20 10:18)
+       ✔ Move nested linked and "ordinary children around" @done (15-05-20 10:18)
+       ✔ Create new instances from children @done (15-05-20 10:19)
+       ✔ Test going via "Open" from instance to instance in a three way loop @done (15-05-20 10:19)
+       ✔ Add nested objects @done (15-05-20 10:20)
+       ✔ Do all the above methods to the nested object (which apply!) @done (15-05-20 10:20)
+
+ ☐ Update the reactive-constructor package to be able to handle objects which have additional fields to them (#24 on github)
 
  ☐ Images overview. Or overview with image previews.
    Probably create switch button which toggles view between LIST or OVERVIEW, where OVERIEW have image previews as well (taken from a previewImg field?)
