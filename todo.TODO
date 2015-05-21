@@ -1,10 +1,10 @@
- ☐ Keydown update of value (without messing with the input!)
-
- ☐ Update the reactive-constructor package to be able to handle objects which have additional fields to them (#24 on github)
-
+ ✔ BUG: When setting a String value to "" it does not get saved! @done (15-05-21 11:19)
+   The default value should NOT be added to exisiting instances?
+ 
  ☐ Images overview. Or overview with image previews.
    Probably create switch button which toggles view between LIST or OVERVIEW, where OVERIEW have image previews as well (taken from a previewImg field?)
    See the "Fetching of data from DB>UI" below!
+   ☐ Should work now, test it HARD!
 
  ☐ Main UI!
    ☐ The look and feel of this thing. 
@@ -45,7 +45,7 @@
 Not prio:
  ☐ Saving of "parent" instance, when editing a child instance
   ☐ Also a "go to parent" button?
-
+ ☐ Keydown update of value (without messing with the input!)
  ☐ Setting of dates, don't seem to work?
  ☐ Ability to define how "deep" nested objects should run.
    ☐ Maybe a "load more" button? Or the "go to" ability mentioned above?
@@ -58,6 +58,7 @@ Not prio:
    Maybe a little helper which the user can embed anywhere he likes (which contains the contents field of the reactive field), and whenever the user updates this (through blur event on the content editable field) the part will be updated in the actual instance??
 ＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿
 Archive:
+ ✔ Update the reactive-constructor package to be able to handle objects which have additional fields to them (#24 on github) @done (15-05-20 16:27)
  ✔ Bug: Setting 0 for number sets val to false @done (15-05-20 15:54)
  ✔ BUG: Can't set superCool to false in Invoice in example 1 @done (15-05-20 15:52)
  ✔ SHOULD WORK NOW! Do extensive testing in the example UI @done (15-05-20 10:20)

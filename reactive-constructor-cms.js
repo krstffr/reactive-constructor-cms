@@ -180,11 +180,19 @@ ReactiveConstructorCmsPlugin = new ReactiveConstructorPlugin({
 			return this.arrayitemMove( listKey, (indexToDuplicate+1), (this.getReactiveValue( listKey ).length - 1) );
 		};
 
+		// Method for getting image preview (if one is set!) for an instance.
+		// Used in the "overview" view of the select overview (as opposed to the list view)
+		// Has test: ✔
+		passedClass.prototype.getImgPreview = function() {
+			if ( !this.getAllCmsOptions().imgPreviewKey)
+				return false;
+			return this.getReactiveValue( this.getAllCmsOptions().imgPreviewKey );
+		};
+
+		// Method for returnin the collection which this instance will be saved to.
 		// Has test: ✔
 		passedClass.prototype.getCollection = function() {
-			if ( !passedClass.constructorDefaults().cmsOptions || !passedClass.constructorDefaults().cmsOptions.collection)
-				return false;
-			return passedClass.constructorDefaults().cmsOptions.collection;
+			return this.getAllCmsOptions().collection || false;
 		};
 
 		// Has test: ✔
@@ -359,6 +367,18 @@ ReactiveConstructorCmsPlugin = new ReactiveConstructorPlugin({
 			}).cmsOptions || {};
 		};
 
+		// Method for returning the constructor's cmsOptions
+		// Has test: ✔
+		passedClass.prototype.getConstructorCmsOptions = function() {
+			return passedClass.constructorDefaults().cmsOptions || {};
+		};
+
+		// Method for getting both instance AND constructor cms options
+		// Has test: ✔
+		passedClass.prototype.getAllCmsOptions = function() {
+			return _.assign( this.getInstanceCmsOptions(), this.getConstructorCmsOptions() );
+		};
+
 		// Method to check if an instance can be saved
 		// Has test: ✔
 		passedClass.prototype.canBeSaved = function() {
@@ -449,9 +469,14 @@ ReactiveConstructorCmsPlugin = new ReactiveConstructorPlugin({
 
 	},
 
+	// Since we don't want to add any fields to ALL new instances, just return an empty object
 	pluginTypeStructure: function () {
-		// Since we don't want to add any fields to ALL new instances, just return an empty object
 		return {};
+	},
+
+	// This returns all VALID fields (but won't add them to instances, they're just OK).
+	validTypeStructureFields: function () {
+		return reactiveConstructorCmsExtraInstanceFields;
 	}
 
 });

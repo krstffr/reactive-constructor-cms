@@ -3,6 +3,24 @@ Animals = new Meteor.Collection('animals');
 
 Meteor.startup(function() {
 
+	Client = new ReactiveConstructor('Client', function() {
+		return {
+			typeStructure: [{
+				type: 'instance with instance cmsOptions',
+				fields: {
+					clientBackground: String
+				},
+				cmsOptions: {
+					inputs: {
+						clientBackground: {
+							type: 'textarea'
+						}
+					},
+				}
+			}]
+		};
+	});
+
 	Person = new ReactiveConstructor('Person', function () {
 		return {
 			cmsOptions: {
@@ -19,15 +37,18 @@ Meteor.startup(function() {
 			typeStructure: [{
 				type: 'worker',
 				fields: {
-					title: String
+					title: String,
+					portraitUrl: String
 				},
 				defaultData: {
 					name: 'Kristoffer Klintberg',
 					title: 'Designer',
 					age: 30,
-					children: []
+					children: [],
+					portraitUrl: 'http://portra.wpshower.com/wp-content/uploads/2014/03/martin-schoeller-barack-obama-portrait-up-close-and-personal.jpg'
 				},
 				cmsOptions: {
+					imgPreviewKey: 'portraitUrl',
 					inputs: {
 						name: {
 							type: 'textarea'
@@ -183,7 +204,7 @@ Tinytest.add('ReactiveConstructorCmsPlugin - init: new instances should be able 
 
 	var fedAnimal = new Animal({ hungry: false });
 	var hungryAnimal = new Animal({ hungry: true });
-		
+
 	console.log( hungryAnimal.getReactiveValue('hungry') );
 	console.log( fedAnimal.getReactiveValue('hungry') );
 
@@ -478,12 +499,69 @@ Tinytest.add('ReactiveConstructorCmsPlugin instance methods - instance.getInstan
 
 });
 
+Tinytest.add('ReactiveConstructorCmsPlugin instance methods - instance.getConstructorCmsOptions()', function(test) {
+	
+	var person1 = new Person({ rcType: 'husband' });
+	var person2 = new Person({ rcType: 'worker' });
+
+	test.equal( person1.getConstructorCmsOptions(), person2.getConstructorCmsOptions() );
+
+	var animal = new Animal();
+
+	test.equal( animal.getConstructorCmsOptions().collection, Animals );
+
+	var instanceWithNoOptions = new NonSaveableConstructor();
+
+	test.equal( instanceWithNoOptions.getConstructorCmsOptions(), {} );
+
+});
+
+Tinytest.add('ReactiveConstructorCmsPlugin instance methods - instance.getAllCmsOptions()', function(test) {
+	
+	var person1 = new Person({ rcType: 'husband' });
+	var person2 = new Person({ rcType: 'worker' });
+
+	test.equal( person1.getAllCmsOptions().collection, person2.getAllCmsOptions().collection );
+	test.notEqual( person1.getAllCmsOptions(), person2.getAllCmsOptions() );
+
+	var animal = new Animal();
+
+	test.equal( animal.getAllCmsOptions().collection, animal.getConstructorCmsOptions().collection );
+
+	var instanceWithNoOptions = new NonSaveableConstructor();
+
+	test.equal( instanceWithNoOptions.getAllCmsOptions(), {} );
+
+	var instanceWithOnlyInstanceCmsOptions = new Client();
+
+	test.equal( instanceWithOnlyInstanceCmsOptions.getAllCmsOptions(), {
+		inputs: {
+			clientBackground: {
+				type: 'textarea'
+			}
+		}
+	});
+
+});
+
 Tinytest.add('ReactiveConstructorCmsPlugin instance methods - instance.getInputType()', function(test) {
 	
 	var person = new Person({ rcType: 'worker' });
 
 	test.equal( person.getInputType('title'), false );
 	test.equal( person.getInputType('name'), 'textarea' );
+
+});
+
+Tinytest.add('ReactiveConstructorCmsPlugin instance methods - instance.getImgPreview()', function(test) {
+	
+	var person = new Person({ rcType: 'worker' });
+
+	test.equal( person.getImgPreview(), 'http://portra.wpshower.com/wp-content/uploads/2014/03/martin-schoeller-barack-obama-portrait-up-close-and-personal.jpg' );
+
+	var animal = new Animal();
+
+	test.isFalse( animal.getImgPreview() );
 
 });
 
@@ -862,10 +940,10 @@ Tinytest.addAsync('ReactiveConstructorCmsPlugin async - instance.getBackupDoc(),
 							});
 						});
 					});
-				});
-			});
-		});
-	});
+});
+});
+});
+});
 
 });
 
@@ -929,8 +1007,8 @@ Tinytest.addAsync('ReactiveConstructorCmsPlugin async - instance.getLinkableInst
 					});
 				});
 			});
-		});
-	});
+});
+});
 
 });
 

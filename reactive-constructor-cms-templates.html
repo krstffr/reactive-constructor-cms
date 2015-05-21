@@ -2,19 +2,46 @@
 
 	<div class="reactive-constructor-cms-select-overview__fader"></div>
 
-	<div class="reactive-constructor-cms-select-overview">
+	<div class="reactive-constructor-cms-select-overview reactive-constructor-cms-select-overview--hidden">
 	
-	<h2>{{ headline }}</h2>
+	<h2>
+		{{ headline }}
+		<a class="reactive-constructor-cms-select-overview__toggle-view">
+			Toggle view
+		</a>
+	</h2>
+
+	{{#if listViewIs 'list' }}
 	
-	<ul>
-	{{#each selectableItems }}
+		<ul>
+			{{#each selectableItems }}
 
-		<li>
-			<a>{{{ buttonValue }}}</a>
-		</li>
+				<li>
+					<a class="reactive-constructor-cms-select-overview__select-item">
+						{{{ buttonValue }}}
+					</a>
+				</li>
 
-	{{/each}}
-	</ul>
+			{{/each}}
+		</ul>
+
+	{{/if}}
+
+	{{#if listViewIs 'overview' }}
+
+		{{#each selectableItems }}
+
+			<div class="reactive-constructor-cms-select-overview__select-item reactive-constructor-cms-select-overview__img-preview">
+				<div
+					style="background-image: url('{{ getImgPreview }}');"
+					class="reactive-constructor-cms-select-overview__img-preview__img">
+				</div>
+				<a>{{{ buttonValue }}}</a>
+			</div>
+
+		{{/each}}
+
+	{{/if}}
 
 	</div>
 

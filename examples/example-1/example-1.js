@@ -19,23 +19,26 @@ Person = new ReactiveConstructor('Person', function () {
         name: String,
         children: [ Person ],
         sex: String,
-        pets: [ Pet ]
+        pets: [ Pet ],
+        portraitUrl: String
       }
     },
     typeStructure: [{
       type: 'worker',
       fields: {
         title: String,
-        bio: String
+        bio: String,
       },
       defaultData: {
         name: 'Kristoffer Klintberg',
         bio: 'Miner for 30 years…',
         title: 'Designer',
         age: 30,
-        children: []
+        children: [],
+        portraitUrl: 'http://portra.wpshower.com/wp-content/uploads/2014/03/martin-schoeller-barack-obama-portrait-up-close-and-personal.jpg'
       },
       cmsOptions: {
+        imgPreviewKey: 'portraitUrl',
         inputs: {
           bio: {
             type: 'textarea'

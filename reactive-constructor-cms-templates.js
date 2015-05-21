@@ -1,5 +1,20 @@
+Template.editTemplate__selectOverview.onCreated(function() {
+  // The list view should be 'list' by default
+  if (this.data)
+    this.data.listView = new ReactiveVar( this.data.listView || 'list' );
+});
+
+Template.editTemplate__selectOverview.onRendered(function() {
+  var wrapper = $( this.find('.reactive-constructor-cms-select-overview') );
+  wrapper.css({ top: $(window).scrollTop() });
+  wrapper.removeClass('reactive-constructor-cms-select-overview--hidden');
+});
+
 Template.editTemplate__selectOverview.events({
-  'click li a': function() {
+  'click .reactive-constructor-cms-select-overview__toggle-view': function() {
+    return this.listView.set( (this.listView.get() === 'list') ? 'overview' : 'list' );
+  },
+  'click .reactive-constructor-cms-select-overview__select-item': function() {
     // Make sure we have a callback function!
     var callback = Template.parentData(0).callback;
     check( callback, Function );
@@ -15,6 +30,14 @@ Template.editTemplate__selectOverview.events({
 });
 
 Template.editTemplate__selectOverview.helpers({
+  getImgPreview: function() {
+    if ( Match.test(this.getImgPreview, Function) )
+      return this.getImgPreview();
+    return ;
+  },
+  listViewIs: function( viewName ) {
+    return this.listView.get() === viewName;
+  },
   buttonValue: function() {
     if (this.reactiveConstructorCmsName){
       return 'Link to: <strong>' + this.reactiveConstructorCmsName + '</strong> ('+ this.getType() +')';
@@ -188,9 +211,9 @@ var updateInput = function ( value, key, type, instance ) {
 
   instance = instance || Template.currentData().value || Template.currentData();
 
-  console.log( value, type );
-
-  if (!value && type !== 'Number' && type !== 'Boolean')
+  // TODO: Is this ever used anymore?
+  // If it is: it's not good!
+  if (!value && type !== 'Number' && type !== 'Boolean' && type !== 'String')
     return instance.unsetReactiveValue( key );
 
   return instance.setReactiveValue( key, value );
