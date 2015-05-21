@@ -84,7 +84,6 @@ ReactiveConstructorCmsPlugin = new ReactiveConstructorPlugin({
 
 		};
 		
-
 		// Method for returning the data for the CMS frontend basically
 		// Will not return the fields in reactiveConstructorCmsExtraInstanceFields
 		// EXCEPT the reactiveConstructorCmsName
@@ -180,13 +179,18 @@ ReactiveConstructorCmsPlugin = new ReactiveConstructorPlugin({
 			return this.arrayitemMove( listKey, (indexToDuplicate+1), (this.getReactiveValue( listKey ).length - 1) );
 		};
 
+		// Method for getting the value of passed key for this instances cmsOptions
+		// Has test: 
+		passedClass.prototype.getCmsOption = function( key ) {
+			check( key, String );
+			return this.getAllCmsOptions()[key] || false;
+		};
+
 		// Method for getting image preview (if one is set!) for an instance.
 		// Used in the "overview" view of the select overview (as opposed to the list view)
 		// Has test: ✔
-		passedClass.prototype.getImgPreview = function() {
-			if ( !this.getAllCmsOptions().imgPreviewKey)
-				return false;
-			return this.getReactiveValue( this.getAllCmsOptions().imgPreviewKey );
+		passedClass.prototype.getImagePreview = function() {
+			return this.getReactiveValue( this.getCmsOption('imgPreviewKey') );
 		};
 
 		// Method for returnin the collection which this instance will be saved to.

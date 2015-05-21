@@ -1,10 +1,12 @@
  ✔ BUG: When setting a String value to "" it does not get saved! @done (15-05-21 11:19)
    The default value should NOT be added to exisiting instances?
  
- ☐ Images overview. Or overview with image previews.
+ ✔ Images overview. Or overview with image previews. @done (15-05-21 13:28)
    Probably create switch button which toggles view between LIST or OVERVIEW, where OVERIEW have image previews as well (taken from a previewImg field?)
    See the "Fetching of data from DB>UI" below!
-   ☐ Should work now, test it HARD!
+   ✔ Should work now, test it HARD! @done (15-05-21 13:28)
+
+ ☐ Image previews of image fields
 
  ☐ Main UI!
    ☐ The look and feel of this thing. 

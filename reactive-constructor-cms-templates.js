@@ -30,9 +30,9 @@ Template.editTemplate__selectOverview.events({
 });
 
 Template.editTemplate__selectOverview.helpers({
-  getImgPreview: function() {
-    if ( Match.test(this.getImgPreview, Function) )
-      return this.getImgPreview();
+  getImagePreview: function() {
+    if ( Match.test(this.getImagePreview, Function) )
+      return this.getImagePreview();
     return ;
   },
   listViewIs: function( viewName ) {

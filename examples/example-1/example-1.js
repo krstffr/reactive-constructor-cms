@@ -132,10 +132,15 @@ Client = new ReactiveConstructor('Client', function() {
       type: 'client',
       fields: {
         clientName: String,
-        adressStreet: String
+        adressStreet: String,
+        clientLogo: String
       },
       defaultData: {
-        clientName: 'New client'
+        clientName: 'New client',
+        clientLogo: 'http://www.pubologi.se/img/pubologi-logo--circle.png'
+      },
+      cmsOptions: {
+        imgPreviewKey: 'clientLogo'
       }
     }]
   };
