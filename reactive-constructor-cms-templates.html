@@ -201,12 +201,26 @@
 
 				{{> Template.dynamic template=getTemplateFromType }}
 
+				{{#if showImagePreview }}
+					{{> editTemplate__imagePreview }}
+				{{/if}}
+
 			{{/each }}
 
 		{{/if}}
 
 	</div>
 
+</template>
+
+<template name="editTemplate__imagePreview">
+
+	<div
+		class="reactive-constructor-cms__input__preview-img"
+		style="background-image: url('{{ value }}');"
+		>
+		</div>
+	
 </template>
 
 <template name="editTemplate__wrapper">

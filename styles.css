@@ -266,9 +266,17 @@
 	text-align: center;
 	padding: 0.5em 0.5em 0.6em;
 	cursor: pointer;
+	overflow: hidden;
 }
 .reactive-constructor-cms-select-overview__img-preview:hover{
 	border-color: #aaa;
+}
+.reactive-constructor-cms-select-overview__img-preview a {
+	max-width: 100%;
+	text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  display: inline-block;
 }
 .reactive-constructor-cms-select-overview__img-preview__img{
 	height: 150px;
@@ -276,6 +284,14 @@
 	margin: 0 0 0.6em;
 	background: #EEE center;
   background-size: cover;
+}
+
+.reactive-constructor-cms__input__preview-img {
+  height: 150px;
+  width: 70%;
+  float: right;
+  background: #414141 center no-repeat;
+  background-size: contain;
 }
 
 .reactive-constructor-cms__msgs .msgs__message{

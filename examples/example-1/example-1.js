@@ -42,6 +42,9 @@ Person = new ReactiveConstructor('Person', function () {
         inputs: {
           bio: {
             type: 'textarea'
+          },
+          portraitUrl: {
+            previewImage: true
           }
         },
         filter: {

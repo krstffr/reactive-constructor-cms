@@ -131,6 +131,11 @@ Template.editTemplate__Collection.onRendered(function () {
 });
 
 Template.editTemplate.helpers({
+  showImagePreview: function() {
+    var instance = Template.parentData(1);
+    var inputOptions = instance.getCmsOption('inputs');
+    return inputOptions && inputOptions[this.key] && inputOptions[this.key].previewImage;
+  },
   isBackup: function() {
     if (this.getReactiveValue)
       return this.getReactiveValue('reactiveConstructorCmsStatus') === 'backup';
