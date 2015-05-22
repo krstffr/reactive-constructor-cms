@@ -167,6 +167,12 @@
 	width: 70%;
 }
 
+.reactive-constructor-cms-wrapper input:disabled{
+	background: #ccc;
+	color: #444;
+	font-weight: bold;
+}
+
 .reactive-constructor-cms-wrapper .wrapper__buttons {
 	position: fixed;
 	bottom: 0;
@@ -292,6 +298,11 @@
   float: right;
   background: #414141 center no-repeat;
   background-size: contain;
+}
+
+.reactive-constructor-cms-change-value-using-overview{
+	float: right;
+	width: 70%;
 }
 
 .reactive-constructor-cms__msgs .msgs__message{

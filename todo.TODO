@@ -1,27 +1,20 @@
- ✔ BUG: When setting a String value to "" it does not get saved! @done (15-05-21 11:19)
-   The default value should NOT be added to exisiting instances?
- 
- ✔ Images overview. Or overview with image previews. @done (15-05-21 13:28)
-   Probably create switch button which toggles view between LIST or OVERVIEW, where OVERIEW have image previews as well (taken from a previewImg field?)
-   See the "Fetching of data from DB>UI" below!
-   ✔ Should work now, test it HARD! @done (15-05-21 13:28)
-
- ✔ Image previews of image fields @done (15-05-21 13:59)
-
  ☐ Main UI!
    ☐ The look and feel of this thing. 
    ☐ Also: how does the user reach the UI?
-     ☐ No router!!
+     ✔ No router!! @done (15-05-21 16:10)
      ☐ Maybe the user can add a {{> HERE }} wherever she wants to have it?
+
+ ☐ Nested instances should not have the reactiveConstructorCmsName field!
+   At least I don't think so?
 
  ☐ Fetching of data from DB
    ☐ UI
-     ☐ Make is a list instead of buttons! See the problem which arose in Matryoshka. Not good!
-     ☐ Make two different views of this, one with images, one list view
+     ✔ Make is a list instead of buttons! See the problem which arose in Matryoshka. Not good! @done (15-05-21 16:10)
+     ✔ Make two different views of this, one with images, one list view @done (15-05-21 16:10)
    ☐ How to handle the "problem" of getting a DB object in multiple places, which created multiple instances of the same data?
       Keep it all in one place as defined by the plugin? Sort of like a global place for all reactive instances fetched from this plugin?
       ☐ Now there is a method for this, just pass constructor name and _id. Works right??
-      ☐ Also use this for populating the list when selecting what part to add.
+      ✔ Also use this for populating the list when selecting what part to add. @done (15-05-21 16:11)
         This is the case now right?
  
  ☐ Global filter method for filtering in lists etc.
@@ -29,8 +22,9 @@
  ☐ Handling of various input types, text/textarea/disabled/select etc.
    ☐ Setting of global (override) of input types (for all types!), such as texareas!
    ☐ Select
-   ☐ Disabled
+   ✔ Disabled @done (15-05-22 09:46)
    ☐ Select boxes: this needs extra special attention I guess?
+   ✔ Disabled and selecting from a predefined list using the list overview. @done (15-05-22 09:46)
 
  ☐ What's the best way to get the current data context in the blur/update value event? Right now using Template.currentData() which means we have to add this event and method to every unique template we might come up with. Not cool!
 
@@ -43,6 +37,11 @@
 
  ☐ Change name of .type to .contstructorName, since that what it is (cause infinite loop right now though!)
  
+ ☐ Previews for linked instances (in the view?)
+   Would be cool AND good!
+   However: we do not have access to the actual docs that are linked up, but just their ID's and stuff. FOR LATER.
+   BUT: If the object is loaded: use it!
+   Or maybe that is overkill? Not performant?
 
 Not prio:
  ☐ Saving of "parent" instance, when editing a child instance
@@ -58,8 +57,17 @@ Not prio:
  ☐ COULD contendeditable in tandem with Blaze.getDate() be something to explore??
    Avoid silly inputs and stuff. Just type away!
    Maybe a little helper which the user can embed anywhere he likes (which contains the contents field of the reactive field), and whenever the user updates this (through blur event on the content editable field) the part will be updated in the actual instance??
+ ☐ Todo: How to handle 10000's of objects in server?
+
 ＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿
 Archive:
+ ✔ Image previews of image fields @done (15-05-21 13:59)
+ ✔ Should work now, test it HARD! @done (15-05-21 13:28)
+ ✔ Images overview. Or overview with image previews. @done (15-05-21 13:28)
+  Probably create switch button which toggles view between LIST or OVERVIEW, where OVERIEW have image previews as well (taken from a previewImg field?)
+  See the "Fetching of data from DB>UI" below!
+ ✔ BUG: When setting a String value to "" it does not get saved! @done (15-05-21 11:19)
+  The default value should NOT be added to exisiting instances?
  ✔ Update the reactive-constructor package to be able to handle objects which have additional fields to them (#24 on github) @done (15-05-20 16:27)
  ✔ Bug: Setting 0 for number sets val to false @done (15-05-20 15:54)
  ✔ BUG: Can't set superCool to false in Invoice in example 1 @done (15-05-20 15:52)

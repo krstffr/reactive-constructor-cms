@@ -28,6 +28,7 @@ Person = new ReactiveConstructor('Person', function () {
       fields: {
         title: String,
         bio: String,
+        favouritePowerRanger: String
       },
       defaultData: {
         name: 'Kristoffer Klintberg',
@@ -35,6 +36,7 @@ Person = new ReactiveConstructor('Person', function () {
         title: 'Designer',
         age: 30,
         children: [],
+        favouritePowerRanger: 'The red one',
         portraitUrl: 'http://portra.wpshower.com/wp-content/uploads/2014/03/martin-schoeller-barack-obama-portrait-up-close-and-personal.jpg'
       },
       cmsOptions: {
@@ -42,6 +44,22 @@ Person = new ReactiveConstructor('Person', function () {
         inputs: {
           bio: {
             type: 'textarea'
+          },
+          favouritePowerRanger: {
+            disabled: true,
+            selectValues: function() {
+              return [{
+                value: 'The red one',
+                getImagePreview: 'https://fbcdn-profile-a.akamaihd.net/hprofile-ak-xpf1/v/t1.0-1/c0.50.200.200/998152_10152626980993012_686571052_n.jpg?oh=1ffcad1d1d8b1e1d82c42ffa3291750d&oe=55C24D4F&__gda__=1442442878_fc69edf002edfafcd7f12a8a164d0a18'
+              }, {
+                value: 'The green one',
+                getImagePreview: 'http://upload.wikimedia.org/wikipedia/en/9/95/GreenRanger.jpg'
+              }, {
+                value: 'Gold',
+                getImagePreview: 'http://nick.mtvnimages.com/nick-assets/video/images/power-rangers/power-rangers-samurai-111-unexpected-arrival-gold-ranger-clip.jpg?format=jpeg&matteColor=white'
+              }];
+            },
+            selectOverview: true
           },
           portraitUrl: {
             previewImage: true

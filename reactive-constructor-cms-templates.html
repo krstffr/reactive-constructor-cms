@@ -67,7 +67,12 @@
 	
 	<label title="{{ key }}">
 		{{> editTemplate__labelString }}
-		<input type="text" value="{{ value }}">
+		<input type="text" value="{{ value }}" disabled="{{ fieldCmsOptions.disabled }}" />
+		{{#if fieldCmsOptions.selectOverview }}
+			<button class="reactive-constructor-cms-change-value-using-overview">
+				Change {{ this.key }}
+			</button>
+		{{/if}}
 	</label>
 	
 </template>

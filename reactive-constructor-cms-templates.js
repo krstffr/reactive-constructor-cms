@@ -30,11 +30,6 @@ Template.editTemplate__selectOverview.events({
 });
 
 Template.editTemplate__selectOverview.helpers({
-  getImagePreview: function() {
-    if ( Match.test(this.getImagePreview, Function) )
-      return this.getImagePreview();
-    return ;
-  },
   listViewIs: function( viewName ) {
     return this.listView.get() === viewName;
   },
@@ -132,9 +127,7 @@ Template.editTemplate__Collection.onRendered(function () {
 
 Template.editTemplate.helpers({
   showImagePreview: function() {
-    var instance = Template.parentData(1);
-    var inputOptions = instance.getCmsOption('inputs');
-    return inputOptions && inputOptions[this.key] && inputOptions[this.key].previewImage;
+    return this.fieldCmsOptions && this.fieldCmsOptions.previewImage;
   },
   isBackup: function() {
     if (this.getReactiveValue)
@@ -277,6 +270,12 @@ Template.editTemplate__wrapper.onRendered(function() {
 });
 
 Template.editTemplate.events({
+  'click .reactive-constructor-cms-change-value-using-overview': function( e ) {
+    var parentInstance = Blaze.getData( $( e.currentTarget ).closest('.wrap')[0] );
+    return ReactiveConstructorCmsPlugin.getSelectListOverview( this.fieldCmsOptions.selectValues(), 'String', this.key, function( newValue, instance, key ) {
+      return instance.setReactiveValue( key, newValue );
+    }, parentInstance );
+  },
   'click .reactive-constructor-cms-move-collection-item': function( e ) {
 
     e.stopImmediatePropagation();

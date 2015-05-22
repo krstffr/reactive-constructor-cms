@@ -89,15 +89,18 @@ ReactiveConstructorCmsPlugin = new ReactiveConstructorPlugin({
 		// EXCEPT the reactiveConstructorCmsName
 		// Has test: ✔
 		passedClass.prototype.getReactiveValuesAsArray = function () {
-			var typeStructure = _.assign( this.getCurrentTypeStructure(), reactiveConstructorCmsExtraInstanceFields );
-			return _(this.reactiveData.get())
+			var instance = this;
+			var typeStructure = _.assign( instance.getCurrentTypeStructure(), reactiveConstructorCmsExtraInstanceFields );
+			return _(instance.reactiveData.get())
 			.map(function( value, key ) {
 				// Only return the non CMS fields (EXCEPT reactiveConstructorCmsName!)
+				// TODO: This should not be the case for nested objects.
 				if ( reactiveConstructorCmsExtraInstanceFields[key] === undefined || key === 'reactiveConstructorCmsName' )
 					return {
 						key: key,
 						value: value,
-						type: getTypeOfStructureItem( typeStructure[key] )
+						type: getTypeOfStructureItem( typeStructure[key] ),
+						fieldCmsOptions: instance.getCmsOption('inputs')[key]
 					};
 			})
 			.compact()
@@ -407,6 +410,13 @@ ReactiveConstructorCmsPlugin = new ReactiveConstructorPlugin({
 
 			var items = instanceHolder.items;
 
+			// MAYBE: We want to use the mainId instead of the _id for _id?
+			// It SHOULD be safer?
+			// items = _.map(items, function(item){
+			// 	item._id = item.getReactiveValue('mainId');
+			// 	return item;
+			// });
+
 			// We do not want to return this object, so filter away items with this _id
 			items = _.reject(items, function(item){
 				return item._id === instance.getReactiveValue('_id');
@@ -614,23 +624,32 @@ ReactiveConstructorCmsPlugin.getSelectListOverview = function( listItems, constr
     // field, which is used to create a new instance. OR the selectedItem IS the new actual
     // object to be added/linked to the current instance.
     callback: function( selectedItem ) {
+        	
+    	// Is it a string? Then just return it!
+    	if ( constructorName === 'String' ){
+    		setCallback( selectedItem.value, instance, key );
+    		return overviewSelectData.removeTemplateCallback();
+    	}
+
+    	// Handle linking of an exisiting object!
     	if ( selectedItem._id ){
-    		// Handle linking of an exisiting object!
     		var linkedItem = {
     			type: 'reactive-constructor-cms-linked-item',
     			constructorName: selectedItem.constructor.constructorName,
     			_id: selectedItem._id
     		};
     		setCallback( linkedItem, instance, key );
+    		return overviewSelectData.removeTemplateCallback();
     	}
+
     	if ( selectedItem.value ) {
 	      // Create a new instance
 	      var newItem = new ReactiveConstructors[ constructorName ]({ rcType: selectedItem.value });
 	      // Set the item to the key of the parent instance
 	      setCallback( newItem, instance, key );
+	      return overviewSelectData.removeTemplateCallback();
 	    }
-      // Remove the template
-      return overviewSelectData.removeTemplateCallback();
+      
     },
     removeTemplateCallback: function() {
       if (renderedCMSSelectOverview){
