@@ -42,6 +42,16 @@ Person = new ReactiveConstructor('Person', function () {
       cmsOptions: {
         imgPreviewKey: 'portraitUrl',
         inputs: {
+          title: {
+            type: 'select',
+            selectValues: function() {
+              return [{
+                value: 'Designer'
+              }, {
+                value: 'Developer'
+              }];
+            }
+          },
           bio: {
             type: 'textarea'
           },

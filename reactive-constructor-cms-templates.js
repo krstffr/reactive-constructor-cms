@@ -51,13 +51,18 @@ Handlebars.registerHelper('getTemplateFromType', function () {
   // Is it a string? Return the basic template
   if (this.type === 'String' || this.type === 'Number' || this.type === 'Date'){
     var instance = Template.parentData(1).value || Template.parentData(1);
+    
     // If the instance (probably a linked instance) do not have a getInputType
     // method, just return the String method.
     if (!instance.getInputType)
       return 'editTemplate__String';
+
     var userSpecifiedInput = instance.getInputType( this.key );
     if (userSpecifiedInput === 'textarea')
       return 'editTemplate__Textarea';
+    if (userSpecifiedInput === 'select')
+      return 'editTemplate__Select';
+
     return 'editTemplate__String';
   }
 
@@ -469,13 +474,16 @@ Template.editTemplate.events({
     return updateInput( value, this.key, this.type, instance );
   },
   // Method for boolean values
-  'change .reactive-constructor-cms-bool-select': function ( e ) {
+  'change .reactive-constructor-cms-select-input': function ( e ) {
 
     e.stopImmediatePropagation();
     
     var value = $(e.currentTarget).val();
+
+    if (this.type === 'Boolean')
+      value = value === 'true';
     
-    Template.currentData().setReactiveValue( this.key, value === 'true' );
+    Template.currentData().setReactiveValue( this.key, value );
 
   }
 });
@@ -503,4 +511,10 @@ Template.reactiveConstructorCms__loadSavedDoc.events({
     });
 
   }
+});
+
+Template.editTemplate__Select.onRendered(function() {
+  var parentInstance = Blaze.getData( $( this.firstNode ).closest('.wrap')[0] );
+  var currentValue = parentInstance.getReactiveValue( this.data.key );
+  $( this.find('select') ).val( currentValue );
 });

@@ -86,11 +86,26 @@
 	
 </template>
 
+<template name="editTemplate__Select">
+
+	<label title="{{ key }}">
+		{{> editTemplate__labelString }}
+		<select class="reactive-constructor-cms-select-input">
+		{{#each fieldCmsOptions.selectValues }}
+			<option value="{{ value }}">
+				{{ value }}
+			</option>
+		{{/each}}
+		</select>
+	</label>
+	
+</template>
+
 <template name="editTemplate__Boolean">
 
 	<label title="{{ key }}">
 		{{> editTemplate__labelString }}
-		<select class="reactive-constructor-cms-bool-select">
+		<select class="reactive-constructor-cms-select-input">
 				<option value="true" selected="{{#if equals value true }}selected{{/if}}">True</option>
 				<option value="false" selected="{{#if equals value false }}selected{{/if}}">False</option>
 		</select>
