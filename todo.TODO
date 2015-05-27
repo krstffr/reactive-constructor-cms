@@ -37,12 +37,8 @@
      Use the mainId when getting the actual edit-doc for editing.
 
  ☐ Change name of .type to .contstructorName, since that what it is (cause infinite loop right now though!)
- 
- ☐ Previews for linked instances (in the view?)
-   Would be cool AND good!
-   However: we do not have access to the actual docs that are linked up, but just their ID's and stuff. FOR LATER.
-   BUT: If the object is loaded: use it!
-   Or maybe that is overkill? Not performant?
+
+ ☐ UI tests would be pretty dope!
 
 Not prio:
  ☐ Saving of "parent" instance, when editing a child instance
@@ -59,6 +55,11 @@ Not prio:
    Avoid silly inputs and stuff. Just type away!
    Maybe a little helper which the user can embed anywhere he likes (which contains the contents field of the reactive field), and whenever the user updates this (through blur event on the content editable field) the part will be updated in the actual instance??
  ☐ Todo: How to handle 10000's of objects in server?
+ ☐ Previews for linked instances (in the view?)
+   Would be cool AND good!
+   However: we do not have access to the actual docs that are linked up, but just their ID's and stuff. FOR LATER.
+   BUT: If the object is loaded: use it!
+   Or maybe that is overkill? Not performant?
 
 ＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿
 Archive:
