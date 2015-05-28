@@ -94,14 +94,16 @@ ReactiveConstructorCmsPlugin = new ReactiveConstructorPlugin({
 			return _(instance.reactiveData.get())
 			.map(function( value, key ) {
 				// Only return the non CMS fields (EXCEPT reactiveConstructorCmsName!)
-				// TODO: This should not be the case for nested objects.
-				if ( reactiveConstructorCmsExtraInstanceFields[key] === undefined || key === 'reactiveConstructorCmsName' )
+				if ( reactiveConstructorCmsExtraInstanceFields[key] === undefined ||
+					( instance.getReactiveValue('_id') &&
+						key === 'reactiveConstructorCmsName' )) {
 					return {
 						key: key,
 						value: value,
 						type: getTypeOfStructureItem( typeStructure[key] ),
 						fieldCmsOptions: instance.getCmsOption('inputs')[key]
 					};
+				}
 			})
 			.compact()
 			.value();

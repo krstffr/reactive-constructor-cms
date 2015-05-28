@@ -49,6 +49,10 @@ Person = new ReactiveConstructor('Person', function () {
                 value: 'Designer'
               }, {
                 value: 'Developer'
+              }, {
+                value: 'President'
+              }, {
+                value: 'Tsar'
               }];
             }
           },
