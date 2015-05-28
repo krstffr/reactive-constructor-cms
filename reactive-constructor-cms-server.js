@@ -25,6 +25,74 @@ var getCollectionFromConstructorName = function( constructorName ) {
 };
 
 Meteor.methods({
+	// Method for getting a published doc AND all the docs which are linked to that object.
+	'reactive-constructor-cms/get-published-doc-and-all-linked-docs': function( mainId, constructorName, publishedDocs ) {
+
+		// Make sure user has passed the correct input types
+		check( mainId, String );
+		check( constructorName, String );
+		
+		if (!publishedDocs)
+			publishedDocs = {};
+		check( publishedDocs, Object );
+
+		// Make sure we have an array @ publishedDocs[constructorName]
+		// for storing all the docs to return.
+		if (!publishedDocs[constructorName])
+			publishedDocs[constructorName] = [];
+
+		// Is the document already in the publishedDocs[constructorName]?
+		// Just return the passed published docs!
+		if ( _.findWhere(publishedDocs[constructorName], { mainId: mainId }) )
+			return publishedDocs;
+
+		// Get the published docuemnt. If there is none: just return the
+		// published docs.
+		var publishedDoc = Meteor.call('reactive-constructor-cms/get-published-doc', mainId, constructorName );
+		if (!publishedDoc)
+			return publishedDocs;
+
+		// Add the published doc to the array.
+		publishedDocs[constructorName].push( publishedDoc );
+
+		// Method for extracting all the linked fields from the docment.
+		var getLinkedFields = function( doc ) {
+
+			var extractFields = function( doc ) {
+
+				return  _( _.keys( doc ) ).map(function( key ) {
+
+					// Is it an array?
+					if (Match.test( doc[key], Array )){
+						return _.map(doc[key], function( nestedValue ) {
+							if (nestedValue.type && nestedValue.type === 'reactive-constructor-cms-linked-item')
+								return nestedValue;
+							return getLinkedFields( nestedValue );
+						});
+					}
+
+					if (doc[key].type && doc[key].type === 'reactive-constructor-cms-linked-item')
+						return doc[key];
+
+					if (Match.test( doc[key], Object ))
+						return extractFields( doc[key] );
+
+					return false;
+
+				}).flatten().compact().value();
+
+			};
+
+			return extractFields( doc );
+
+		};
+
+		return _.reduce( getLinkedFields( publishedDoc ), function(publishedDocsMemo, field){
+			publishedDocsMemo = Meteor.call('reactive-constructor-cms/get-published-doc-and-all-linked-docs', field._id, field.constructorName, publishedDocsMemo );
+			return publishedDocsMemo;
+		}, publishedDocs);
+
+	},
 	// Method for getting a backup version of an instance
 	'reactive-constructor-cms/get-backup-doc': function( mainId, constructorName, updateTime, version ) {
 

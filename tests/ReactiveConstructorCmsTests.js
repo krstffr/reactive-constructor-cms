@@ -38,7 +38,9 @@ Meteor.startup(function() {
 				type: 'worker',
 				fields: {
 					title: String,
-					portraitUrl: String
+					portraitUrl: String,
+					pets: [ Animal ],
+					bestFriend: Person
 				},
 				defaultData: {
 					name: 'Kristoffer Klintberg',
@@ -119,37 +121,37 @@ Meteor.startup(function() {
 		}; 
 	});
 
-Animal = new ReactiveConstructor('Animal', function() {
-	return {
-		cmsOptions: {
-			collection: Animals
-		},
-		typeStructure: [{
-			type: 'dog',
-			fields: {
-				name: String,
-				hungry: Boolean,
-				owner: Person
-			}
-		}]
-	};
-});
+	Animal = new ReactiveConstructor('Animal', function() {
+		return {
+			cmsOptions: {
+				collection: Animals
+			},
+			typeStructure: [{
+				type: 'dog',
+				fields: {
+					name: String,
+					hungry: Boolean,
+					owner: Person
+				}
+			}]
+		};
+	});
 
-NonSaveableConstructor = new ReactiveConstructor('NonSaveableConstructor', function() {
-	return {
-		typeStructure: [{
-			type: 'this is a non saveable instance'
-		}]
-	};
-});
+	NonSaveableConstructor = new ReactiveConstructor('NonSaveableConstructor', function() {
+		return {
+			typeStructure: [{
+				type: 'this is a non saveable instance'
+			}]
+		};
+	});
 
 });
 
 if (Meteor.isServer){
 	Meteor.methods({
 		'reactive-constructor-cms/cleanup-test-db': function() {
-			console.log('removing all persons from DB…');
-			return Persons.remove({});
+			console.log('removing all persons AND animals from DB…');
+			return Persons.remove({}) && Animals.remove({});
 		}
 	});
 	return false;
@@ -1051,7 +1053,139 @@ Tinytest.addAsync('ReactiveConstructorCmsPlugin async - ReactiveConstructorCmsPl
 
 });
 
+Tinytest.addAsync('ReactiveConstructorCmsPlugin server methods - reactive-constructor-cms/get-published-doc-and-all-linked-docs', function(test, next) {
 
+	loginOrCreateAccount(function() {
+
+		// Setup some instances to work on
+		var animal1 = new Animal({
+			_id: 'pet1_id',
+			name: 'Rex',
+			hungry: true,
+			owner: {
+				type: 'reactive-constructor-cms-linked-item',
+	      constructorName: 'Person',
+	      _id: 'owner_id'
+			}
+		});
+		var animal2 = new Animal({
+			_id: 'pet2_id',
+			name: 'Buddy doggy',
+			hungry: false,
+			owner: {
+				type: 'reactive-constructor-cms-linked-item',
+	      constructorName: 'Person',
+	      _id: 'paradox_id'
+			}
+		});
+		var animal3 = new Animal({
+			_id: 'pet3_id',
+			name: 'Owned by a nested BFF'
+		});
+		var animal4 = new Animal({
+			_id: 'pet4_id',
+			name: 'Owned by a super-nested BFF'
+		});
+		var BFF = new Person({
+			_id: 'best-friend-id',
+			pets: [{
+				type: 'reactive-constructor-cms-linked-item',
+	      constructorName: 'Animal',
+	      _id: 'pet1_id'
+			}],
+			bestFriend: {
+				bestFriend: {
+					bestFriend: {
+						bestFriend: {
+							pets: [{
+								type: 'reactive-constructor-cms-linked-item',
+					      constructorName: 'Animal',
+					      _id: 'pet4_id'
+							}]
+						}
+					}
+				}
+			}
+		});
+		var owner = new Person({
+			_id: 'owner_id',
+			title: 'Kennel keeper',
+			pets: [{
+				type: 'reactive-constructor-cms-linked-item',
+	      constructorName: 'Animal',
+	      _id: 'pet1_id'
+			}, {
+				type: 'reactive-constructor-cms-linked-item',
+	      constructorName: 'Animal',
+	      _id: 'pet2_id'
+			}],
+			bestFriend: {
+				title: 'Nested best friend',
+				bestFriend: {
+					title: 'Even nestier best friend',
+					pets: [{
+						type: 'reactive-constructor-cms-linked-item',
+			      constructorName: 'Animal',
+			      _id: 'pet3_id'
+					}],
+					bestFriend: {
+						type: 'reactive-constructor-cms-linked-item',
+			      constructorName: 'Person',
+			      _id: 'best-friend-id'
+					}
+				}
+			}
+		});
+		var paradoxicalOwner = new Person({
+			_id: 'paradox_id',
+			title: 'A paradox this is',
+			bestFriend: {
+				type: 'reactive-constructor-cms-linked-item',
+	      constructorName: 'Person',
+	      _id: 'owner_id'
+			}
+		});
+
+		animal1.save({ publish: true }, function() {
+			animal2.save({ publish: true }, function() {
+				animal3.save({ publish: true }, function() {
+					animal4.save({ publish: true }, function() {
+						BFF.save({publish: true}, function() {
+							paradoxicalOwner.save({publish: true}, function() {
+								owner.save({ publish: true }, function() {
+									Meteor.call('reactive-constructor-cms/get-published-doc-and-all-linked-docs', owner.getReactiveValue('_id'), 'Person', function( err, res ) {
+										console.log( res );
+										test.isTrue( Match.test( res.Person, Array ) );
+										test.isTrue( Match.test( res.Animal, Array ) );
+										test.equal( res.Person.length, 3 );
+										test.equal( res.Animal.length, 4 );
+										test.equal( _.findWhere( res.Person, { mainId: 'owner_id' }).title, 'Kennel keeper' );
+										test.equal( _.findWhere( res.Person, { mainId: 'best-friend-id' }).pets[0]._id, 'pet1_id' );
+										test.equal( _.findWhere( res.Animal, { mainId: 'pet2_id' }).owner._id, 'paradox_id' );
+										test.equal( _.findWhere( res.Person, { mainId: 'paradox_id' }).title, 'A paradox this is' );
+										test.equal( _.findWhere( res.Person, { mainId: 'paradox_id' }).bestFriend._id, 'owner_id' );
+
+										// Also let's try to create reactive instance from these objects as well.
+										_.each(res.Person, function(person){
+											new Person(person);
+										});
+										_.each(res.Animal, function(animal){
+											new Animal(animal);
+										});
+
+										next();
+									});
+								});
+							});
+						});
+					});
+				});
+			});
+		});
+
+	});
+
+});
 
 
 
