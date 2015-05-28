@@ -4,6 +4,7 @@
 	box-sizing: border-box;
 }
 
+.reactive-constructor-cms-wrapper,
 .reactive-constructor-cms-wrapper *,
 .reactive-constructor-cms-wrapper *:before,
 .reactive-constructor-cms-wrapper *:after,
@@ -11,14 +12,16 @@
 .reactive-constructor-cms-select-overview *:before,
 .reactive-constructor-cms-select-overview *:after {
 	box-sizing: inherit;
+	font-family: "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif !important;
+	letter-spacing: 0;
 }
 
 .reactive-constructor-cms-select-overview,
 .reactive-constructor-cms-wrapper{
-	font-family: sans-serif;
 	font-size: 13px;
 	position: fixed;
 }
+
 
 .reactive-constructor-cms-wrapper {
 
@@ -149,10 +152,12 @@
 	box-sizing: border-box;
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
+  font-size: 1em;
   border: none;
 	outline: none;
-	padding: 0.5em;
-	border-radius: 0;
+	padding: 0.5em !important;
+	margin: 0 !important;
+	border-radius: 0 !important;
 }
 
 .reactive-constructor-cms-wrapper textarea{
