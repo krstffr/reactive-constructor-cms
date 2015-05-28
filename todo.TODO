@@ -1,6 +1,9 @@
  ✔ Method for getting published docs? @done (15-05-28 11:39)
    Kind of a unified way of getting all of them sweet published docs, and also all linked docs of a doc!
 
+ ✔ Date input! @done (15-05-28 15:16)
+   A good way to select and halde dates.
+
  ☐ Main UI!
    ☐ The look and feel of this thing. 
    ☐ Also: how does the user reach the UI?
@@ -47,7 +50,8 @@ Not prio:
  ☐ Saving of "parent" instance, when editing a child instance
   ☐ Also a "go to parent" button?
  ☐ Keydown update of value (without messing with the input!)
- ☐ Setting of dates, don't seem to work?
+ ✔ Setting of dates, don't seem to work? @done (15-05-28 15:16)
+ ☐ A GOOD way to handle dates (without using third party libs) 
  ☐ Ability to define how "deep" nested objects should run.
    ☐ Maybe a "load more" button? Or the "go to" ability mentioned above?
  ☐ An expand/hide button for all listde instances?

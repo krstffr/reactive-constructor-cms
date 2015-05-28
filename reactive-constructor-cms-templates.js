@@ -212,6 +212,9 @@ var updateInput = function ( value, key, type, instance ) {
   if (type === 'Number')
     value = parseFloat( value, 10 ) || 0;
 
+  if (type === 'Date')
+    value = new Date( value );
+
   instance = instance || Template.currentData().value || Template.currentData();
 
   // TODO: Is this ever used anymore?
