@@ -4,6 +4,9 @@
  ✔ Date input! @done (15-05-28 15:16)
    A good way to select and halde dates.
 
+ ☐ Setting for defining a collection of ONLY linked objects where no non-linked objects are allowed?
+   Useful for many web-page-like stuff I guess where some objects should only point to other actual docs?
+
  ☐ Main UI!
    ☐ The look and feel of this thing. 
    ☐ Also: how does the user reach the UI?
