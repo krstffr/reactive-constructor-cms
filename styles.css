@@ -11,7 +11,7 @@
 .reactive-constructor-cms-select-overview *,
 .reactive-constructor-cms-select-overview *:before,
 .reactive-constructor-cms-select-overview *:after {
-	box-sizing: inherit;
+	box-sizing: border-box;
 	font-family: "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif !important;
 	letter-spacing: 0;
 }

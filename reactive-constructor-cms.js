@@ -786,3 +786,24 @@ ReactiveConstructorCmsPlugin.editPageGet = function( instance ) {
 	});
 
 };
+
+// Method for overriding the defautl setReactiveValue method
+// Has test: ✔
+ReactiveConstructorCmsPlugin.setReactiveValue = function( instance, key, value, ordinarySetReactiveValueFunction ) {
+
+	var fieldCmsOptions = instance.getCmsOption('inputs')[key];
+	if (fieldCmsOptions && fieldCmsOptions.transform){
+		value = fieldCmsOptions.transform( value );
+	}
+
+	return ordinarySetReactiveValueFunction( instance, key, value );
+
+};
+
+
+
+
+
+
+
+

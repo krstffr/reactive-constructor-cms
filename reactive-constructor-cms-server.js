@@ -25,6 +25,7 @@ var getCollectionFromConstructorName = function( constructorName ) {
 };
 
 Meteor.methods({
+	// TODO: This needs to fetch ALL linked docs from a collection at the same time (not one doc at a time!) instead.
 	// Method for getting a published doc AND all the docs which are linked to that object.
 	'reactive-constructor-cms/get-published-doc-and-all-linked-docs': function( mainId, constructorName, publishedDocs ) {
 

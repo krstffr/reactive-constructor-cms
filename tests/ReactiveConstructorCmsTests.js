@@ -145,6 +145,28 @@ Meteor.startup(function() {
 		};
 	});
 
+	WebPage = new ReactiveConstructor('WebPage', function() {
+		return {
+			typeStructure: [{
+				type: 'webPage',
+				fields: {
+					url: String
+				},
+				cmsOptions: {
+					inputs: {
+						url: {
+							transform: function( value ) {
+								value += ' overridden!';
+								console.log( value );
+								return value;
+							}
+						}
+					}
+				}
+			}]
+		};
+	});
+
 });
 
 if (Meteor.isServer){
@@ -294,6 +316,19 @@ Tinytest.add('ReactiveConstructorCmsPlugin overrides - checkReactiveValues()', f
 		test.isUndefined( dataToCheck.wife );
 		test.equal( ordinaryStructure, currentTypeStructure );
 	});
+
+});
+
+Tinytest.add('ReactiveConstructorCmsPlugin overrides - setReactiveValue()', function(test) {
+
+	var testWebPage = new WebPage();
+
+	ReactiveConstructorCmsPlugin.setReactiveValue( testWebPage, 'url', 'A super cool url', function( instance, key, value ) {
+		test.equal( value, 'A super cool url overridden!' );
+		return testWebPage.setReactiveValue( key, value );
+	});
+
+	test.equal( testWebPage.getReactiveValue('url'), 'A super cool url overridden!' );
 
 });
 
@@ -1174,6 +1209,7 @@ Tinytest.addAsync('ReactiveConstructorCmsPlugin server methods - reactive-constr
 										});
 
 										next();
+
 									});
 								});
 							});
@@ -1182,7 +1218,6 @@ Tinytest.addAsync('ReactiveConstructorCmsPlugin server methods - reactive-constr
 				});
 			});
 		});
-
 	});
 
 });

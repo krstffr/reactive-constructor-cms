@@ -76,7 +76,10 @@ Person = new ReactiveConstructor('Person', function () {
             selectOverview: true
           },
           portraitUrl: {
-            previewImage: true
+            previewImage: true,
+            transform: function( value ) {
+              return value.replace(/ /g, '');
+            }
           }
         },
         filter: {
