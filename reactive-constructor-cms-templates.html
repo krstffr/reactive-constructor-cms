@@ -352,7 +352,7 @@
 <template name="getReactiveValueEditable">
 
 	<div class="cms-edit">
-    {{#if markdown }}
+    {{#if toMarkdown }}
       {{#markdown}}{{ instance.getReactiveValue key }}{{/markdown}}
     {{else}}
       {{ instance.getReactiveValue key }}

@@ -66,6 +66,8 @@ Template.getReactiveValueEditable.events({
     // Make sure the right types are set
     check( this.instance.rcType, String );
     check( this.key, String );
+    if (this.toMarkdown)
+      check( this.toMarkdown, Boolean );
 
     // Remove the current template
     removereactiveValueEditTemplate();
@@ -76,6 +78,7 @@ Template.getReactiveValueEditable.events({
       {
         instance: this.instance,
         key: this.key,
+        toMarkdown: this.toMarkdown,
         originalElement: e.currentTarget
       },
       $('body')[0]
