@@ -1,7 +1,7 @@
 Package.describe({
 	name: "krstffr:reactive-constructor-cms",
 	summary: "CMS for krstffr:reactive-constructor instances.",
-	version: "0.2.0-alpha-11"
+	version: "0.2.0"
 });
 
 Package.onUse(function (api) {
@@ -11,7 +11,7 @@ Package.onUse(function (api) {
 	api.use([
 		"templating",
 		"reactive-var@1.0.4",
-		"krstffr:reactive-constructor@1.1.0-alpha-11",
+		"krstffr:reactive-constructor@1.1.1",
 		"krstffr:msgs@0.0.6",
 		"mizzao:jquery-ui@1.11.2"
 		], "client");
@@ -24,6 +24,7 @@ Package.onUse(function (api) {
 		"reactive-constructor-cms.js",
 		"reactive-constructor-cms-templates.html",
 		"reactive-constructor-cms-templates.js",
+		"reactive-constructor-cms-edit-value-overlay.js",
 		"styles.css",
 		], "client");
 
@@ -39,7 +40,7 @@ Package.onUse(function (api) {
 });
 
 Package.onTest(function (api) {
-  	
+
   api.use([
   	"tinytest",
   	"krstffr:reactive-constructor",

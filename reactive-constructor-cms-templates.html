@@ -335,3 +335,28 @@
   {{/if}}
 	
 </template>
+
+<template name="editTemplate__elementTextareaOverlay">
+
+	<div class="edit-overlay">
+
+    <textarea class="edit-overlay__textarea">{{ instance.getReactiveValue key }}</textarea>
+
+    <button class="edit-overlay__button edit-overlay__button--save">Save</button>
+    <button class="edit-overlay__button edit-overlay__button--cancel">Cancel</button>
+
+  </div>
+	
+</template>
+
+<template name="getReactiveValueEditable">
+
+	<div class="cms-edit">
+    {{#if markdown }}
+      {{#markdown}}{{ instance.getReactiveValue key }}{{/markdown}}
+    {{else}}
+      {{ instance.getReactiveValue key }}
+    {{/if}}
+  </div>
+	
+</template>

@@ -1,5 +1,5 @@
 <head>
-  <title>example-2</title>
+  <title>example-2: getReactiveValueEditable</title>
 </head>
 
 <body>
@@ -10,17 +10,15 @@
 
   <h1>Testing yes.</h1>
 
-  <button id="login">Login/out {{#if currentUser }} LOGGED IN! {{/if}}</button>
-
   <h2>Editable data:</h2>
 
   {{#with aTest }}
 
-    {{> tempContentClickable instance=this key='aString' markdown=true }}
+    {{> getReactiveValueEditable instance=this key='aString' markdown=true }}
 
-  	{{> tempContentClickable instance=this key='aNumber' }}
+  	{{> getReactiveValueEditable instance=this key='aNumber' }}
 
-    {{> tempContentClickable instance=this key='aBool' }}
+    {{> getReactiveValueEditable instance=this key='aBool' }}
 
   {{/with}}
 
@@ -42,30 +40,5 @@
     {{ getReactiveValue 'aBool' }}
 
   {{/with }}
-
-</template>
-
-<template name="tempContentClickable">
-
-  <div class="cms-edit">
-    {{#if markdown }}
-      {{#markdown}}{{ instance.getReactiveValue key }}{{/markdown}}
-    {{else}}
-      {{ instance.getReactiveValue key }}
-    {{/if}}
-  </div>
-
-</template>
-
-<template name="tempEditOverlay">
-
-  <div class="edit-overlay">
-
-    <textarea class="edit-overlay__textarea">{{ instance.getReactiveValue key }}</textarea>
-
-    <button class="edit-overlay__button edit-overlay__button--save">Save</button>
-    <button class="edit-overlay__button edit-overlay__button--cancel">Cancel</button>
-
-  </div>
 
 </template>
