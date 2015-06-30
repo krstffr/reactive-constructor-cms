@@ -4,7 +4,8 @@ SomeStructure = new ReactiveConstructor('SomeStructure', function() {
       type: 'something',
       fields: {
         aString: String,
-        aNumber: Number
+        aNumber: Number,
+        aBool:   Boolean
       }
     }]
   };
@@ -13,69 +14,112 @@ SomeStructure = new ReactiveConstructor('SomeStructure', function() {
 if (!Meteor.isClient)
   return false;
 
-document.execCommand('formatBlock', false, 'p');
+Template['tempEditOverlay'].onRendered(function(argument){
 
-structure = new SomeStructure({ rcType: 'something', aString: '# StringaLing\n\nNew paragraph?' });
+  var originalElement = $( this.data.originalElement );
+  var editElement = $( this.firstNode );
+
+  return editElement.css({
+    top: originalElement.offset().top,
+    left: originalElement.offset().left,
+    height: originalElement.height(),
+    width: originalElement.width(),
+    position: 'absolute'
+  }).addClass('edit-overlay--visible');
+
+});
+
+structure = new SomeStructure({
+  rcType: 'something',
+  aString: '# StringaLing\n\nNew paragraph?',
+  aNumber: 4530,
+  aBool: true
+});
 
 Template.testTemplate.helpers({
   aTest: function() {
     return structure;
-  },
-  session: function( key ) {
-    return Session.get(key);
   }
 });
 
-Blaze.registerHelper('editableReactiveValue', function( key, options ) {
+Blaze.registerHelper('editableReactiveValue', function( options ) {
 
-  var value = this.getReactiveValue( key );
+  var key = options.hash.key;
+  var markdown = options.hash.markdown || false;
 
-  var wrapper = 'textarea';
-
-  if ( !Session.equals('rcms-editing', key) )
-    wrapper = 'span';
-
-  if (options.hash.markdown && !Session.equals('rcms-editing', key) ){
-    var converter = new Showdown.converter();
-    console.log( converter );
-    value = converter.makeHtml( value );
-  }
+  check( key, String );
+  check( markdown, Boolean );
 
   if (!Meteor.userId || !Meteor.userId())
-    return value;  
+    return value;
 
-  return '<'+wrapper+' data-rcms-key="' + key + '" class="cms-edit" contenteditable >' + value + '</'+wrapper+'>';
+  return Blaze.toHTMLWithData( Template['tempContentClickable'], {
+    instance: this,
+    key: key,
+    markdown: markdown
+  });
 
+});
+
+var renderedEditTemplate = false;
+
+var removeRenderedEditTemplate = function () {
+  if (renderedEditTemplate) {
+    Blaze.remove( renderedEditTemplate );
+    renderedEditTemplate = false;
+  }
+  return true;
+};
+
+Template.tempEditOverlay.events({
+  'click .edit-overlay__button--cancel': function() {
+    return removeRenderedEditTemplate();
+  },
+  'click .edit-overlay__button--save': function ( e ) {
+
+    var value = $(e.currentTarget).parent().find('textarea').val();
+
+    this.instance.setReactiveValueWithTypecasting( this.key, value );
+
+    return removeRenderedEditTemplate();
+
+  }
 });
 
 Template.body.events({
+  // Just an event for loggin in/out
   'click #login': function() {
-    Accounts.createUser({ username: '11', password: '11!' });
-    Meteor.loginWithPassword('11', '11');
-  },
-  'focus .cms-edit, click .cms-edit': function( e ) {
-    var key = $(e.currentTarget).data('rcms-key');
-    console.log( key );
-    return Session.set('rcms-editing', key );
-  },
-  'blur .cms-edit': function( e ) {
 
-    Session.set('rcms-editing', false );
+    if (Meteor.userId && Meteor.userId())
+      return Meteor.logout();
 
-    var key = $(e.currentTarget).data('rcms-key');
-    var value = $(e.currentTarget).val() || $(e.currentTarget).html();
+    return Accounts.createUser({ username: '11', password: '11!' }, function(err){
+      if (err)
+        return Meteor.loginWithPassword('11', '11!', function( err ){
+          console.log( err );
+        });
+    });
 
-    console.log( 'value, pre line break replace', value );
+  }
+});
 
-    // Change line breaks into newlines
-    value = value.replace(/<br>/g, '\n');
-    console.log( 'saving:', value );
+Template.tempContentClickable.events({
+  'click .cms-edit': function ( e ) {
 
-    // Set numbers to numbers
-    if( this.getReactiveValue(key).constructor === Number )
-      value = parseFloat( value, 10 );
+    if (!Meteor.userId && !Meteor.userId())
+      return false;
 
-    return this.setReactiveValue( key, value );
+    removeRenderedEditTemplate();
+
+    renderedEditTemplate = Blaze.renderWithData(
+      Template['tempEditOverlay'],
+      {
+        instance: this.instance,
+        key: this.key,
+        originalElement: e.currentTarget
+      },
+      $('body')[0]
+      );
 
   }
 });

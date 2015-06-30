@@ -7,31 +7,65 @@
 </body>
 
 <template name="testTemplate">
-  
+
   <h1>Testing yes.</h1>
 
-  <button id="login">Login/out</button>
-
-  <p>Session.get('rcms-editing') => {{ session 'rcms-editing' }}</p>
+  <button id="login">Login/out {{#if currentUser }} LOGGED IN! {{/if}}</button>
 
   <h2>Editable data:</h2>
 
   {{#with aTest }}
 
-  	{{{ editableReactiveValue 'aString' markdown=true }}}
+    {{> tempContentClickable instance=this key='aString' markdown=true }}
 
-  	{{{ editableReactiveValue 'aNumber' }}}
+  	{{> tempContentClickable instance=this key='aNumber' }}
+
+    {{> tempContentClickable instance=this key='aBool' }}
 
   {{/with}}
 
-  <h2>The same data:</h2>
+  <h2>The same data again, just for the super fun.</h2>
 
   {{#with aTest }}
 
+    <h3>Markdowned:</h3>
   	{{#markdown}}{{ getReactiveValue 'aString' }}{{/markdown}}
+    <h3>Not markdowned:</h3>
+    {{ getReactiveValue 'aString' }}
+
+    <hr>
 
   	{{ getReactiveValue 'aNumber' }}
 
+    <hr>
+
+    {{ getReactiveValue 'aBool' }}
+
   {{/with }}
+
+</template>
+
+<template name="tempContentClickable">
+
+  <div class="cms-edit">
+    {{#if markdown }}
+      {{#markdown}}{{ instance.getReactiveValue key }}{{/markdown}}
+    {{else}}
+      {{ instance.getReactiveValue key }}
+    {{/if}}
+  </div>
+
+</template>
+
+<template name="tempEditOverlay">
+
+  <div class="edit-overlay">
+
+    <textarea class="edit-overlay__textarea">{{ instance.getReactiveValue key }}</textarea>
+
+    <button class="edit-overlay__button edit-overlay__button--save">Save</button>
+    <button class="edit-overlay__button edit-overlay__button--cancel">Cancel</button>
+
+  </div>
 
 </template>
