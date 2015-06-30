@@ -1,0 +1,11 @@
+.edit-overlay{
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+.edit-overlay--visible{
+  opacity: 1;
+}
+.edit-overlay__textarea {
+  width: 100%;
+  height: 100%;
+}
