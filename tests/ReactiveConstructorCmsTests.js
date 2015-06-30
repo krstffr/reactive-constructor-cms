@@ -319,14 +319,11 @@ Tinytest.add('ReactiveConstructorCmsPlugin overrides - checkReactiveValues()', f
 
 });
 
-Tinytest.add('ReactiveConstructorCmsPlugin overrides - setReactiveValue()', function(test) {
+Tinytest.add('ReactiveConstructorCmsPlugin overrides - setReactiveValue() with transform', function(test) {
 
 	var testWebPage = new WebPage();
 
-	ReactiveConstructorCmsPlugin.setReactiveValue( testWebPage, 'url', 'A super cool url', function( instance, key, value ) {
-		test.equal( value, 'A super cool url overridden!' );
-		return testWebPage.setReactiveValue( key, value );
-	});
+	testWebPage.setReactiveValue( 'url', 'A super cool url' );
 
 	test.equal( testWebPage.getReactiveValue('url'), 'A super cool url overridden!' );
 
