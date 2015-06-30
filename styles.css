@@ -327,3 +327,17 @@
 }
 				
 				
+
+/* Some edit overlay styles */
+.edit-overlay{
+  opacity: 0;
+  -webkit-transition: opacity 0.2s ease;
+          transition: opacity 0.2s ease;
+}
+.edit-overlay--visible{
+  opacity: 1;
+}
+.edit-overlay__textarea {
+  width: 100%;
+  height: 100%;
+}
