@@ -32,13 +32,15 @@
 	right: 2em;
 	overflow: auto;
 
-	background: #112;
-	color: white;
+	background: #f5f5f5;
+	color: #050505;
 
 	opacity: 1;
 	transform: translate(0,0);
 
 	transition: 0.3s transform ease, 0.1s opacity ease;
+
+	box-shadow: 0 3px 30px rgba( 0, 0, 0, 0.2 );
 
 }
 
@@ -49,54 +51,47 @@
 
 }
 
-.reactive-constructor-cms__main-wrapper .reactive-constructor-cms__main-wrapper__editable-fields{
+.reactive-constructor-cms__main-wrapper__editable-fields{
 	height: 100%;
 	overflow: auto;
 	padding-bottom: 2em;
 }
 
-.reactive-constructor-cms__main-wrapper .reactive-constructor-cms__instance-wrapper {
-	padding: 1.5em 1.2em;
+.reactive-constructor-cms__instance-wrapper {
 	width: 100%;
-	overflow: hidden;
+	/*overflow: hidden;*/
+	position: relative;
+	box-shadow: 0 2px 5px rgba( 0, 0, 0, 0.2 );
 }
 
-.reactive-constructor-cms__main-wrapper .reactive-constructor-cms__instance-wrapper .reactive-constructor-cms__list-of-instances,
-.reactive-constructor-cms__main-wrapper .reactive-constructor-cms__instance-wrapper > .reactive-constructor-cms__instance-wrapper {
-	background: rgba(220, 235, 255, 0.15);
-	padding: 0.5em;
+.reactive-constructor-cms__list-of-instances {
+	background: linear-gradient(to bottom right, #E7E7E7, #B0B0B0);
+	padding: 0.7em;
 	margin: 0;
-	border-bottom: 1px dashed rgba(255,255,255,0.15);
 }
 
-.reactive-constructor-cms__main-wrapper .reactive-constructor-cms__instance-wrapper > .reactive-constructor-cms__instance-wrapper {
-	padding: 1.15em 1em 0.2em;
+.reactive-constructor-cms__list-of-instances__key{
+	font-style: italic;
+	display: inline-block;
+	font-weight: bold;
+	color: #777;
+	padding: 0.1em 0.7em 0.6em;
 }
 
-.reactive-constructor-cms__main-wrapper .reactive-constructor-cms__instance-wrapper .reactive-constructor-cms__list-of-instances__instances > .reactive-constructor-cms__instance-wrapper {
-	background: #112;
-	padding: 1.2em 0.7em 0.3em;
-	margin: 0;
-	border-bottom: 0.2em solid rgba(220, 235, 255, 0.3);
+.reactive-constructor-cms__list-of-instances__instances > .reactive-constructor-cms__instance-wrapper {
+	margin-bottom: 0.7em;
 }
 
-.reactive-constructor-cms__main-wrapper .reactive-constructor-cms__instance-wrapper .reactive-constructor-cms__list-of-instances button {
+.reactive-constructor-cms__list-of-instances button {
 	width: 100%;
 	padding: 0.3em;
 }
 
-.reactive-constructor-cms__main-wrapper .reactive-constructor-cms__instance-wrapper > h2 .reactive-constructor-cms-ACTION--remove-instance-from-list,
-.reactive-constructor-cms__main-wrapper .reactive-constructor-cms__instance-wrapper > h2 .reactive-constructor-cms-ACTION--duplicate-instance-in-list{
-	display: none;
-}
-
-.reactive-constructor-cms__main-wrapper .reactive-constructor-cms__list-of-instances__instances > .reactive-constructor-cms__instance-wrapper > h2 .reactive-constructor-cms-ACTION--remove-instance-from-list,
-.reactive-constructor-cms__main-wrapper .reactive-constructor-cms__list-of-instances__instances > .reactive-constructor-cms__instance-wrapper > h2 .reactive-constructor-cms-ACTION--duplicate-instance-in-list{
-	display: inline-block;
-}
-
-.reactive-constructor-cms__main-wrapper > .reactive-constructor-cms__main-wrapper__editable-fields > .reactive-constructor-cms__instance-wrapper > h2 .reactive-constructor-cms__instance-wrapper__instance-buttons a {
-	display: none;
+.reactive-constructor-cms__main-wrapper > 
+.reactive-constructor-cms__main-wrapper__editable-fields > 
+.reactive-constructor-cms__instance-wrapper > 
+.reactive-constructor-cms__instance-wrapper__header .reactive-constructor-cms__instance-wrapper__instance-buttons {
+	display: none !important;
 }
 
 .reactive-constructor-cms__main-wrapper a{
@@ -106,43 +101,36 @@
 	color: #8ED8B6;
 }
 
-
-.reactive-constructor-cms__main-wrapper .reactive-constructor-cms__instance-wrapper > h2 .reactive-constructor-cms__instance-wrapper__instance-buttons a {
-	display: inline-block;
-  float: right;
-  font-size: 0.6em;
-  line-height: 2.35;
-  margin-left: 1em;
+.reactive-constructor-cms__instance-wrapper__instance-buttons{
+	display: inline;
 }
 
 .reactive-constructor-cms__main-wrapper label {
-	display: inline-block;
+	display: block;
 	width: 100%;
 	overflow: hidden;
-	padding: 0.45em 0 0.35em;
+	background: white;
 }
 
 .reactive-constructor-cms__main-wrapper label + label {
-	border-top: 1px dashed rgba(255,255,255,0.15);
+	border-top: 1px solid #979797;
 }
 
 .reactive-constructor-cms__main-wrapper label span {
-	padding: 0.4em 0 0;
+	padding: 0.6em 0.6em 0.2em;
 	display: inline-block;
-	max-width: 28%;
-	text-overflow: ellipsis;
-  /* Required for text-overflow to do anything */
-  white-space: nowrap;
-  overflow: hidden;
+	font-style: italic;
+	color: #b4b4b4;
 }
 
 .reactive-constructor-cms__main-wrapper button {
-	background: #8ED8B6;
+	background: linear-gradient(to bottom, #444, #333);
+	color: white;
 	cursor: pointer;
 }
 
 .reactive-constructor-cms__main-wrapper button:hover {
-	background: #7EB8A6;
+	background: linear-gradient(to bottom, #666, #444);
 }
 
 .reactive-constructor-cms__main-wrapper input,
@@ -155,9 +143,15 @@
   font-size: 1em;
   border: none;
 	outline: none;
-	padding: 0.5em !important;
+	padding: 0.6em !important;
 	margin: 0 !important;
 	border-radius: 0 !important;
+}
+
+.reactive-constructor-cms__main-wrapper input,
+.reactive-constructor-cms__main-wrapper textarea {
+	font-size: 16px !important;
+	padding-top: 0 !important;
 }
 
 .reactive-constructor-cms__main-wrapper textarea{
@@ -168,8 +162,7 @@
 .reactive-constructor-cms__main-wrapper label > select,
 .reactive-constructor-cms__main-wrapper label > button,
 .reactive-constructor-cms__main-wrapper label > textarea {
-	float: right;
-	width: 70%;
+	width: 100%;
 }
 
 .reactive-constructor-cms__main-wrapper input:disabled{
@@ -178,44 +171,55 @@
 	font-weight: bold;
 }
 
-.reactive-constructor-cms__main-wrapper .reactive-constructor-cms__main-wrapper__buttons {
+.reactive-constructor-cms__main-wrapper__buttons {
 	position: fixed;
 	bottom: 0;
 	width: 100%;
 }
 
-.reactive-constructor-cms__main-wrapper .reactive-constructor-cms__main-wrapper__buttons button {
+.reactive-constructor-cms__main-wrapper__buttons button {
 	width: 20%;
 	float: left;
 	border-right: 1px solid;
 }
-.reactive-constructor-cms__main-wrapper .reactive-constructor-cms__main-wrapper__buttons button:last-child {
+.reactive-constructor-cms__main-wrapper__buttons button:last-child {
 	border-right: none;
 }
 
-.reactive-constructor-cms__main-wrapper .reactive-constructor-cms-input-value-type{
-	opacity: 0.35;
-	font-weight: normal;
-}
-
-.reactive-constructor-cms__main-wrapper h2,
-.reactive-constructor-cms__main-wrapper h3{
+.reactive-constructor-cms__instance-wrapper__header{
+	position: absolute;
 	padding: 0 0 0.6em;
-  margin: 0;
-}
-
-.reactive-constructor-cms__main-wrapper h2{
-	font-size: 1.6em;
+  margin: -3px -3px 0 0;
+	font-size: 1em;
 	font-weight: bold;
-}
-.reactive-constructor-cms__main-wrapper .reactive-constructor-cms__instance-wrapper .reactive-constructor-cms__instance-wrapper h2{
-	font-size: 1.3em;
+	text-align: right;
+	width: 100%;
+	right: 0;
+	opacity: 0;
+	transition: 0.2s opacity ease;
 }
 
-.reactive-constructor-cms__main-wrapper h3 {
-	font-size: 1.2em;
+.reactive-constructor-cms__instance-wrapper__header--visible{
+	opacity: 1;
+}
+
+.reactive-constructor-cms__instance-wrapper__header > span,
+.reactive-constructor-cms__instance-wrapper__instance-buttons a{
+	background: #333;
+	color: white;
+	padding: 0.2em 0.4em;
+	font-size: 12px;
+	display: inline-block;
+}
+
+.reactive-constructor-cms__instance-wrapper__header > span {
+	letter-spacing: 0.03em;
+}
+
+.reactive-constructor-cms__instance-wrapper__header__text--light{
+	opacity: 0.4;
 	font-weight: normal;
-	text-align: center;
+	text-transform: uppercase;
 }
 
 .reactive-constructor-cms__select-overview{

@@ -114,11 +114,11 @@
 
 <template name="editTemplate__ListOfInstances">
 
-	<label title="{{ key }}">
-		{{> editTemplate__labelString }}
-	</label>
-
 	<div class="reactive-constructor-cms__list-of-instances">
+
+		<span class="reactive-constructor-cms__list-of-instances__key">
+			{{ key }}
+		</span>
 
 		<div class="reactive-constructor-cms__list-of-instances__instances">
 
@@ -148,7 +148,7 @@
 
 	<div class="reactive-constructor-cms__instance-wrapper">
 
-		<h2>
+		<div class="reactive-constructor-cms__instance-wrapper__header">
 
 			{{#if isBackup }}
 				<span>
@@ -159,19 +159,22 @@
 			{{#if isLinkedInstance }}
 				<span>
 					{{ key }} links to:
+					<a class="reactive-constructor-cms-ACTION--open-child-instance">
+						{{ getType }}
+					</a>
 				</span>
-				<a class="reactive-constructor-cms-ACTION--open-child-instance">
-					{{ getType }}
-				</a>
 			{{else}}
-				{{ getType }}
+				{{#if getType }}
+					{{#if constructorName }}
+						<span>
+							<span class="reactive-constructor-cms__instance-wrapper__header__text--light">{{ constructorName }}</span> 
+							{{ getType }}
+						</span>
+					{{/if}}
+				{{/if}}
 			{{/if}}
 
-			<span>
-				{{ constructorName }}
-			</span>
-
-			<span class="reactive-constructor-cms__instance-wrapper__instance-buttons">
+			<div class="reactive-constructor-cms__instance-wrapper__instance-buttons">
 			
 				<a class="reactive-constructor-cms-ACTION--open-child-instance">
 					Open
@@ -203,9 +206,9 @@
 					Change
 				</a>
 
-			</span>
+			</div>
 
-		</h2>
+		</div>
 
 		{{#if isLinkedInstance }}
 

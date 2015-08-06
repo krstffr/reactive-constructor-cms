@@ -231,6 +231,14 @@ var updateInput = function ( value, key, type, instance ) {
 
 };
 
+// Method for toggling the current instance header (text and "edit buttons")
+var toggleInstanceHeader = _.debounce( function ( menuEl ) {
+  return $('.reactive-constructor-cms__instance-wrapper__header')
+  .addClass('reactive-constructor-cms__instance-wrapper__header--visible')
+  .not( menuEl )
+  .removeClass('reactive-constructor-cms__instance-wrapper__header--visible');
+}, 80 );
+
 Template.editTemplate__wrapper.events({
   'click .reactive-constructor-cms-ACTION--load-next-backup-of-instance': function() {
     var instance = this;
@@ -275,6 +283,18 @@ Template.editTemplate__wrapper.events({
         return ReactiveConstructorCmsPlugin.editPageGet( createdInstance );
       }
     });
+  },
+  'mouseenter .reactive-constructor-cms__instance-wrapper': function( e ) {
+    return toggleInstanceHeader( $( e.currentTarget ).children('.reactive-constructor-cms__instance-wrapper__header').first() );
+  },
+  'mouseleave .reactive-constructor-cms__instance-wrapper': function( e ) {
+    return toggleInstanceHeader(
+      $( e.currentTarget )
+      .parent()
+      .closest('.reactive-constructor-cms__instance-wrapper')
+      .children('.reactive-constructor-cms__instance-wrapper__header')
+      .first()
+    );
   }
 });
 
