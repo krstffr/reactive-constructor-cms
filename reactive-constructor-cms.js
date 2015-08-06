@@ -732,7 +732,7 @@ ReactiveConstructorCmsPlugin.editPageRemove = function( instance, callback ) {
 
 		// Hide the container by adding the hidden class
 		// TODO: Use a more proper class
-		$('.reactive-constructor-cms-wrapper').addClass('wrapper--hidden');
+		$('.reactive-constructor-cms__main-wrapper').addClass('reactive-constructor-cms__main-wrapper--hidden');
 
 		// Return a time out which actually remove the view
 		return Meteor.setTimeout(function () {
@@ -780,7 +780,7 @@ ReactiveConstructorCmsPlugin.editPageGet = function( instance ) {
 
 		// TODO: Make better, use proper classes etc.
 		Meteor.setTimeout(function () {
-			$('.wrapper--hidden').removeClass('wrapper--hidden');
+			$('.reactive-constructor-cms__main-wrapper--hidden').removeClass('reactive-constructor-cms__main-wrapper--hidden');
 		}, 5 );
 
 	});

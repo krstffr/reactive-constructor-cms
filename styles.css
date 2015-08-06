@@ -1,29 +1,29 @@
 /* apply a natural box layout model to all elements, but allowing components to change */
-.reactive-constructor-cms-wrapper,
-.reactive-constructor-cms-select-overview {
+.reactive-constructor-cms__main-wrapper,
+.reactive-constructor-cms__select-overview {
 	box-sizing: border-box;
 }
 
-.reactive-constructor-cms-wrapper,
-.reactive-constructor-cms-wrapper *,
-.reactive-constructor-cms-wrapper *:before,
-.reactive-constructor-cms-wrapper *:after,
-.reactive-constructor-cms-select-overview *,
-.reactive-constructor-cms-select-overview *:before,
-.reactive-constructor-cms-select-overview *:after {
+.reactive-constructor-cms__main-wrapper,
+.reactive-constructor-cms__main-wrapper *,
+.reactive-constructor-cms__main-wrapper *:before,
+.reactive-constructor-cms__main-wrapper *:after,
+.reactive-constructor-cms__select-overview *,
+.reactive-constructor-cms__select-overview *:before,
+.reactive-constructor-cms__select-overview *:after {
 	box-sizing: border-box;
 	font-family: "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif !important;
 	letter-spacing: 0;
 }
 
-.reactive-constructor-cms-select-overview,
-.reactive-constructor-cms-wrapper{
+.reactive-constructor-cms__select-overview,
+.reactive-constructor-cms__main-wrapper{
 	font-size: 13px;
 	position: fixed;
 }
 
 
-.reactive-constructor-cms-wrapper {
+.reactive-constructor-cms__main-wrapper {
 
 	width: 45%;
 	min-width: 600px;
@@ -42,72 +42,72 @@
 
 }
 
-.reactive-constructor-cms-wrapper.wrapper--hidden {
+.reactive-constructor-cms__main-wrapper.reactive-constructor-cms__main-wrapper--hidden {
 
 	opacity: 0;
 	transform: translate(0,20px);
 
 }
 
-.reactive-constructor-cms-wrapper .wrapper__editable-fields{
+.reactive-constructor-cms__main-wrapper .reactive-constructor-cms__main-wrapper__editable-fields{
 	height: 100%;
 	overflow: auto;
 	padding-bottom: 2em;
 }
 
-.reactive-constructor-cms-wrapper .wrap {
+.reactive-constructor-cms__main-wrapper .reactive-constructor-cms__instance-wrapper {
 	padding: 1.5em 1.2em;
 	width: 100%;
 	overflow: hidden;
 }
 
-.reactive-constructor-cms-wrapper .wrap .collection,
-.reactive-constructor-cms-wrapper .wrap > .wrap {
+.reactive-constructor-cms__main-wrapper .reactive-constructor-cms__instance-wrapper .reactive-constructor-cms__list-of-instances,
+.reactive-constructor-cms__main-wrapper .reactive-constructor-cms__instance-wrapper > .reactive-constructor-cms__instance-wrapper {
 	background: rgba(220, 235, 255, 0.15);
 	padding: 0.5em;
 	margin: 0;
 	border-bottom: 1px dashed rgba(255,255,255,0.15);
 }
 
-.reactive-constructor-cms-wrapper .wrap > .wrap {
+.reactive-constructor-cms__main-wrapper .reactive-constructor-cms__instance-wrapper > .reactive-constructor-cms__instance-wrapper {
 	padding: 1.15em 1em 0.2em;
 }
 
-.reactive-constructor-cms-wrapper .wrap .collection__items > .wrap {
+.reactive-constructor-cms__main-wrapper .reactive-constructor-cms__instance-wrapper .reactive-constructor-cms__list-of-instances__instances > .reactive-constructor-cms__instance-wrapper {
 	background: #112;
 	padding: 1.2em 0.7em 0.3em;
 	margin: 0;
 	border-bottom: 0.2em solid rgba(220, 235, 255, 0.3);
 }
 
-.reactive-constructor-cms-wrapper .wrap .collection button {
+.reactive-constructor-cms__main-wrapper .reactive-constructor-cms__instance-wrapper .reactive-constructor-cms__list-of-instances button {
 	width: 100%;
 	padding: 0.3em;
 }
 
-.reactive-constructor-cms-wrapper .wrap > h2 .reactive-constructor-cms-remove-collection-item,
-.reactive-constructor-cms-wrapper .wrap > h2 .reactive-constructor-cms-duplicate-collection-item{
+.reactive-constructor-cms__main-wrapper .reactive-constructor-cms__instance-wrapper > h2 .reactive-constructor-cms-ACTION--remove-instance-from-list,
+.reactive-constructor-cms__main-wrapper .reactive-constructor-cms__instance-wrapper > h2 .reactive-constructor-cms-ACTION--duplicate-instance-in-list{
 	display: none;
 }
 
-.reactive-constructor-cms-wrapper .collection__items > .wrap > h2 .reactive-constructor-cms-remove-collection-item,
-.reactive-constructor-cms-wrapper .collection__items > .wrap > h2 .reactive-constructor-cms-duplicate-collection-item{
+.reactive-constructor-cms__main-wrapper .reactive-constructor-cms__list-of-instances__instances > .reactive-constructor-cms__instance-wrapper > h2 .reactive-constructor-cms-ACTION--remove-instance-from-list,
+.reactive-constructor-cms__main-wrapper .reactive-constructor-cms__list-of-instances__instances > .reactive-constructor-cms__instance-wrapper > h2 .reactive-constructor-cms-ACTION--duplicate-instance-in-list{
 	display: inline-block;
 }
 
-.reactive-constructor-cms-wrapper > .wrapper__editable-fields > .wrap > h2 .rc-cms-links a {
+.reactive-constructor-cms__main-wrapper > .reactive-constructor-cms__main-wrapper__editable-fields > .reactive-constructor-cms__instance-wrapper > h2 .reactive-constructor-cms__instance-wrapper__instance-buttons a {
 	display: none;
 }
 
-.reactive-constructor-cms-wrapper a{
+.reactive-constructor-cms__main-wrapper a{
 	cursor: pointer;
 }
-.reactive-constructor-cms-wrapper a:hover{
+.reactive-constructor-cms__main-wrapper a:hover{
 	color: #8ED8B6;
 }
 
 
-.reactive-constructor-cms-wrapper .wrap > h2 .rc-cms-links a {
+.reactive-constructor-cms__main-wrapper .reactive-constructor-cms__instance-wrapper > h2 .reactive-constructor-cms__instance-wrapper__instance-buttons a {
 	display: inline-block;
   float: right;
   font-size: 0.6em;
@@ -115,18 +115,18 @@
   margin-left: 1em;
 }
 
-.reactive-constructor-cms-wrapper label {
+.reactive-constructor-cms__main-wrapper label {
 	display: inline-block;
 	width: 100%;
 	overflow: hidden;
 	padding: 0.45em 0 0.35em;
 }
 
-.reactive-constructor-cms-wrapper label + label {
+.reactive-constructor-cms__main-wrapper label + label {
 	border-top: 1px dashed rgba(255,255,255,0.15);
 }
 
-.reactive-constructor-cms-wrapper label span {
+.reactive-constructor-cms__main-wrapper label span {
 	padding: 0.4em 0 0;
 	display: inline-block;
 	max-width: 28%;
@@ -136,19 +136,19 @@
   overflow: hidden;
 }
 
-.reactive-constructor-cms-wrapper button {
+.reactive-constructor-cms__main-wrapper button {
 	background: #8ED8B6;
 	cursor: pointer;
 }
 
-.reactive-constructor-cms-wrapper button:hover {
+.reactive-constructor-cms__main-wrapper button:hover {
 	background: #7EB8A6;
 }
 
-.reactive-constructor-cms-wrapper input,
-.reactive-constructor-cms-wrapper select,
-.reactive-constructor-cms-wrapper button,
-.reactive-constructor-cms-wrapper textarea {
+.reactive-constructor-cms__main-wrapper input,
+.reactive-constructor-cms__main-wrapper select,
+.reactive-constructor-cms__main-wrapper button,
+.reactive-constructor-cms__main-wrapper textarea {
 	box-sizing: border-box;
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
@@ -160,66 +160,65 @@
 	border-radius: 0 !important;
 }
 
-.reactive-constructor-cms-wrapper textarea{
+.reactive-constructor-cms__main-wrapper textarea{
 	height: 200px;
 }
 
-.reactive-constructor-cms-wrapper label > input,
-.reactive-constructor-cms-wrapper label > select,
-.reactive-constructor-cms-wrapper label > button,
-.reactive-constructor-cms-wrapper label > textarea {
+.reactive-constructor-cms__main-wrapper label > input,
+.reactive-constructor-cms__main-wrapper label > select,
+.reactive-constructor-cms__main-wrapper label > button,
+.reactive-constructor-cms__main-wrapper label > textarea {
 	float: right;
 	width: 70%;
 }
 
-.reactive-constructor-cms-wrapper input:disabled{
+.reactive-constructor-cms__main-wrapper input:disabled{
 	background: #ccc;
 	color: #444;
 	font-weight: bold;
 }
 
-.reactive-constructor-cms-wrapper .wrapper__buttons {
+.reactive-constructor-cms__main-wrapper .reactive-constructor-cms__main-wrapper__buttons {
 	position: fixed;
 	bottom: 0;
 	width: 100%;
 }
 
-.reactive-constructor-cms-wrapper .wrapper__buttons button {
+.reactive-constructor-cms__main-wrapper .reactive-constructor-cms__main-wrapper__buttons button {
 	width: 20%;
 	float: left;
 	border-right: 1px solid;
 }
-.reactive-constructor-cms-wrapper .wrapper__buttons button:last-child {
+.reactive-constructor-cms__main-wrapper .reactive-constructor-cms__main-wrapper__buttons button:last-child {
 	border-right: none;
 }
 
-.reactive-constructor-cms-wrapper .reactive-constructor-cms-constructor-name,
-.reactive-constructor-cms-wrapper .reactive-constructor-cms-input-value-type{
+.reactive-constructor-cms__main-wrapper .reactive-constructor-cms-input-value-type{
 	opacity: 0.35;
 	font-weight: normal;
 }
 
-.reactive-constructor-cms-wrapper h2,
-.reactive-constructor-cms-wrapper h3{
+.reactive-constructor-cms__main-wrapper h2,
+.reactive-constructor-cms__main-wrapper h3{
 	padding: 0 0 0.6em;
   margin: 0;
 }
 
-.reactive-constructor-cms-wrapper h2{
+.reactive-constructor-cms__main-wrapper h2{
 	font-size: 1.6em;
 	font-weight: bold;
 }
-.reactive-constructor-cms-wrapper .wrap .wrap h2{
+.reactive-constructor-cms__main-wrapper .reactive-constructor-cms__instance-wrapper .reactive-constructor-cms__instance-wrapper h2{
 	font-size: 1.3em;
 }
 
-.reactive-constructor-cms-wrapper h3 {
+.reactive-constructor-cms__main-wrapper h3 {
 	font-size: 1.2em;
 	font-weight: normal;
 	text-align: center;
 }
 
-.reactive-constructor-cms-select-overview{
+.reactive-constructor-cms__select-overview{
 	margin-top: 10%;
   left: 20%;
   width: 60%;
@@ -231,30 +230,30 @@
   opacity: 1;
   transition: opacity 0.2s ease;
 }
-.reactive-constructor-cms-select-overview--hidden{
+.reactive-constructor-cms__select-overview--hidden{
 	opacity: 0;
 }
-.reactive-constructor-cms-select-overview ul{
+.reactive-constructor-cms__select-overview ul{
 	border-top: 1px solid #eee;
 }
-.reactive-constructor-cms-select-overview ul,
-.reactive-constructor-cms-select-overview li{
+.reactive-constructor-cms__select-overview ul,
+.reactive-constructor-cms__select-overview li{
 	padding: 0;
 	margin: 0;
 	display: block;
 }
-.reactive-constructor-cms-select-overview li a{
+.reactive-constructor-cms__select-overview li a{
 	display: inline-block;
 	width: 100%;
 	padding: 0.3em;
 	cursor: pointer;
 	border-bottom: 1px solid #eee;
 }
-.reactive-constructor-cms-select-overview li a:hover{
+.reactive-constructor-cms__select-overview li a:hover{
 	background: #ccc;
 }
 
-.reactive-constructor-cms-select-overview__fader{
+.reactive-constructor-cms__select-overview__fader{
 	position: fixed;
 	top: 0;
 	bottom: 0;
@@ -264,12 +263,12 @@
 	opacity: 0.4;
 }
 
-.reactive-constructor-cms-select-overview__toggle-view{
+.reactive-constructor-cms__select-overview__toggle-view{
 	float: right;
 	font-size: 0.6em;
 	padding-top: 0.6em;
 }
-.reactive-constructor-cms-select-overview__img-preview{
+.reactive-constructor-cms__select-overview__img-preview{
 	float: left;
 	width: 31%;
 	border: 1px solid #eee;
@@ -279,17 +278,17 @@
 	cursor: pointer;
 	overflow: hidden;
 }
-.reactive-constructor-cms-select-overview__img-preview:hover{
+.reactive-constructor-cms__select-overview__img-preview:hover{
 	border-color: #aaa;
 }
-.reactive-constructor-cms-select-overview__img-preview a {
+.reactive-constructor-cms__select-overview__img-preview a {
 	max-width: 100%;
 	text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
   display: inline-block;
 }
-.reactive-constructor-cms-select-overview__img-preview__img{
+.reactive-constructor-cms__select-overview__img-preview__img{
 	height: 150px;
 	width: auto;
 	margin: 0 0 0.6em;
@@ -305,7 +304,7 @@
   background-size: contain;
 }
 
-.reactive-constructor-cms-change-value-using-overview{
+.reactive-constructor-cms-ACTION--change-value-using-overview{
 	float: right;
 	width: 70%;
 }
@@ -329,15 +328,15 @@
 				
 
 /* Some edit overlay styles */
-.edit-overlay{
+.reactive-constructor-cms__live-edit-overlay{
   opacity: 0;
   -webkit-transition: opacity 0.2s ease;
           transition: opacity 0.2s ease;
 }
-.edit-overlay--visible{
+.reactive-constructor-cms__live-edit-overlay--visible{
   opacity: 1;
 }
-.edit-overlay__textarea {
+.reactive-constructor-cms__live-edit-overlay__textarea {
   width: 100%;
   height: 100%;
 }
