@@ -535,6 +535,9 @@ Template.reactiveConstructorCms__loadSavedDoc.onCreated(function() {
 Template.reactiveConstructorCms__loadSavedDoc.helpers({
   reactiveConstructorCms__constructors: function() {
     return ReactiveConstructorCmsPlugin.getGlobalInstanceStore();
+  },
+  items: function() {
+    return _.sortByAll( this.items, 'rcType', 'reactiveConstructorCmsName');
   }
 });
 
