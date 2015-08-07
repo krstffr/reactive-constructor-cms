@@ -8,7 +8,7 @@
    Useful for many web-page-like stuff I guess where some objects should only point to other actual docs?
 
  ☐ Main UI!
-   ☐ The look and feel of this thing. 
+   ✔ The look and feel of this thing.  @done (15-08-07 12:08)
    ☐ Also: how does the user reach the UI?
      ✔ No router!! @done (15-05-21 16:10)
      ☐ Maybe the user can add a {{> HERE }} wherever she wants to have it?
@@ -57,7 +57,7 @@ Not prio:
  ☐ A GOOD way to handle dates (without using third party libs) 
  ☐ Ability to define how "deep" nested objects should run.
    ☐ Maybe a "load more" button? Or the "go to" ability mentioned above?
- ☐ An expand/hide button for all listde instances?
+ ☐ An expand/hide button for all listed instances?
    To unclutter the UI a bit!
  ☐ Nested list (array) instances with it's own nested lists looks MESSY. Too much going on.
  ☐ How to handle nested "pure" objects? Should that even be allowed? NAH. Not in the CMS! Or? Maybe…
