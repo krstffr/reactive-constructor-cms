@@ -354,7 +354,7 @@
 
 .reactive-constructor-cms__input__preview-img {
   height: 150px;
-  width: 70%;
+  width: 100%;
   float: right;
   background: #414141 center no-repeat;
   background-size: contain;
