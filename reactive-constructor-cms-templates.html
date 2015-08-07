@@ -69,7 +69,7 @@
 
 <template name="editTemplate__String">
 	
-	<label title="{{ key }}" class="reactive-constructor-cms__label--no-hover">
+	<label title="{{ key }}" class="{{#if fieldCmsOptions.selectOverview }}reactive-constructor-cms__label--no-hover{{/if}}">
 		{{> editTemplate__labelString }}
 		<input type="text" value="{{ value }}" disabled="{{ fieldCmsOptions.disabled }}" />
 		{{#if fieldCmsOptions.selectOverview }}
