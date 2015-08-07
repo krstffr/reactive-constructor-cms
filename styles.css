@@ -117,7 +117,7 @@
 	cursor: pointer;
 }
 .reactive-constructor-cms__main-wrapper a:hover{
-	color: #8ED8B6;
+	color: #FFF9CD !important;
 }
 
 .reactive-constructor-cms__instance-wrapper__instance-buttons{
@@ -256,9 +256,10 @@
 
 .reactive-constructor-cms__instance-wrapper__header{
 	position: absolute;
-	padding: 0 0 0.6em;
+	padding: 0;
   margin: -3px -3px 0 0;
 	font-size: 1em;
+	line-height: 1;
 	font-weight: bold;
 	right: 0;
 	opacity: 0;
@@ -272,8 +273,8 @@
 .reactive-constructor-cms__instance-wrapper__header > span,
 .reactive-constructor-cms__instance-wrapper__instance-buttons a{
 	background: #333;
-	color: white;
-	padding: 0.2em 0.4em;
+	color: white !important;
+	padding: 0.4em;
 	font-size: 12px;
 	display: inline-block;
 }
@@ -299,6 +300,7 @@
   position: absolute;
   opacity: 1;
   transition: opacity 0.2s ease;
+  z-index: 1010;
 }
 .reactive-constructor-cms__select-overview--hidden{
 	opacity: 0;
@@ -331,6 +333,7 @@
 	right: 0;
 	background: black;
 	opacity: 0.4;
+	z-index: 990;
 }
 
 .reactive-constructor-cms__select-overview__toggle-view{

@@ -559,6 +559,8 @@ Template.reactiveConstructorCms__loadSavedDoc.events({
 
 Template.editTemplate__Select.onRendered(function() {
   var parentInstance = Blaze.getData( $( this.firstNode ).closest('.reactive-constructor-cms__instance-wrapper')[0] );
+  if (!parentInstance || !parentInstance.getReactiveValue)
+    return false;
   var currentValue = parentInstance.getReactiveValue( this.data.key );
   $( this.find('select') ).val( currentValue );
 });
