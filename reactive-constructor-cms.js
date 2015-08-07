@@ -55,8 +55,9 @@ ReactiveConstructorCmsPlugin = new ReactiveConstructorPlugin({
 		// TODO: Needs to check "global" overrides as well!
 		// Has test: ✔
 		passedClass.prototype.getInputType = function( key ) {
-			if (this.getInstanceCmsOptions().inputs && this.getInstanceCmsOptions().inputs[key])
-				return this.getInstanceCmsOptions().inputs[key].type;
+			var cmsOptions = this.getAllCmsOptions();
+			if (cmsOptions.inputs && cmsOptions.inputs[key])
+				return cmsOptions.inputs[key].type;
 			return false;
 		};
 
@@ -385,7 +386,24 @@ ReactiveConstructorCmsPlugin = new ReactiveConstructorPlugin({
 		// Method for getting both instance AND constructor cms options
 		// Has test: ✔
 		passedClass.prototype.getAllCmsOptions = function() {
-			return _.assign( this.getInstanceCmsOptions(), this.getConstructorCmsOptions() );
+
+			var cmsOptions = this.getConstructorCmsOptions();
+			var instanceTypeCmsOptions = this.getInstanceCmsOptions();
+
+			if (instanceTypeCmsOptions.inputs)
+				cmsOptions.inputs  = _.assign( cmsOptions.inputs || {}, instanceTypeCmsOptions.inputs );
+
+			if (instanceTypeCmsOptions.exclude)
+				cmsOptions.exclude = _.assign( cmsOptions.exclude || {}, instanceTypeCmsOptions.exclude );
+
+			if (instanceTypeCmsOptions.filter)
+				cmsOptions.filter  = _.assign( cmsOptions.filter || {}, instanceTypeCmsOptions.filter );
+
+			if (instanceTypeCmsOptions.imgPreviewKey)
+				cmsOptions.imgPreviewKey  = instanceTypeCmsOptions.imgPreviewKey;
+			
+			return cmsOptions;
+			
 		};
 
 		// Method to check if an instance can be saved
@@ -732,7 +750,7 @@ ReactiveConstructorCmsPlugin.editPageRemove = function( instance, callback ) {
 
 		// Hide the container by adding the hidden class
 		// TODO: Use a more proper class
-		$('.reactive-constructor-cms-wrapper').addClass('wrapper--hidden');
+		$('.reactive-constructor-cms__main-wrapper').addClass('reactive-constructor-cms__main-wrapper--hidden');
 
 		// Return a time out which actually remove the view
 		return Meteor.setTimeout(function () {
@@ -780,7 +798,7 @@ ReactiveConstructorCmsPlugin.editPageGet = function( instance ) {
 
 		// TODO: Make better, use proper classes etc.
 		Meteor.setTimeout(function () {
-			$('.wrapper--hidden').removeClass('wrapper--hidden');
+			$('.reactive-constructor-cms__main-wrapper--hidden').removeClass('reactive-constructor-cms__main-wrapper--hidden');
 		}, 5 );
 
 	});

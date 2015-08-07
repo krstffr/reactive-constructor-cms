@@ -24,12 +24,27 @@ Meteor.startup(function() {
 	Person = new ReactiveConstructor('Person', function () {
 		return {
 			cmsOptions: {
-				collection: Persons
+				collection: Persons,
+				inputs: {
+					bio: {
+						type: 'textarea'
+					},
+					someSelectValue: {
+						type: 'textarea'
+					}
+				},
+				filter: {
+					children: ['worker', 'child', 'husband']
+				},
+				exclude: {
+					pets: ['dog']
+				}
 			},
 			globalValues: {
 				fields: {
 					age: Number,
 					name: String,
+					bio: String,
 					children: [ Person ],
 					sex: String
 				}
@@ -54,10 +69,16 @@ Meteor.startup(function() {
 					inputs: {
 						name: {
 							type: 'textarea'
+						},
+						someSelectValue: {
+							type: 'select'
 						}
 					},
 					filter: {
 						children: ['worker', 'child']
+					},
+					exclude: {
+						pets: ['dog', 'cat']
 					}
 				}
 			}, {
@@ -157,7 +178,6 @@ Meteor.startup(function() {
 						url: {
 							transform: function( value ) {
 								value += ' overridden!';
-								console.log( value );
 								return value;
 							}
 						}
@@ -228,9 +248,6 @@ Tinytest.add('ReactiveConstructorCmsPlugin - init: new instances should be able 
 
 	var fedAnimal = new Animal({ hungry: false });
 	var hungryAnimal = new Animal({ hungry: true });
-
-	console.log( hungryAnimal.getReactiveValue('hungry') );
-	console.log( fedAnimal.getReactiveValue('hungry') );
 
 	test.isTrue( hungryAnimal.getReactiveValue('hungry') );
 	test.isFalse( fedAnimal.getReactiveValue('hungry') );
@@ -475,6 +492,10 @@ Tinytest.add('ReactiveConstructorCmsPlugin instance methods - instance.getInstan
 	// This should just be an empty object
 	test.isTrue( Match.test( nonSaveableInstance.getInstanceCmsOptions(), {} ) );
 
+	// This should also get "global" values, set on the main constructor
+
+
+
 });
 
 Tinytest.add('ReactiveConstructorCmsPlugin instance methods - instance.getConstructorCmsOptions()', function(test) {
@@ -534,10 +555,25 @@ Tinytest.add('ReactiveConstructorCmsPlugin instance methods - instance.getInputT
 Tinytest.add('ReactiveConstructorCmsPlugin instance methods - instance.getCmsOption()', function(test) {
 
 	var person = new Person();
+	var anotherPerson = new Person({ rcType: 'wife' });
+	var thirdPerson = new Person({ rcType: 'husband' });
 
-	test.equal( person.getCmsOption('inputs'), { name: {type: 'textarea'} });
+	test.equal( person.getCmsOption('inputs'), { name: {type: 'textarea'}, bio: { type: 'textarea' }, someSelectValue: { type: 'select' } });
 	test.equal( person.getCmsOption('filter'), { children: ['worker', 'child'] });
 	test.isFalse( person.getCmsOption('something not set') );
+
+	// This value is set to type textare on the constructor level, but overwritten on the worker
+	// type. But it should still be texarea on a non worker which does not overwrite it!
+	test.equal(        person.getCmsOption('inputs').someSelectValue.type, 'select' );
+	test.equal( anotherPerson.getCmsOption('inputs').someSelectValue.type, 'textarea' );
+
+	// Also the filter property should be overwritable with the instance type being the overwriter
+	test.equal(      person.getCmsOption('filter').children, ['worker', 'child'] );
+	test.equal( thirdPerson.getCmsOption('filter').children, ['worker', 'child', 'husband'] );	
+
+	// AND for exclude as well.
+	test.equal(      person.getCmsOption('exclude').pets, ['dog', 'cat'] );
+	test.equal( thirdPerson.getCmsOption('exclude').pets, ['dog'] );	
 
 	test.throws(function() {
 		person.getCmsOption( 123 );

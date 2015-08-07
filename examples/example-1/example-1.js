@@ -11,7 +11,12 @@ Persons = new Meteor.Collection('persons');
 Person = new ReactiveConstructor('Person', function () {
   return {
     cmsOptions: {
-      collection: Persons
+      collection: Persons,
+      inputs: {
+        childhoodMemories: {
+          type: 'textarea'
+        }
+      }
     },
     globalValues: {
       fields: {
@@ -28,6 +33,7 @@ Person = new ReactiveConstructor('Person', function () {
       fields: {
         title: String,
         bio: String,
+        childhoodMemories: String,
         favouritePowerRanger: String
       },
       defaultData: {

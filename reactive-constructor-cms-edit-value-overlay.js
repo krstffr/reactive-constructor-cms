@@ -19,7 +19,7 @@ Template.editTemplate__elementTextareaOverlay.onRendered(function(){
     height: originalElement.height(),
     width: originalElement.width(),
     position: 'absolute'
-  }).addClass('edit-overlay--visible');
+  }).addClass('reactive-constructor-cms__live-edit-overlay--visible');
 
 });
 
@@ -39,11 +39,11 @@ var removereactiveValueEditTemplate = function () {
 };
 
 Template.editTemplate__elementTextareaOverlay.events({
-  'click .edit-overlay__button--cancel': function() {
+  'click .reactive-constructor-cms__live-edit-overlay__button--cancel': function() {
     // Remove the edit template.
     return removereactiveValueEditTemplate();
   },
-  'click .edit-overlay__button--save': function ( e ) {
+  'click .reactive-constructor-cms__live-edit-overlay__button--save': function ( e ) {
 
     // Get the new value…
     var value = $(e.currentTarget).parent().find('textarea').val();
@@ -58,7 +58,7 @@ Template.editTemplate__elementTextareaOverlay.events({
 });
 
 Template.getReactiveValueEditable.events({
-  'click .cms-edit': function ( e ) {
+  'click .reactive-constructor-cms__live-edit-wrapper': function ( e ) {
 
     if (!Meteor.userId || !Meteor.userId())
       return ;

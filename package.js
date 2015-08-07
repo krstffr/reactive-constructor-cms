@@ -1,7 +1,7 @@
 Package.describe({
 	name: "krstffr:reactive-constructor-cms",
 	summary: "CMS for krstffr:reactive-constructor instances.",
-	version: "0.2.2"
+	version: "0.3.0"
 });
 
 Package.onUse(function (api) {
@@ -11,13 +11,13 @@ Package.onUse(function (api) {
 	api.use([
 		"templating",
 		"reactive-var@1.0.4",
-		"krstffr:reactive-constructor@1.1.1",
+		"krstffr:reactive-constructor@1.2.0",
 		"krstffr:msgs@0.0.6",
 		"mizzao:jquery-ui@1.11.2"
 		], "client");
 
 	api.use([
-		"stevezhu:lodash@1.0.2"
+		"stevezhu:lodash@3.10.1"
 		], ["client", "server"]);
 
 	api.addFiles([
