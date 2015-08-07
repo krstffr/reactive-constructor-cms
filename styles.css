@@ -133,6 +133,7 @@
 	width: 100%;
 	overflow: hidden;
 	background: white;
+	padding: 0;
 }
 
 .reactive-constructor-cms__main-wrapper label:hover {
@@ -232,6 +233,7 @@
 .reactive-constructor-cms__main-wrapper input:disabled{
 	color: #444;
 	font-weight: bold;
+	opacity: 1 !important;
 }
 
 .reactive-constructor-cms__main-wrapper__buttons {
