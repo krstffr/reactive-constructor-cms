@@ -69,13 +69,15 @@
 
 <template name="editTemplate__String">
 	
-	<label title="{{ key }}">
+	<label title="{{ key }}" class="reactive-constructor-cms__label--no-hover">
 		{{> editTemplate__labelString }}
 		<input type="text" value="{{ value }}" disabled="{{ fieldCmsOptions.disabled }}" />
 		{{#if fieldCmsOptions.selectOverview }}
-			<button class="reactive-constructor-cms-ACTION--change-value-using-overview">
-				Change {{ this.key }}
-			</button>
+			<div class="reactive-constructor-cms__select-wrapper">
+				<button class="reactive-constructor-cms-ACTION--change-value-using-overview">
+					Change {{ this.key }}
+				</button>
+			</div>
 		{{/if}}
 	</label>
 	
@@ -92,27 +94,31 @@
 
 <template name="editTemplate__Select">
 
-	<label title="{{ key }}">
+	<label title="{{ key }}" class="reactive-constructor-cms__label--no-hover">
 		{{> editTemplate__labelString }}
-		<select class="reactive-constructor-cms-ACTION--select-input">
-		{{#each fieldCmsOptions.selectValues }}
-			<option value="{{ value }}">
-				{{ value }}
-			</option>
-		{{/each}}
-		</select>
+		<div class="reactive-constructor-cms__select-wrapper">
+			<select class="reactive-constructor-cms-ACTION--select-input">
+			{{#each fieldCmsOptions.selectValues }}
+				<option value="{{ value }}">
+					{{ value }}
+				</option>
+			{{/each}}
+			</select>
+		</div>
 	</label>
 	
 </template>
 
 <template name="editTemplate__Boolean">
 
-	<label title="{{ key }}">
+	<label title="{{ key }}" class="reactive-constructor-cms__label--no-hover">
 		{{> editTemplate__labelString }}
-		<select class="reactive-constructor-cms-ACTION--select-input">
+		<div class="reactive-constructor-cms__select-wrapper">
+			<select class="reactive-constructor-cms-ACTION--select-input">
 				<option value="true" selected="{{#if equals value true }}selected{{/if}}">True</option>
 				<option value="false" selected="{{#if equals value false }}selected{{/if}}">False</option>
-		</select>
+			</select>
+		</div>
 	</label>
 
 </template>

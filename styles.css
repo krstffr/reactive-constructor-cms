@@ -134,6 +134,10 @@
 	background: #FFF9CD;
 }
 
+.reactive-constructor-cms__main-wrapper .reactive-constructor-cms__label--no-hover:hover{
+	background: white;
+}
+
 .reactive-constructor-cms__main-wrapper label + label {
 	border-top: 1px solid #979797;
 }
@@ -170,7 +174,21 @@
 }
 
 .reactive-constructor-cms__main-wrapper button:hover {
-	background: #ddd;
+	background: #FFF9CD;
+	border-color: #FFF9CD;
+	color: black;
+}
+
+.reactive-constructor-cms__main-wrapper .reactive-constructor-cms-ACTION--change-value-using-overview{
+	color: black;
+	background: #FFF9CD;
+	width: 100%;
+	margin-top: -8px !important;
+}
+
+.reactive-constructor-cms__main-wrapper .reactive-constructor-cms-ACTION--change-value-using-overview:hover{
+	background: #eee;
+	border-color: #eee;
 }
 
 .reactive-constructor-cms__main-wrapper input,
@@ -182,6 +200,17 @@
 
 .reactive-constructor-cms__main-wrapper textarea{
 	height: 200px;
+}
+
+.reactive-constructor-cms__main-wrapper select{
+	height: 2.3em;
+	width: 100%;
+	background: #FFF9CD;
+}
+
+.reactive-constructor-cms__select-wrapper{
+	padding: 3px 7px 9px;
+	width: 100%;
 }
 
 .reactive-constructor-cms__main-wrapper label > input,
@@ -329,11 +358,6 @@
   float: right;
   background: #414141 center no-repeat;
   background-size: contain;
-}
-
-.reactive-constructor-cms-ACTION--change-value-using-overview{
-	float: right;
-	width: 70%;
 }
 
 .reactive-constructor-cms-ACTION--open-child-instance,
