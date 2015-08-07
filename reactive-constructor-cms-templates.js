@@ -30,6 +30,9 @@ Template.editTemplate__selectOverview.events({
 });
 
 Template.editTemplate__selectOverview.helpers({
+  selectableItems: function() {
+    return _.sortBy( this.selectableItems, 'value' );
+  },
   listViewIs: function( viewName ) {
     return this.listView.get() === viewName;
   },
