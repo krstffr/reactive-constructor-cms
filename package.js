@@ -17,7 +17,7 @@ Package.onUse(function (api) {
 		], "client");
 
 	api.use([
-		"stevezhu:lodash@1.0.2"
+		"stevezhu:lodash@3.10.1"
 		], ["client", "server"]);
 
 	api.addFiles([
