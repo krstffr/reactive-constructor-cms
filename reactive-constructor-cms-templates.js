@@ -58,6 +58,7 @@ Handlebars.registerHelper('getTemplateFromType', function () {
       return 'editTemplate__String';
 
     var userSpecifiedInput = instance.getInputType( this.key );
+
     if (userSpecifiedInput === 'textarea')
       return 'editTemplate__Textarea';
     if (userSpecifiedInput === 'select')
