@@ -55,7 +55,7 @@
 .reactive-constructor-cms__main-wrapper__editable-fields{
 	height: 100%;
 	overflow: auto;
-	padding-bottom: 2em;
+	padding-bottom: 7.5em;
 }
 
 .reactive-constructor-cms__instance-wrapper {
@@ -229,13 +229,26 @@
 	position: fixed;
 	bottom: 0;
 	width: 100%;
+	background: linear-gradient(to bottom right, #E7E7E7, #B0B0B0);
+	padding: 10px 10px 0;
+	border-top: 2px solid #555;
 }
 
 .reactive-constructor-cms__main-wrapper__buttons button {
-	width: 20%;
-	float: left;
-	border-right: 1px solid;
+	width: 22%;
+	display: inline-block;
+	padding: 4px 0;
+	margin: 0 6px 10px 0 !important;
+	border: none;
+	background: #FFF9CD;
+	color: black;
+	font-weight: normal;
 }
+
+.reactive-constructor-cms__main-wrapper__buttons button:hover{
+	background: #eee;
+}
+
 .reactive-constructor-cms__main-wrapper__buttons button:last-child {
 	border-right: none;
 }
@@ -368,11 +381,12 @@
 .reactive-constructor-cms__msgs .msgs__message{
 	background: white;
 	text-align: center;
-	margin: 5px;
+	margin: 0 0 10px 0;
 	padding: 0.7em;
 	color: black;
 	font-weight: bold;
-	border: 1px solid;
+	border: 2px solid;
+	border-radius: 5px !important;
 }
 .reactive-constructor-cms__msgs .msgs__message--rc-cms__message--success{
 	color: #8ED8B6;
