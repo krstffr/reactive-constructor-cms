@@ -181,8 +181,8 @@ Template.editTemplate.helpers({
       return value === 'reactive-constructor-cms-linked-item';
     });
   },
+  // Check if this instance is a nested instance (meaning another instance from a reactive constructor)
   isNestedInstance: function () {
-    console.log( this );
     return (this.value && this.value.constructorName) || (this.value && this.value.rcType);
   },
   // Check if the item is part of a list of instances or a "single instance"

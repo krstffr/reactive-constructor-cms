@@ -48,12 +48,17 @@
 </template>
 
 <template name="editTemplate__noReactiveInstanceSet">
-	<label title="{{ key }}">
-		{{> editTemplate__labelString }}
+
+	<span class="reactive-constructor-cms__nested-instance__key">
+		{{ key }}
+	</span>
+
+	<div class="reactive-constructor-cms__nested-instance__none-added-yet-button-wrapper">
 		<button class="reactive-constructor-cms-ACTION--add-new-instance">
 			Add new {{ key }}
 		</button>
-	</label>
+	</div>
+
 </template>
 
 <template name="editTemplate__labelString">
