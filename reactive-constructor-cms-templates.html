@@ -138,15 +138,37 @@
 
 </template>
 
+<template name="editTemplate__linkedInstance">
+
+	<label class="reactive-constructor-cms-ACTION--open-child-instance" title="{{ getType }}">
+		<span>
+			Links to:
+		</span>
+		<input type="text" value="{{ getType }}" disabled>
+	</label>
+
+</template>
+
 <template name="editTemplate">
 	
 	{{#if isSingleInstance }}
-		<label title="{{ key }}">
-			{{> editTemplate__labelString }}
-		</label>
+
+		{{#if isNestedInstance }}
+			<!-- Linked instance, do not show label here -->
+		{{else}}
+			<label title="{{ key }}">
+				{{> editTemplate__labelString }}
+			</label>
+		{{/if}}
 	{{/if}}
 
-	<div class="reactive-constructor-cms__instance-wrapper">
+	{{#if isNestedInstance }}
+		<span class="reactive-constructor-cms__nested-instance__key">
+			{{ key }}
+		</span>
+	{{/if}}
+
+	<div class="reactive-constructor-cms__instance-wrapper {{#if isNestedInstance }}reactive-constructor-cms__instance-wrapper--nested{{/if}}">
 
 		<div class="reactive-constructor-cms__instance-wrapper__header">
 
@@ -158,16 +180,21 @@
 
 			{{#if isLinkedInstance }}
 				<span>
-					{{ key }} links to:
-					<a class="reactive-constructor-cms-ACTION--open-child-instance">
-						{{ getType }}
-					</a>
+					linked <span class="reactive-constructor-cms__instance-wrapper__header__text--light">
+						{{#if constructorName }}
+							{{ constructorName }}
+						{{else}}
+							{{ type }}
+						{{/if}}
+					</span>
 				</span>
 			{{else}}
 				{{#if getType }}
 					{{#if constructorName }}
 						<span>
-							<span class="reactive-constructor-cms__instance-wrapper__header__text--light">{{ constructorName }}</span> 
+							<span class="reactive-constructor-cms__instance-wrapper__header__text--light">
+								{{ constructorName }}
+							</span> 
 							{{ getType }}
 						</span>
 					{{/if}}
@@ -211,6 +238,8 @@
 		</div>
 
 		{{#if isLinkedInstance }}
+
+			{{> editTemplate__linkedInstance }}
 
 		{{else}}
 

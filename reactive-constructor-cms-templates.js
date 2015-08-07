@@ -130,6 +130,35 @@ Template.editTemplate__ListOfInstances.onRendered(function () {
   });
 });
 
+var getType = function() {
+
+  var instance = this.value || this;
+
+  // Is it a linked instance?
+  // Then get the name of the linnked instance (as well as the type!)
+  if (instance.type === 'reactive-constructor-cms-linked-item'){
+    var constructorName = instance.constructorName || this.type;
+    var savedInstances = _.findWhere(ReactiveConstructorCmsPlugin.getGlobalInstanceStore(), {
+      constructorName: constructorName
+    }).items;
+    var savedInstance = _.findWhere(savedInstances, { _id: instance._id });
+    // Did we find a saved instance? And does it have a cms-name? If yes: return it!
+    if (savedInstance && savedInstance.reactiveConstructorCmsName)
+      return savedInstance.reactiveConstructorCmsName;
+  }
+
+  var type = '';
+  if (Match.test( instance.getType, Function ))
+    type = instance.getType();
+  if (instance.type)
+    type = instance.type;
+  return type.charAt(0).toUpperCase() + type.slice(1);
+};
+
+Template.editTemplate__linkedInstance.helpers({
+  getType: getType
+});
+
 Template.editTemplate.helpers({
   showImagePreview: function() {
     return this.fieldCmsOptions && this.fieldCmsOptions.previewImage;
@@ -151,6 +180,10 @@ Template.editTemplate.helpers({
     return _.some(testValues, function(value){
       return value === 'reactive-constructor-cms-linked-item';
     });
+  },
+  isNestedInstance: function () {
+    console.log( this );
+    return (this.value && this.value.constructorName) || (this.value && this.value.rcType);
   },
   // Check if the item is part of a list of instances or a "single instance"
   // Compare these two:
@@ -184,31 +217,10 @@ Template.editTemplate.helpers({
     var instance = this.value || this;
     if (instance.constructor.constructorName)
       return instance.constructor.constructorName;
+    if (this.constructorName)
+      return this.constructorName;
   },
-  getType: function() {
-
-    var instance = this.value || this;
-
-    // Is it a linked instance?
-    // Then get the name of the linnked instance (as well as the type!)
-    if (instance.type === 'reactive-constructor-cms-linked-item'){
-      var constructorName = instance.constructorName || this.type;
-      var savedInstances = _.findWhere(ReactiveConstructorCmsPlugin.getGlobalInstanceStore(), {
-        constructorName: constructorName
-      }).items;
-      var savedInstance = _.findWhere(savedInstances, { _id: instance._id });
-      // Did we find a saved instance? And does it have a cms-name? If yes: return it!
-      if (savedInstance && savedInstance.reactiveConstructorCmsName)
-        return savedInstance.reactiveConstructorCmsName;
-    }
-
-    var type = '';
-    if (Match.test( instance.getType, Function ))
-      type = instance.getType();
-    if (instance.type)
-      type = instance.type;
-    return type.charAt(0).toUpperCase() + type.slice(1);
-  }
+  getType: getType
 });
 
 // TODO this is not clean at all actually.
