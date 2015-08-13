@@ -538,7 +538,7 @@ Template.reactiveConstructorCms__loadSavedDoc.onCreated(function() {
 
 Template.reactiveConstructorCms__loadSavedDoc.helpers({
   reactiveConstructorCms__constructors: function() {
-    return ReactiveConstructorCmsPlugin.getGlobalInstanceStore();
+    return _.sortBy( ReactiveConstructorCmsPlugin.getGlobalInstanceStore(), 'constructorName' );
   },
   items: function() {
     return _.sortByAll( this.items, 'rcType', 'reactiveConstructorCmsName');
