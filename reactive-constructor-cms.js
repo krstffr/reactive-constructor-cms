@@ -14,6 +14,7 @@ var reactiveConstructorCmsExtraInstanceFields = {
 	_id: String,
 	reactiveConstructorCmsName: String,
 	reactiveConstructorCmsStatus: String,
+	reactiveConstructorIsPublished: Boolean,
 	updateTime: ISODate,
 	mainId: String
 };
@@ -78,6 +79,8 @@ ReactiveConstructorCmsPlugin = new ReactiveConstructorPlugin({
 
 				this._id = this.getReactiveValue('_id');
 				this.reactiveConstructorCmsName = this.getReactiveValue('reactiveConstructorCmsName');
+
+				// Also make sure it has a reactiveConstructorIsPublished field
 
 			}
 
@@ -209,20 +212,23 @@ ReactiveConstructorCmsPlugin = new ReactiveConstructorPlugin({
 		passedClass.prototype.save = function( saveOptions, callback ) {
 
 			check( saveOptions, Object );
+
 			if (callback)
 				check( callback, Function );
 
 			if ( !Meteor.userId() )
 				throw new Meteor.Error('reactive-constructor-cms', 'You need to be logged in.' );
+
+			var instance = this;
 			
-			if ( !this.getCollection() )
+			if ( !instance.getCollection() )
 				throw new Meteor.Error('reactive-constructor-cms', 'No collection defined for: ' + passedClass.constructorName );
 
-			this.setupCmsFields();
+			instance.setupCmsFields();
 
 			var firstMessage = Msgs.addMessage('Saving…', 'rc-cms__message--info');
 
-			return Meteor.call('reactive-constructor-cms/save', this.getDataAsObject(), passedClass.constructorName, saveOptions, function( err, res ) {
+			return Meteor.call('reactive-constructor-cms/save', instance.getDataAsObject(), passedClass.constructorName, saveOptions, function( err, res ) {
 				if (err)
 					return Msgs.addMessage( err.reason, 'rc-cms__message--error');
 				if ( res ){
@@ -233,9 +239,15 @@ ReactiveConstructorCmsPlugin = new ReactiveConstructorPlugin({
 						Msgs.addMessage('Saved!', 'rc-cms__message--success');
 					ReactiveConstructorCmsPlugin.updateGlobalInstanceStore();
 				}
+
+				// If there is a callback, execute it
 				if ( callback )
 					return callback( err, res );
-				return true;
+				
+				// If this item is saved for the first time, re-open this doc on save
+				var createdInstance = ReactiveConstructorCmsPlugin.getInstanceByTypeAndId( instance.constructor.constructorName, instance.getReactiveValue('mainId') );
+				return ReactiveConstructorCmsPlugin.editPageGet( createdInstance );
+
 			});
 
 		};
@@ -246,13 +258,15 @@ ReactiveConstructorCmsPlugin = new ReactiveConstructorPlugin({
 
 			if ( !Meteor.userId() )
 				throw new Meteor.Error('reactive-constructor-cms', 'You need to be logged in.' );
+
+			var instance = this;
 			
-			if ( !this.getCollection() )
+			if ( !instance.getCollection() )
 				throw new Meteor.Error('reactive-constructor-cms', 'No collection defined for: ' + passedClass.constructorName );
 
 			var firstMessage = Msgs.addMessage('Removing published doc…', 'rc-cms__message--info');
 
-			var mainId = this.getReactiveValue('mainId');
+			var mainId = instance.getReactiveValue('mainId');
 			check( mainId, String );
 
 			return Meteor.call('reactive-constructor-cms/unpublish', mainId, passedClass.constructorName, function( err, res ) {
@@ -266,9 +280,15 @@ ReactiveConstructorCmsPlugin = new ReactiveConstructorPlugin({
 					Msgs.removeMessage( firstMessage );
 					Msgs.addMessage('There was nothing to unpublish.', 'rc-cms__message--info');
 				}
+
+				ReactiveConstructorCmsPlugin.updateGlobalInstanceStore();
+				
 				if ( callback )
 					return callback( err, res );
-				return true;
+
+				var createdInstance = ReactiveConstructorCmsPlugin.getInstanceByTypeAndId( instance.constructor.constructorName, instance._id );
+				return ReactiveConstructorCmsPlugin.editPageGet( createdInstance );
+
 			});
 
 		};
@@ -410,6 +430,10 @@ ReactiveConstructorCmsPlugin = new ReactiveConstructorPlugin({
 		// Has test: ✔
 		passedClass.prototype.canBeSaved = function() {
 			return this.getCollection() !== false;
+		};
+
+		passedClass.prototype.isSaved = function() {
+			return this.getReactiveValue('updateTime');
 		};
 
 		// Method for returning all current instances (from the DB)
