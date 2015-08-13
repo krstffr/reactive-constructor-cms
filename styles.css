@@ -346,11 +346,22 @@
 	z-index: 990;
 }
 
-.reactive-constructor-cms__select-overview__toggle-view{
+.reactive-constructor-cms__select-overview__header-buttons{
 	float: right;
 	font-size: 0.6em;
-	padding-top: 0.6em;
 }
+
+.reactive-constructor-cms__select-overview__header-buttons a {
+	padding: 0.25em 0.3em;
+  display: inline-block;
+  background: #333;
+  color: white;
+  cursor: pointer;
+}
+.reactive-constructor-cms__select-overview__header-buttons a:hover {
+  color: #FFF9CD !important;
+}
+
 .reactive-constructor-cms__select-overview__img-preview{
 	float: left;
 	width: 31%;

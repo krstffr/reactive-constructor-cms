@@ -10,6 +10,13 @@ Template.editTemplate__selectOverview.onRendered(function() {
   wrapper.removeClass('reactive-constructor-cms__select-overview--hidden');
 });
 
+var hideSelectOverviewCallback = function() {
+  var removeTemplateCallback = Template.parentData(0).removeTemplateCallback;
+  check( removeTemplateCallback, Function );
+  // Execute the callback!
+  return removeTemplateCallback();
+};
+
 Template.editTemplate__selectOverview.events({
   'click .reactive-constructor-cms__select-overview__toggle-view': function() {
     return this.listView.set( (this.listView.get() === 'list') ? 'overview' : 'list' );
@@ -21,12 +28,8 @@ Template.editTemplate__selectOverview.events({
     // Execute the callback!
     return callback( this );
   },
-  'click .reactive-constructor-cms__select-overview__fader': function() {
-    var removeTemplateCallback = Template.parentData(0).removeTemplateCallback;
-    check( removeTemplateCallback, Function );
-    // Execute the callback!
-    return removeTemplateCallback();
-  }
+  'click .reactive-constructor-cms__select-overview__close': hideSelectOverviewCallback,
+  'click .reactive-constructor-cms__select-overview__fader': hideSelectOverviewCallback
 });
 
 Template.editTemplate__selectOverview.helpers({

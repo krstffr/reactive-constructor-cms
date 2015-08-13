@@ -1,7 +1,7 @@
 Package.describe({
 	name: "krstffr:reactive-constructor-cms",
 	summary: "CMS for krstffr:reactive-constructor instances.",
-	version: "0.3.6"
+	version: "0.3.7"
 });
 
 Package.onUse(function (api) {
