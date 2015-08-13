@@ -237,7 +237,7 @@
 }
 
 .reactive-constructor-cms__main-wrapper__buttons {
-	position: fixed;
+	position: absolute;
 	bottom: 0;
 	width: 100%;
 	background: linear-gradient(to bottom right, #E7E7E7, #B0B0B0);

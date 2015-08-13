@@ -1,0 +1,44 @@
+<head>
+  <title>example-2: getReactiveValueEditable</title>
+</head>
+
+<body>
+	{{> testTemplate }}
+</body>
+
+<template name="testTemplate">
+
+  <h1>Testing yes.</h1>
+
+  <h2>Editable data:</h2>
+
+  {{#with aTest }}
+
+    {{> getReactiveValueEditable instance=this key='aString' toMarkdown=true }}
+
+  	{{> getReactiveValueEditable instance=this key='aNumber' }}
+
+    {{> getReactiveValueEditable instance=this key='aBool' }}
+
+  {{/with}}
+
+  <h2>The same data again, just for the super fun.</h2>
+
+  {{#with aTest }}
+
+    <h3>Markdowned:</h3>
+  	{{#markdown}}{{ getReactiveValue 'aString' }}{{/markdown}}
+    <h3>Not markdowned:</h3>
+    {{ getReactiveValue 'aString' }}
+
+    <hr>
+
+  	{{ getReactiveValue 'aNumber' }}
+
+    <hr>
+
+    {{ getReactiveValue 'aBool' }}
+
+  {{/with }}
+
+</template>
