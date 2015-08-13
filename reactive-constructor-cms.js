@@ -244,9 +244,14 @@ ReactiveConstructorCmsPlugin = new ReactiveConstructorPlugin({
 				if ( callback )
 					return callback( err, res );
 				
-				// If this item is saved for the first time, re-open this doc on save
-				var createdInstance = ReactiveConstructorCmsPlugin.getInstanceByTypeAndId( instance.constructor.constructorName, instance.getReactiveValue('mainId') );
-				return ReactiveConstructorCmsPlugin.editPageGet( createdInstance );
+				// If the edit page open? Reload it with the new doc.
+				if (ReactiveConstructorCmsPlugin.editPageIsOpen()){
+					// If this item is saved for the first time, re-open this doc on save
+					var createdInstance = ReactiveConstructorCmsPlugin.getInstanceByTypeAndId( instance.constructor.constructorName, instance.getReactiveValue('mainId') );
+					return ReactiveConstructorCmsPlugin.editPageGet( createdInstance );
+				}
+
+				return true;
 
 			});
 
@@ -286,8 +291,12 @@ ReactiveConstructorCmsPlugin = new ReactiveConstructorPlugin({
 				if ( callback )
 					return callback( err, res );
 
-				var createdInstance = ReactiveConstructorCmsPlugin.getInstanceByTypeAndId( instance.constructor.constructorName, instance._id );
-				return ReactiveConstructorCmsPlugin.editPageGet( createdInstance );
+				if (ReactiveConstructorCmsPlugin.editPageIsOpen()){
+					var createdInstance = ReactiveConstructorCmsPlugin.getInstanceByTypeAndId( instance.constructor.constructorName, instance._id );
+					return ReactiveConstructorCmsPlugin.editPageGet( createdInstance );
+				}
+
+				return true;
 
 			});
 
@@ -827,6 +836,10 @@ ReactiveConstructorCmsPlugin.editPageGet = function( instance ) {
 
 	});
 
+};
+
+ReactiveConstructorCmsPlugin.editPageIsOpen = function() {
+	return $('.reactive-constructor-cms__main-wrapper').length > 0;
 };
 
 // Method for overriding the defautl setReactiveValue method
