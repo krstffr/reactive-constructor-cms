@@ -144,7 +144,20 @@ Meteor.methods({
 
 		var collection = getCollectionFromConstructorName( constructorName );
 
-		return collection.remove({ mainId: mainId, reactiveConstructorCmsStatus: 'published' });
+		return {
+			removePublished: collection.remove({
+				mainId: mainId,
+				reactiveConstructorCmsStatus: 'published'
+			}),
+			updatedEditDoc: collection.update({
+				mainId: mainId,
+				reactiveConstructorCmsStatus: 'edit'
+			}, {
+				$set: {
+					reactiveConstructorIsPublished: false
+				}
+			})
+		};
 
 	},
 	'reactive-constructor-cms/save': function( item, constructorName, saveOptions ) {
@@ -190,14 +203,22 @@ Meteor.methods({
 		// Remove all backups after the last 15 ones
 		updateResult.backupsRemoved = Meteor.call('reactive-constructor-cms/delete-old-backups', backupDoc.mainId, reactiveConstructorCmsBackupsToKeep, constructorName );
 
+		// The isPublished flag should be false by deafult, only to be set true if saveOptions.publish
+		item.reactiveConstructorIsPublished = false;
+
 		// Publish the doc if the saveOptions.publish was set to true
 		if ( saveOptions.publish ){
+
+			// Set a isPublished flag to true (so user can know if the current edit-doc is published)
+			item.reactiveConstructorIsPublished = true;
+
 			var publishDoc = _.clone( backupDoc );
 			publishDoc.reactiveConstructorCmsStatus = 'published';
 			updateResult.published = collection.upsert({
 				mainId: publishDoc.mainId,
 				reactiveConstructorCmsStatus: 'published'
 			}, publishDoc );
+
 		}
 
 		item.reactiveConstructorCmsStatus = 'edit';

@@ -246,7 +246,7 @@
 }
 
 .reactive-constructor-cms__main-wrapper__buttons button {
-	width: 22%;
+	width: 23.2%;
 	display: inline-block;
 	padding: 4px 0;
 	margin: 0 6px 10px 0 !important;
@@ -254,6 +254,17 @@
 	background: #FFF9CD;
 	color: black;
 	font-weight: normal;
+}
+
+.reactive-constructor-cms__main-wrapper__buttons__new-item{
+  display: inline-block;
+  width: auto;
+}
+
+.reactive-constructor-cms__main-wrapper__buttons__new-item button {
+	width: auto;
+	padding-left: 2em !important;
+	padding-right: 2em !important;
 }
 
 .reactive-constructor-cms__main-wrapper__buttons button:hover{

@@ -259,6 +259,19 @@ var toggleInstanceHeader = _.debounce( function ( menuEl ) {
 }, 80 );
 
 Template.editTemplate__wrapper.events({
+  'click .reactive-constructor-cms-ACTION--goto-parent-instance': function() {
+    
+    // Make sure we have a parentInstance (else we would never get to this place!)
+    if (!this.parentInstance)
+      return false;
+
+    // Make sure it is a ReactiveConstructor object (this is basically duck typing?)
+    check( this.parentInstance.getReactiveValue, Function );
+
+    // Open the parent instance!
+    return ReactiveConstructorCmsPlugin.editPageGet( this.parentInstance );
+
+  },
   'click .reactive-constructor-cms-ACTION--load-next-backup-of-instance': function() {
     var instance = this;
     return instance.getBackupDoc(0, function(err, res) {

@@ -308,26 +308,49 @@
 				{{> msgs }}
 			</div>
 
+			{{#if parentInstance }}
+
+				<button class="reactive-constructor-cms-ACTION--goto-parent-instance">
+					Back to <strong>{{ parentInstance.rcType }}</strong>
+				</button>
+
+			{{/if}}
+
 			{{#if canBeSaved }}
 
-				<button class="reactive-constructor-cms-ACTION--save-and-publish-instance">
-					Save and publish
-				</button>
-				<button class="reactive-constructor-cms-ACTION--save-instance">
-					Save
-				</button>
-				<button class="reactive-constructor-cms-ACTION--save-duplicate-of-instance">
-					Duplicate
-				</button>
-				<button class="reactive-constructor-cms-ACTION--remove-instance">
-					Remove
-				</button>
-				<button class="reactive-constructor-cms-ACTION--unpublish-instance">
-					Unpublish
-				</button>
-				<button class="reactive-constructor-cms-ACTION--load-next-backup-of-instance">
-					Back one version
-				</button>
+				{{#if isSaved }}
+
+					<button class="reactive-constructor-cms-ACTION--save-and-publish-instance">
+						Save & Publish
+					</button>
+					<button class="reactive-constructor-cms-ACTION--save-instance">
+						Save
+					</button>
+
+					<button class="reactive-constructor-cms-ACTION--save-duplicate-of-instance">
+						Duplicate
+					</button>
+					<button class="reactive-constructor-cms-ACTION--remove-instance">
+						Remove
+					</button>
+					{{#if getReactiveValue 'reactiveConstructorIsPublished' }}
+						<button class="reactive-constructor-cms-ACTION--unpublish-instance">
+							Unpublish
+						</button>
+					{{/if}}
+					<button class="reactive-constructor-cms-ACTION--load-next-backup-of-instance">
+						Back one version
+					</button>
+				{{else}}
+					<div class="reactive-constructor-cms__main-wrapper__buttons__new-item">
+						<button class="reactive-constructor-cms-ACTION--save-and-publish-instance">
+							Save & Publish <strong>NEW</strong>
+						</button>
+						<button class="reactive-constructor-cms-ACTION--save-instance">
+							Save <strong>NEW</strong>
+						</button>
+					</div>
+				{{/if}}
 
 			{{/if}}
 			<button class="reactive-constructor-cms-ACTION--close-main-wrapper">
