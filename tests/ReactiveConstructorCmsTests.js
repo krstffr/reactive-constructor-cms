@@ -427,6 +427,8 @@ Tinytest.add('ReactiveConstructorCmsPlugin instance methods - instance.arrayitem
 	// Duplicate John!
 	person.arrayitemDuplicate( 'buddies', 1 );
 
+	buddies = person.getReactiveValue('buddies');
+
 	test.equal( buddies.length, 4 );
 	test.equal( buddies[1].getReactiveValue('name'), 'john');
 	test.equal( buddies[2].getReactiveValue('name'), 'john');
@@ -449,6 +451,8 @@ Tinytest.add('ReactiveConstructorCmsPlugin instance methods - instance.arrayitem
 
 	// Move John! Now he should be at place 2 instead of 1
 	person.arrayitemRemove( 'buddies', 1 );
+
+	buddies = person.getReactiveValue('buddies');
 
 	test.notEqual( buddies[1].getReactiveValue('name'), 'john');
 	test.equal( buddies.length, 2 );
@@ -823,6 +827,8 @@ Tinytest.addAsync('ReactiveConstructorCmsPlugin async - instance.arrayitemMove()
 	// Move John! Now he should be at place 2 instead of 1
 	person.arrayitemMove( 'buddies', 2, 1 );
 
+	buddies = person.getReactiveValue('buddies');
+
 	Meteor.setTimeout(function() {
 		test.notEqual( buddies[1].getReactiveValue('name'), 'john');
 		test.equal( buddies[2].getReactiveValue('name'), 'john');
@@ -830,7 +836,10 @@ Tinytest.addAsync('ReactiveConstructorCmsPlugin async - instance.arrayitemMove()
 		test.equal( buddies[0].getReactiveValue('name'), 'mr. first');
 
 		Meteor.setTimeout(function() {
+			
 			person.arrayitemMove( 'buddies', 0, 1 );
+
+			buddies = person.getReactiveValue('buddies');
 
 			test.notEqual( buddies[0].getReactiveValue('name'), 'mr. first');
 			test.equal( buddies[1].getReactiveValue('name'), 'mr. first');
