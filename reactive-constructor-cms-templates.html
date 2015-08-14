@@ -308,6 +308,14 @@
 				{{> msgs }}
 			</div>
 
+			{{#if parentInstance }}
+
+				<button class="reactive-constructor-cms-ACTION--goto-parent-instance">
+					Back to <strong>{{ parentInstance.rcType }}</strong>
+				</button>
+
+			{{/if}}
+
 			{{#if canBeSaved }}
 
 				{{#if isSaved }}

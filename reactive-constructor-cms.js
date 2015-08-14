@@ -103,7 +103,7 @@ ReactiveConstructorCmsPlugin = new ReactiveConstructorPlugin({
 						key === 'reactiveConstructorCmsName' )) {
 					return {
 						key: key,
-						value: value,
+						value: instance.getReactiveValue(key),
 						type: getTypeOfStructureItem( typeStructure[key] ),
 						fieldCmsOptions: instance.getCmsOption('inputs')[key]
 					};

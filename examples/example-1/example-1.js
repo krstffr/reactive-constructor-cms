@@ -292,8 +292,13 @@ ComplexTestConstructor = new ReactiveConstructor('ComplexTestConstructor', funct
   };
 });
 
-if (Meteor.isServer)
+if (Meteor.isServer){
+  Invoices._ensureIndex({ reactiveConstructorCmsStatus: 1 });
+  Clients._ensureIndex({ reactiveConstructorCmsStatus: 1 });
+  Persons._ensureIndex({ reactiveConstructorCmsStatus: 1 });
+  ComplexTestConstructors._ensureIndex({ reactiveConstructorCmsStatus: 1 });
   return false;
+}
 
 
 person = new Person({ name: 'Stoffe K' });
