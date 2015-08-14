@@ -382,7 +382,11 @@
 
 						<li>
 							<a class="reactive-constructor-cms-ACTION--open-instance">
-								{{ ../constructorName }} {{ getType }}: {{ reactiveConstructorCmsName }}
+								{{ ../constructorName }} {{ getType }}: 
+								<strong>{{ reactiveConstructorCmsName }}</strong>
+								{{#if getReactiveValue 'reactiveConstructorIsPublished' }}
+									(published verison)
+								{{/if}}
 							</a>
 						</li>
 
