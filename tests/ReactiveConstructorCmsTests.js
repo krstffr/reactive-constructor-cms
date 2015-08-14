@@ -424,12 +424,12 @@ Tinytest.add('ReactiveConstructorCmsPlugin instance methods - instance.arrayitem
 	test.notEqual( buddies[2].getReactiveValue('name'), 'john');
 	test.equal( buddies.length, 3 );
 
-	// Dupliace John!
+	// Duplicate John!
 	person.arrayitemDuplicate( 'buddies', 1 );
 
+	test.equal( buddies.length, 4 );
 	test.equal( buddies[1].getReactiveValue('name'), 'john');
 	test.equal( buddies[2].getReactiveValue('name'), 'john');
-	test.equal( buddies.length, 4 );
 
 	test.throws(function() {
 		// 'wife' is not an array, so it should throw an error
@@ -888,7 +888,7 @@ Tinytest.addAsync('ReactiveConstructorCmsPlugin async - instance.unpublish(), lo
 		docToSave.save({ publish: true }, function(){
 			docToSave.unpublish(function( err, res ) {
 				console.log( res );
-				test.equal( res, 1 );
+				test.equal( res, {'removePublished':1,'updatedEditDoc':1} );
 				next();
 			});
 		});
@@ -923,7 +923,7 @@ Tinytest.addAsync('ReactiveConstructorCmsPlugin async - instance.getPublishedDoc
 			docToSave.getPublishedDoc(function( err, res ) {
 				test.equal( res.reactiveConstructorCmsStatus, 'published' );
 				docToSave.unpublish(function( err, res ) {
-					test.equal( res, 1 );
+					test.equal( res, {'removePublished':1,'updatedEditDoc':1} );
 					docToSave.getPublishedDoc(function( err, res ) {
 						test.isUndefined( res );
 						next();

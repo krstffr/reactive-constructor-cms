@@ -148,13 +148,14 @@ ReactiveConstructorCmsPlugin = new ReactiveConstructorPlugin({
 
 			// …move the item…
 			arr.splice( newIndex, 0, arr.splice( oldIndex, 1 )[0] );
+			
 			// …and update the array.
 			// This extra "reset" to an empty array is because the DOM would not 
 			// update correctly sometimes with complex nested instances.
-			instance.setReactiveValue( listKey, [] );
-			return _.defer(function(){
+			// instance.setReactiveValue( listKey, [] );
+			// return _.defer(function(){
 				return instance.setReactiveValue( listKey, arr );
-			});
+			// });
 		};
 
 		// Method for duplicating an item in an array,

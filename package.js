@@ -10,10 +10,10 @@ Package.onUse(function (api) {
 
 	api.use([
 		"templating",
-		"reactive-var@1.0.4",
-		"krstffr:reactive-constructor@1.2.1",
+		"reactive-var@1.0.5",
+		"krstffr:reactive-constructor@1.2.2",
 		"krstffr:msgs@0.0.6",
-		"mizzao:jquery-ui@1.11.2"
+		"mizzao:jquery-ui@1.11.4"
 		], "client");
 
 	api.use([

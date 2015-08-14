@@ -3,9 +3,10 @@
 /* global InvoiceListItem:true */
 /* global Invoice:true */
 
-Invoices = new Meteor.Collection('invoices');
-Clients = new Meteor.Collection('clients');
-Persons = new Meteor.Collection('persons');
+Invoices =                new Meteor.Collection('invoices');
+Clients =                 new Meteor.Collection('clients');
+Persons =                 new Meteor.Collection('persons');
+ComplexTestConstructors = new Meteor.Collection('complexTestConstructors');
 
 // Create a reactive constructor which can be used in tests.
 Person = new ReactiveConstructor('Person', function () {
@@ -271,6 +272,21 @@ Invoice = new ReactiveConstructor('Invoice', function() {
       defaultData: {
         invoiceName: 'KK000',
         superCool: false
+      }
+    }]
+  };
+});
+
+ComplexTestConstructor = new ReactiveConstructor('ComplexTestConstructor', function() {
+  return {
+    cmsOptions: {
+      collection: ComplexTestConstructors
+    },
+    typeStructure: [{
+      type: 'Complex instance',
+      fields: {
+        name: String,
+        children: [ ComplexTestConstructor ]
       }
     }]
   };
