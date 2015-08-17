@@ -80,7 +80,7 @@ Meteor.methods({
 
 					return false;
 
-				}).flatten().compact().value();
+				}).flattenDeep().compact().value();
 
 			};
 
@@ -89,14 +89,7 @@ Meteor.methods({
 		};
 
 		return _.reduce( getLinkedFields( publishedDoc ), function(publishedDocsMemo, field){
-
-			// TODO: This must be some kind of bug, the field object should never be empty!
-			// (The bug (where an empty array might be passed) is prevented using this technique)
-			if (!field._id || !field.constructorName)
-				return publishedDocsMemo;
-
-			publishedDocsMemo = Meteor.call('reactive-constructor-cms/get-published-doc-and-all-linked-docs', field._id, field.constructorName, publishedDocsMemo );
-			return publishedDocsMemo;
+			return Meteor.call('reactive-constructor-cms/get-published-doc-and-all-linked-docs', field._id, field.constructorName, publishedDocsMemo );
 		}, publishedDocs);
 
 	},
