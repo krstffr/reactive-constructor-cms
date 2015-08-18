@@ -1,7 +1,7 @@
 Package.describe({
 	name: "krstffr:reactive-constructor-cms",
 	summary: "CMS for krstffr:reactive-constructor instances.",
-	version: "0.4.2"
+	version: "0.4.3"
 });
 
 Package.onUse(function (api) {
@@ -36,6 +36,10 @@ Package.onUse(function (api) {
 		"tempCMSInstances",
 		"ReactiveConstructorCmsPlugin"
 		], "client");
+
+	api.export([
+		"reactiveConstructorCmsGetPublishCursorFromDoc"
+		], "server");
 
 });
 

@@ -271,3 +271,104 @@ Meteor.publish('reactive-constructor-cms__editable-docs', function() {
 	}).value();
 
 });
+
+
+// 
+// 
+// HELPERS FOR GETTING ALL PUBLISHED DOCS IN A PUBLISH/CURSOR-FORMAT
+// REFACTOR ALL OF THIS PLEASE!
+// 
+// 
+var getAllLinkedDocsIds = function( doc, memo ) {
+
+	memo = memo || {};
+
+	check( doc, Object );
+	check( memo, Object );
+
+	// Is the passed "doc" actually a link itself? Then just add it to the
+	// memo and return the memo
+	if (doc.type === 'reactive-constructor-cms-linked-item') {
+		if (!memo[doc.constructorName])
+			memo[doc.constructorName] = [];
+		memo[doc.constructorName].push( doc._id );
+		return memo;
+	}
+
+	// Iterate over allt the fields in the doc
+	return _.reduce( doc, function( memo, value ){
+
+		// Is it an array?
+		// Recurse on every item in the array
+		if (Match.test( value, Array )){
+			return _.reduce( value, function( memo, nestedDoc ){
+				return getAllLinkedDocsIds( nestedDoc, memo );
+			}, memo );
+		}
+
+		// Is it not a linked object? Just return the memo
+		if (!Match.test( value, Object ) || value.type !== 'reactive-constructor-cms-linked-item')
+			return memo;
+		
+		// Make sure we have a contructor for holding the _id…
+		if (!memo[value.constructorName])
+			memo[value.constructorName] = [];
+
+		// Add the _id (which is in fact a link to the mainId ) to the holder
+		// and return the memo!
+		memo[value.constructorName].push( value._id );
+		
+		return memo;
+
+	}, memo );
+
+};
+
+var getDocAndLinks = function( mainId, constructorName, fetchedDocs ) {
+
+	// Holder for all the fetched documents
+	fetchedDocs = fetchedDocs || {};
+
+	// Make sure the holder for all fetched docs has the current
+	// constructorName as a field for holding all the instances of that
+	// constructor
+	if (!fetchedDocs[ constructorName ])
+		fetchedDocs[ constructorName ] = [];
+
+	check( mainId, String );
+	check( constructorName, String );
+	check( fetchedDocs, Object );
+
+	// Get the current doc
+	var doc = getCollectionFromConstructorName( constructorName ).findOne({ reactiveConstructorCmsStatus: 'published', mainId: mainId });
+
+	// Get all the ids of all the linked docs
+	var linkedIds = getAllLinkedDocsIds( doc );
+
+	// Add this doc _id to the fetchedDocs holder (to make sure we don't try to fetch it again)
+	fetchedDocs[ constructorName ].push( mainId );
+
+	// Iterated across all the linked ids and recurse!
+	return _.reduce( linkedIds, function( memo, linkedIdInConstructor, constructorName ){
+		// Get every linked doc which is found in this constructor
+		return _.reduce(linkedIdInConstructor, function( memo, linkedId ){
+			// Only get the ones which are not already fetched!
+			if ( _.indexOf(fetchedDocs[constructorName], linkedId ) < 0 )
+				return getDocAndLinks( linkedId, constructorName, fetchedDocs );
+			return fetchedDocs;
+		}, fetchedDocs );
+	}, fetchedDocs ); 
+
+};
+
+reactiveConstructorCmsGetPublishCursorFromDoc = function( initDocument, constructorName ) {
+
+	check( initDocument.mainId, String );
+	check( constructorName, String );
+
+	var docAndLinks = getDocAndLinks( initDocument.mainId, constructorName );
+
+	return _.map(docAndLinks, function( value, constructorName ){
+		return getCollectionFromConstructorName( constructorName ).find({reactiveConstructorCmsStatus: 'published',mainId: { $in: value }});
+	});
+};
