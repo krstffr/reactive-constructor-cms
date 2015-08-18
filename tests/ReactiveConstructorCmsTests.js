@@ -1,5 +1,6 @@
 Persons = new Meteor.Collection('persons');
 Animals = new Meteor.Collection('animals');
+Dreams = new Meteor.Collection('dreams');
 
 Meteor.startup(function() {
 
@@ -152,7 +153,23 @@ Meteor.startup(function() {
 				fields: {
 					name: String,
 					hungry: Boolean,
-					owner: Person
+					owner: Person,
+					biggestDream: Dream
+				}
+			}]
+		};
+	});
+
+
+	Dream = new ReactiveConstructor('Dream', function() {
+		return {
+			cmsOptions: {
+				collection: Dreams
+			},
+			typeStructure: [{
+				type: 'dream',
+				fields: {
+					personsInDream: [ Person ]
 				}
 			}]
 		};
@@ -190,12 +207,74 @@ Meteor.startup(function() {
 });
 
 if (Meteor.isServer){
+	
 	Meteor.methods({
 		'reactive-constructor-cms/cleanup-test-db': function() {
 			console.log('removing all persons AND animals from DB…');
-			return Persons.remove({}) && Animals.remove({});
+			return Persons.remove({}) && Animals.remove({}) && Dreams.remove({});
 		}
 	});
+
+	Tinytest.add('ReactiveConstructorCmsPlugin Server - published-docs-publish—helper-function', function( test ) {
+
+		Persons.remove({});
+		Animals.remove({});
+		Dreams.remove({});
+
+		var linkedDreamSelector = {
+			_id: 'testingLinkedDream',
+			mainId: 'testingLinkedDream',
+			reactiveConstructorCmsStatus: 'published',
+			personsInDream: [{
+				type: 'reactive-constructor-cms-linked-item',
+				constructorName: 'Person',
+				_id: 'testPerson'
+			}, {
+				type: 'reactive-constructor-cms-linked-item',
+				constructorName: 'Person',
+				_id: 'secondPerson'
+			}]
+		};
+		Dreams.insert( linkedDreamSelector );
+
+		var linkedDogSelector = {
+			_id: 'testingLinkedDog',
+			mainId: 'testingLinkedDog',
+			reactiveConstructorCmsStatus: 'published',
+			biggestDream: {
+				type: 'reactive-constructor-cms-linked-item',
+				constructorName: 'Dream',
+				_id: 'testingLinkedDream'
+			}
+		};
+		Animals.insert( linkedDogSelector );
+
+		var personSelector = { _id: 'testPerson', mainId: 'testPerson', reactiveConstructorCmsStatus: 'published' };
+		// Insert our main person
+		Persons.insert( _.extend( personSelector, { pets: [{
+			type: 'reactive-constructor-cms-linked-item',
+			constructorName: 'Animal',
+			_id: 'testingLinkedDog'
+		} ] }) );
+
+		// Insert another one
+		Persons.insert({
+			_id: 'secondPerson', mainId: 'secondPerson', reactiveConstructorCmsStatus: 'published'
+		});
+
+		var publishCursors = reactiveConstructorCmsGetPublishCursorFromDoc( Persons.findOne( personSelector ), 'Person' );
+
+		test.isTrue( Match.test( publishCursors, Array ) );
+		test.equal( publishCursors.length, 3 );
+		test.equal( publishCursors[0]._cursorDescription.collectionName, 'persons' );
+		test.equal( publishCursors[1]._cursorDescription.collectionName, 'animals' );
+		test.equal( publishCursors[2]._cursorDescription.collectionName, 'dreams' );
+
+		var publishedPersons = publishCursors[0].fetch();
+		test.equal( publishedPersons.length, 2 );
+
+	});
+
 	return false;
 }
 

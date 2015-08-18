@@ -26,7 +26,8 @@ Person = new ReactiveConstructor('Person', function () {
         children: [ Person ],
         sex: String,
         pets: [ Pet ],
-        portraitUrl: String
+        portraitUrl: String,
+        invoices: [ Invoice ]
       }
     },
     typeStructure: [{
@@ -293,10 +294,40 @@ ComplexTestConstructor = new ReactiveConstructor('ComplexTestConstructor', funct
 });
 
 if (Meteor.isServer){
+
+  var getCollectionFromConstructorName = function( constructorName ) {
+  
+    check( constructorName, String );
+    check( ReactiveConstructors[ constructorName ], Function );
+
+    if (!ReactiveConstructors[ constructorName ].constructorDefaults)
+      return false;
+
+    // Get the defaults defined by the user
+    var defaults = ReactiveConstructors[ constructorName ].constructorDefaults();
+
+    // Get the collection to store the doc(s) in
+    if (!defaults.cmsOptions || !defaults.cmsOptions.collection)
+      return false;
+
+    var collection = defaults.cmsOptions.collection;
+
+    // Make sure we have a collection
+    check( collection, Meteor.Collection );
+
+    return collection;
+
+  };
+
   Invoices._ensureIndex({ reactiveConstructorCmsStatus: 1 });
   Clients._ensureIndex({ reactiveConstructorCmsStatus: 1 });
   Persons._ensureIndex({ reactiveConstructorCmsStatus: 1 });
   ComplexTestConstructors._ensureIndex({ reactiveConstructorCmsStatus: 1 });
+
+  Meteor.publish('testPublication', function( mainId, constructorName ) {
+    return reactiveConstructorCmsGetPublishCursorFromDoc( getCollectionFromConstructorName( constructorName ).findOne( mainId ), constructorName );
+  });
+
   return false;
 }
 
