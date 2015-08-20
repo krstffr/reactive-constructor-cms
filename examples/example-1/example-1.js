@@ -160,10 +160,13 @@ Pet = new ReactiveConstructor('Pet', function() {
     typeStructure: [{
       type: 'cat',
       fields: {
-        name: String
+        name: String,
+        cool: Boolean,
+        bestPetPal: Pet
       },
       defaultData: {
-        name: 'Mr. Cat-pants'
+        name: 'Mr. Cat-pants',
+        cool: true
       }
     }]
   };

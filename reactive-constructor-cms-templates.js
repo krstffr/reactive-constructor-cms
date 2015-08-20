@@ -539,11 +539,12 @@ Template.editTemplate.events({
     e.stopImmediatePropagation();
     
     var value = $(e.currentTarget).val();
+    var instance = Template.currentData().value || Template.currentData();
 
     if (this.type === 'Boolean')
       value = value === 'true';
     
-    Template.currentData().setReactiveValue( this.key, value );
+    instance.setReactiveValue( this.key, value );
 
   }
 });
