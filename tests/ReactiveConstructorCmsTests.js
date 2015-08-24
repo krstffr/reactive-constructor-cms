@@ -19,8 +19,8 @@ Meteor.startup(function() {
 						},
 						userId: {
 							initMethod: function( value ) {
-								console.log( value ||  Meteor.userId() );
-								return value || Meteor.userId();
+								console.log( value ||  Meteor.userId() || 'not logged in' );
+								return value || Meteor.userId() || 'not logged in';
 							}
 						}
 					},
@@ -432,19 +432,6 @@ Tinytest.add('ReactiveConstructorCmsPlugin overrides - setReactiveValue() with t
 
 });
 
-Tinytest.add('ReactiveConstructorCmsPlugin overrides - initMethod() on instance', function(test) {
-
-	var testClient = new Client();
-
-	test.equal( testClient.getReactiveValue('userId'), Meteor.userId() );
-
-	var customUserId = 'cool user id dude!';
-	var clientWithUserId = new Client({ userId: customUserId });
-
-	test.equal( clientWithUserId.getReactiveValue('userId'), customUserId );
-
-});
-
 Tinytest.add('ReactiveConstructorCmsPlugin overrides - setValueToCorrectType', function(test) {
 
 	// Not passing the correct arguments should throw errors
@@ -745,6 +732,25 @@ Tinytest.add('ReactiveConstructorCmsPlugin constructor methods - getCreatableTyp
 
 	// The husband type should only have two creatable types of buddies
 	test.equal( Person.getCreatableTypes( 'buddies', testHusband ).length, 2 );
+
+});
+
+Tinytest.addAsync('ReactiveConstructorCmsPlugin async - initMethod() on instance: logged in', function(test, next) {
+
+	loginOrCreateAccount(function() {
+
+		var testClient = new Client();
+
+		test.equal( testClient.getReactiveValue('userId'), Meteor.userId() );
+
+		var customUserId = 'cool user id dude!';
+		var clientWithUserId = new Client({ userId: customUserId });
+
+		test.equal( clientWithUserId.getReactiveValue('userId'), customUserId );
+
+		next();
+
+	});
 
 });
 
