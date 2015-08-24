@@ -1,8 +1,35 @@
-Persons = new Meteor.Collection('persons');
-Animals = new Meteor.Collection('animals');
-Dreams = new Meteor.Collection('dreams');
+Persons =               new Meteor.Collection('persons');
+Animals =               new Meteor.Collection('animals');
+Dreams =                new Meteor.Collection('dreams');
+UserSpecificDocuments = new Meteor.Collection('userSpecificDocuments');
 
 Meteor.startup(function() {
+
+	UserSpecificDocument = new ReactiveConstructor('UserSpecificDocument', function() {
+		return {
+			globalValues: {
+				fields: {
+					userId: String
+				}
+			},
+			cmsOptions: {
+				collection: UserSpecificDocuments,
+				collectionPublishFilter: function() {
+					return { userId: this.userId };
+				},
+				inputs: {
+					userId: {
+						initMethod: function( value ) {
+							return value || Meteor.userId() || 'user is nog logged in!';
+						}
+					}
+				}
+			},
+			typeStructure: [{
+				type: 'userSpecificDocumentDefaultType'
+			}]
+		};
+	});
 
 	Client = new ReactiveConstructor('Client', function() {
 		return {
@@ -19,7 +46,6 @@ Meteor.startup(function() {
 						},
 						userId: {
 							initMethod: function( value ) {
-								console.log( value ||  Meteor.userId() || 'not logged in' );
 								return value || Meteor.userId() || 'not logged in';
 							}
 						}
@@ -218,7 +244,7 @@ if (Meteor.isServer){
 	Meteor.methods({
 		'reactive-constructor-cms/cleanup-test-db': function() {
 			console.log('removing all persons AND animals from DB…');
-			return Persons.remove({}) && Animals.remove({}) && Dreams.remove({});
+			return Persons.remove({}) && Animals.remove({}) && Dreams.remove({}) && UserSpecificDocuments.remove({});
 		}
 	});
 
@@ -849,6 +875,44 @@ Tinytest.addAsync('ReactiveConstructorCmsPlugin async - instance.save(), logged 
 				numberAffected: Number
 			}));
 			next();
+		});
+	});
+
+});
+
+Tinytest.addAsync('ReactiveConstructorCmsPlugin async - check subscription and publish filter', function(test, next) {
+	
+	loginOrCreateAccount(function() {
+		return startSubscription(function() {
+
+			// Make sure there are no docs yet
+			test.equal( UserSpecificDocuments.find().count(), 0 );
+			var userSpecificDocument = new UserSpecificDocument();
+
+			userSpecificDocument.save({}, function() {
+
+				// Make sure we have a doc now!
+				test.equal( UserSpecificDocuments.find().count(), 1 );
+				console.log( Meteor.userId() );
+
+				// Now: let's log out, and create a new account and then check how many docs we have (should be 0!)
+				Meteor.logout(function() {
+					test.equal( UserSpecificDocuments.find().count(), 0 );
+					Accounts.createUser({ username: 'different-user', password: 'password' }, function() {
+						Meteor.loginWithPassword('different-user', 'password', function() {
+							test.equal( UserSpecificDocuments.find().count(), 0 );
+
+							var anotherUserSpecificDocument = new UserSpecificDocument();
+							anotherUserSpecificDocument.save({}, function() {
+								startSubscription(function() {
+									test.equal( UserSpecificDocuments.find().count(), 1 );
+									next();
+								});
+							});
+						});
+					});
+				});
+			});
 		});
 	});
 

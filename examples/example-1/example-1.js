@@ -13,21 +13,31 @@ Person = new ReactiveConstructor('Person', function () {
   return {
     cmsOptions: {
       collection: Persons,
+      collectionPublishFilter: function () {
+        return { userId: this.userId };
+      },
       inputs: {
         childhoodMemories: {
           type: 'textarea'
+        },
+        userId: {
+          disabled: true,
+          initMethod: function ( value ) {
+            return value || Meteor.userId() || 'no user id!';
+          }
         }
       }
     },
     globalValues: {
       fields: {
-        age: Number,
-        name: String,
-        children: [ Person ],
-        sex: String,
-        pets: [ Pet ],
+        age:         Number,
+        name:        String,
+        children:    [ Person ],
+        sex:         String,
+        pets:        [ Pet ],
         portraitUrl: String,
-        invoices: [ Invoice ]
+        invoices:    [ Invoice ],
+        userId:      String
       }
     },
     typeStructure: [{
