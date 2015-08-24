@@ -9,12 +9,19 @@ Meteor.startup(function() {
 			typeStructure: [{
 				type: 'instance with instance cmsOptions',
 				fields: {
-					clientBackground: String
+					clientBackground: String,
+					userId: String
 				},
 				cmsOptions: {
 					inputs: {
 						clientBackground: {
 							type: 'textarea'
+						},
+						userId: {
+							initMethod: function( value ) {
+								console.log( value ||  Meteor.userId() );
+								return value || Meteor.userId();
+							}
 						}
 					},
 				}
@@ -425,6 +432,19 @@ Tinytest.add('ReactiveConstructorCmsPlugin overrides - setReactiveValue() with t
 
 });
 
+Tinytest.add('ReactiveConstructorCmsPlugin overrides - initMethod() on instance', function(test) {
+
+	var testClient = new Client();
+
+	test.equal( testClient.getReactiveValue('userId'), Meteor.userId() );
+
+	var customUserId = 'cool user id dude!';
+	var clientWithUserId = new Client({ userId: customUserId });
+
+	test.equal( clientWithUserId.getReactiveValue('userId'), customUserId );
+
+});
+
 Tinytest.add('ReactiveConstructorCmsPlugin overrides - setValueToCorrectType', function(test) {
 
 	// Not passing the correct arguments should throw errors
@@ -616,13 +636,10 @@ Tinytest.add('ReactiveConstructorCmsPlugin instance methods - instance.getAllCms
 
 	var instanceWithOnlyInstanceCmsOptions = new Client();
 
-	test.equal( instanceWithOnlyInstanceCmsOptions.getAllCmsOptions(), {
-		inputs: {
-			clientBackground: {
-				type: 'textarea'
-			}
-		}
-	});
+	test.equal(
+		_.keys( instanceWithOnlyInstanceCmsOptions.getAllCmsOptions().inputs ),
+		['clientBackground', 'userId']
+		);
 
 });
 

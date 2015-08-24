@@ -265,17 +265,27 @@ Invoice = new ReactiveConstructor('Invoice', function() {
     typeStructure: [{
       type: 'invoice',
       fields: {
-        _id: String,
+        _id:         String,
         invoiceName: String,
-        currency: String,
-        items: [ InvoiceListItem ],
-        reference: String,
-        client: Client,
-        superCool: Boolean
+        currency:    String,
+        items:       [ InvoiceListItem ],
+        reference:   String,
+        client:      Client,
+        superCool:   Boolean,
+        userId:      String
       },
       defaultData: {
         invoiceName: 'KK000',
         superCool: false
+      },
+      cmsOptions: {
+        inputs: {
+          userId: {
+            initMethod: function( value ) {
+              return value || Meteor.userId();
+            }
+          }
+        }
       }
     }]
   };
