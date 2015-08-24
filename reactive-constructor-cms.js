@@ -533,6 +533,16 @@ ReactiveConstructorCmsPlugin = new ReactiveConstructorPlugin({
 
 	initInstance: function ( instance ) {
 
+		var cmsOptionsInputs = instance.getAllCmsOptions().inputs;
+
+		if (!cmsOptionsInputs)
+			return instance;
+			
+		_.each( cmsOptionsInputs, function ( input, key ) {
+			if (input.initMethod)
+				return instance.setReactiveValue( key, input.initMethod( instance.getReactiveValue( key ) ) );
+		});
+
 		return instance;
 
 	},

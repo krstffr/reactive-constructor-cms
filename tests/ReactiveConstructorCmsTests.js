@@ -9,12 +9,19 @@ Meteor.startup(function() {
 			typeStructure: [{
 				type: 'instance with instance cmsOptions',
 				fields: {
-					clientBackground: String
+					clientBackground: String,
+					userId: String
 				},
 				cmsOptions: {
 					inputs: {
 						clientBackground: {
 							type: 'textarea'
+						},
+						userId: {
+							initMethod: function( value ) {
+								console.log( value ||  Meteor.userId() || 'not logged in' );
+								return value || Meteor.userId() || 'not logged in';
+							}
 						}
 					},
 				}
@@ -616,13 +623,10 @@ Tinytest.add('ReactiveConstructorCmsPlugin instance methods - instance.getAllCms
 
 	var instanceWithOnlyInstanceCmsOptions = new Client();
 
-	test.equal( instanceWithOnlyInstanceCmsOptions.getAllCmsOptions(), {
-		inputs: {
-			clientBackground: {
-				type: 'textarea'
-			}
-		}
-	});
+	test.equal(
+		_.keys( instanceWithOnlyInstanceCmsOptions.getAllCmsOptions().inputs ),
+		['clientBackground', 'userId']
+		);
 
 });
 
@@ -728,6 +732,25 @@ Tinytest.add('ReactiveConstructorCmsPlugin constructor methods - getCreatableTyp
 
 	// The husband type should only have two creatable types of buddies
 	test.equal( Person.getCreatableTypes( 'buddies', testHusband ).length, 2 );
+
+});
+
+Tinytest.addAsync('ReactiveConstructorCmsPlugin async - initMethod() on instance: logged in', function(test, next) {
+
+	loginOrCreateAccount(function() {
+
+		var testClient = new Client();
+
+		test.equal( testClient.getReactiveValue('userId'), Meteor.userId() );
+
+		var customUserId = 'cool user id dude!';
+		var clientWithUserId = new Client({ userId: customUserId });
+
+		test.equal( clientWithUserId.getReactiveValue('userId'), customUserId );
+
+		next();
+
+	});
 
 });
 
