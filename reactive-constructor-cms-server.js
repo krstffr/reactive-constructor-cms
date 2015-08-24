@@ -258,16 +258,24 @@ Meteor.publish('reactive-constructor-cms__editable-docs', function() {
 	// These should only be available to logged in users
 	if (!this.userId)
 		return this.error( new Meteor.Error('reactive-constructor-cms', 'You need to login to subscribe to reactive-constructor-cms__editable-docs' ) );
+
+	// Used in the publishFilter, to be able to use the meteor server context inside the method
+	var meteorServerContext = this;
 	
 	// Get all the publications
 	return _.chain(ReactiveConstructors)
 	.map(function( constructor ){
 		if (constructor.constructorDefaults().cmsOptions && constructor.constructorDefaults().cmsOptions.collection)
-			return constructor.constructorDefaults().cmsOptions.collection;
+			return { reactiveConstructor: constructor, collection: constructor.constructorDefaults().cmsOptions.collection };
 	})
 	.compact()
-	.map(function( collection ){
-		return collection.find({ reactiveConstructorCmsStatus: 'edit' });
+	.map(function( collectionAndConstructor ){
+		var query = { reactiveConstructorCmsStatus: 'edit' };
+		var publishFilter = collectionAndConstructor.reactiveConstructor.constructorDefaults().cmsOptions.collectionPublishFilter;
+		// If there is a publishFilter, "assign" it to the query!
+		if ( publishFilter )
+			query = _.assign( query, publishFilter.call( meteorServerContext ) );
+		return collectionAndConstructor.collection.find( query );
 	}).value();
 
 });
