@@ -19,6 +19,12 @@ Person = new ReactiveConstructor('Person', function () {
       inputs: {
         childhoodMemories: {
           type: 'textarea'
+        },
+        userId: {
+          disabled: true,
+          initMethod: function ( value ) {
+            return value || Meteor.userId() || 'no user id!';
+          }
         }
       }
     },
@@ -54,12 +60,6 @@ Person = new ReactiveConstructor('Person', function () {
       cmsOptions: {
         imgPreviewKey: 'portraitUrl',
         inputs: {
-          userId: {
-            initMethod: function ( value ) {
-              console.log( value || Meteor.userId() || 'no user id!' );
-              return value || Meteor.userId() || 'no user id!';
-            }
-          },
           title: {
             type: 'select',
             selectValues: function() {
