@@ -1,7 +1,7 @@
 Package.describe({
 	name: "krstffr:reactive-constructor-cms",
 	summary: "CMS for krstffr:reactive-constructor instances.",
-	version: "0.4.6"
+	version: "0.4.7"
 });
 
 Package.onUse(function (api) {
@@ -11,7 +11,7 @@ Package.onUse(function (api) {
 	api.use([
 		"templating",
 		"reactive-var@1.0.5",
-		"krstffr:reactive-constructor@1.2.2",
+		"krstffr:reactive-constructor@1.2.3",
 		"krstffr:msgs@0.0.6",
 		"mizzao:jquery-ui@1.11.4"
 		], "client");

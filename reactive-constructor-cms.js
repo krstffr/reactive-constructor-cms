@@ -853,7 +853,7 @@ ReactiveConstructorCmsPlugin.editPageIsOpen = function() {
 	return $('.reactive-constructor-cms__main-wrapper').length > 0;
 };
 
-// Method for overriding the defautl setReactiveValue method
+// Method for overriding the default setReactiveValue method
 // Has test: ✔
 ReactiveConstructorCmsPlugin.setReactiveValue = function( instance, key, value, ordinarySetReactiveValueFunction ) {
 
