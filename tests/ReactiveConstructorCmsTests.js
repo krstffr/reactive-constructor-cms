@@ -870,10 +870,7 @@ Tinytest.addAsync('ReactiveConstructorCmsPlugin async - instance.save(), logged 
 		docToSave.save({}, function( err, res ){
 			test.equal( res.backupsRemoved, 0 );
 			test.isTrue( Match.test( res.backup, String ) );
-			test.isTrue( Match.test( res.edit, {
-				insertedId: String,
-				numberAffected: Number
-			}));
+			test.isTrue( Match.test( res.edit, String ) );
 			next();
 		});
 	});
@@ -935,10 +932,7 @@ Tinytest.addAsync('ReactiveConstructorCmsPlugin async - instance.save({ publish:
 			numberAffected: Number
 		}));
 
-		test.isTrue( Match.test( res.edit, {
-			insertedId: String,
-			numberAffected: Number
-		}));
+		test.isTrue( Match.test( res.edit, String ) );
 
 		next();
 
@@ -956,12 +950,23 @@ Tinytest.addAsync('ReactiveConstructorCmsPlugin async - instance.save(), remove 
 	var saveRecurse = function( num, instance ) {
 		instance.save({ publish: true }, function( err, res ){
 
-			test.isTrue( Match.test( res, {
-				published: Object,
-				edit: Object,
-				backup: String,
-				backupsRemoved: Number
-			}));
+			if (num === saveTimes) {
+				test.isTrue( Match.test( res, {
+					published: Object,
+					// The first save should return a string here.
+					edit: String,
+					backup: String,
+					backupsRemoved: Number
+				}));
+			}
+			else {
+				test.isTrue( Match.test( res, {
+					published: Object,
+					edit: Object,
+					backup: String,
+					backupsRemoved: Number
+				}));
+			}
 
 			if (num <= backupsShouldBeRemovedAfter)
 				test.equal( res.backupsRemoved, 1 );
@@ -1287,8 +1292,9 @@ Tinytest.addAsync('ReactiveConstructorCmsPlugin async - ReactiveConstructorCmsPl
 	var person = new Person({ rcType: 'child' });
 
 	person.save({}, function( err, res ) {
+		console.log( res );
 		test.equal(
-			ReactiveConstructorCmsPlugin.getInstanceByTypeAndId( 'Person', res.edit.insertedId )._id,
+			ReactiveConstructorCmsPlugin.getInstanceByTypeAndId( 'Person', res.edit )._id,
 			person.getReactiveValue('_id')
 			);
 		next();

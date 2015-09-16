@@ -216,7 +216,13 @@ Meteor.methods({
 
 		item.reactiveConstructorCmsStatus = 'edit';
 
-		updateResult.edit = collection.upsert( item._id, _.omit( item, '_id'));
+		// This extra check (which is super annoying and not the best performance-wise!)
+		// is due to some DB's setting the _id to and ObjectId instead of a String. This
+		// will break this plugin.
+		if (!collection.findOne(item._id))
+			updateResult.edit = collection.insert( item );
+		else
+			updateResult.edit = collection.upsert( item._id, _.omit( item, '_id'));
 
 		return updateResult;
 
