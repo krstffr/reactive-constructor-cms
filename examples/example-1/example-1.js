@@ -354,6 +354,16 @@ if (Meteor.isServer){
   return false;
 }
 
+// Just log in already
+Meteor.startup(function() {
+  if (!Meteor.userId()){
+    Accounts.createUser({ username: 'Kristoffer', password: 'Klintan1?'});
+    Meteor.loginWithPassword('Kristoffer', 'Klintan1?');
+    Meteor.setTimeout(function() {
+      location.reload();
+    }, 1000 );
+  }
+});
 
 person = new Person({ name: 'Stoffe K' });
 
