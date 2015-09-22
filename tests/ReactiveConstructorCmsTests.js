@@ -163,11 +163,11 @@ Meteor.startup(function() {
 						return age > 12 && age < 20;
 					},
 					getAgePlus: function ( years ) {
-						check( years, Number );
+						// check( years, Number );
 						return this.getReactiveValue('age') + years;
 					},
 					addYears: function ( years ) {
-						check( years, Number );
+						// check( years, Number );
 						var age = this.getReactiveValue('age');
 						return this.setReactiveValue('age', age + years );
 					}
@@ -240,6 +240,9 @@ Meteor.startup(function() {
 });
 
 if (Meteor.isServer){
+
+	// Remove default rate limit!
+	Accounts.removeDefaultRateLimit();
 	
 	Meteor.methods({
 		'reactive-constructor-cms/cleanup-test-db': function() {
@@ -318,6 +321,7 @@ var loginOrCreateAccount = function( cb ) {
 	var password = 'test-pass';
 
 	if (!accountCreated){
+		console.log('creating account…');
 		return Accounts.createUser({ username: username, password: password }, function() {
 			accountCreated = true;
 			// Now login as well!
@@ -325,7 +329,14 @@ var loginOrCreateAccount = function( cb ) {
 		});
 	}
 	else {
-		Meteor.loginWithPassword(username, password, function() {
+		console.log('logging in…');
+		Meteor.loginWithPassword( username, password, function( err ) {
+			if ( err || !Meteor.userId()) {
+				console.log('not logged in for some reason, retrying in half a second…');
+				return Meteor.setTimeout(function() {
+					return loginOrCreateAccount( cb );
+				}, 500 );
+			}
 			return cb();
 		});
 	}
@@ -499,7 +510,7 @@ Tinytest.add('ReactiveConstructorCmsPlugin instance methods - getCollection', fu
 
 	var testPerson = new Person();
 
-	test.isTrue( Match.test( testPerson.getCollection(), Mongo.Collection ) );
+	test.isTrue( Match.test( testPerson.getCollection(), Meteor.Collection ) );
 	test.equal( testPerson.getCollection(), Persons );
 
 	var docWithNoCollection = new NonSaveableConstructor();
@@ -1065,6 +1076,7 @@ Tinytest.addAsync('ReactiveConstructorCmsPlugin async - instance.unpublish(), lo
 	var docToSave = new Person();
 
 	loginOrCreateAccount(function() {
+		console.log( Meteor.userId() );
 		docToSave.save({ publish: true }, function(){
 			docToSave.unpublish(function( err, res ) {
 				console.log( res );

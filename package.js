@@ -1,7 +1,7 @@
 Package.describe({
 	name: "krstffr:reactive-constructor-cms",
 	summary: "CMS for krstffr:reactive-constructor instances.",
-	version: "0.4.8"
+	version: "0.4.9"
 });
 
 Package.onUse(function (api) {
@@ -11,13 +11,14 @@ Package.onUse(function (api) {
 	api.use([
 		"templating",
 		"reactive-var@1.0.5",
-		"krstffr:reactive-constructor@1.2.3",
-		"krstffr:msgs@0.0.6",
+		"krstffr:reactive-constructor@1.2.5",
+		"krstffr:msgs@0.0.8",
 		"mizzao:jquery-ui@1.11.4"
 		], "client");
 
 	api.use([
-		"stevezhu:lodash@3.10.1"
+		"stevezhu:lodash@3.10.1",
+		"check@1.0.5"
 		], ["client", "server"]);
 
 	api.addFiles([
@@ -46,11 +47,14 @@ Package.onUse(function (api) {
 Package.onTest(function (api) {
 
   api.use([
+  	"check",
   	"tinytest",
   	"krstffr:reactive-constructor",
   	"krstffr:reactive-constructor-cms",
   	"accounts-base",
-  	"accounts-password"
+  	"krstffr:msgs",
+  	"accounts-password",
+  	"stevezhu:lodash@3.10.1"
   	], ["client", "server"]);
 
   api.export(["ReactiveConstructors", "Persons", "Animals"], ["server", "client"]);
