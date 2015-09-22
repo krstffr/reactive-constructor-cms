@@ -12,7 +12,6 @@ Template.editTemplate__selectOverview.onRendered(function() {
 
 var hideSelectOverviewCallback = function() {
   var removeTemplateCallback = Template.parentData(0).removeTemplateCallback;
-  check( removeTemplateCallback, Function );
   // Execute the callback!
   return removeTemplateCallback();
 };
@@ -24,7 +23,6 @@ Template.editTemplate__selectOverview.events({
   'click .reactive-constructor-cms__select-overview__select-item': function() {
     // Make sure we have a callback function!
     var callback = Template.parentData(0).callback;
-    check( callback, Function );
     // Execute the callback!
     return callback( this );
   },
@@ -155,7 +153,7 @@ var getType = function() {
   }
 
   var type = '';
-  if (Match.test( instance.getType, Function ))
+  if ( instance.getType && ( instance.getType.constructor === Function ))
     type = instance.getType();
   if (instance.type)
     type = instance.type;
@@ -208,7 +206,7 @@ Template.editTemplate.helpers({
   // },
   getReactiveValuesAsArray: function() {
     var instance = this.value || this;
-    if (Match.test( instance.getReactiveValuesAsArray, Function ))
+    if ( instance.getReactiveValuesAsArray && ( instance.getReactiveValuesAsArray.constructor === Function ))
       return instance.getReactiveValuesAsArray();
 
     return _.map( instance, function( value, key ) {
@@ -266,7 +264,8 @@ Template.editTemplate__wrapper.events({
       return false;
 
     // Make sure it is a ReactiveConstructor object (this is basically duck typing?)
-    check( this.parentInstance.getReactiveValue, Function );
+    if (this.parentInstance.getReactiveValue.constructor !== Function)
+      throw new Error('reactive-constructor-cms', 'No getReactiveValue method on parent?');
 
     // Open the parent instance!
     return ReactiveConstructorCmsPlugin.editPageGet( this.parentInstance );
@@ -438,7 +437,7 @@ Template.editTemplate.events({
     var instance = this.value || this;
 
     // This is not a "linked" object, but a directly nested one
-    if ( Match.test( instance.getReactiveValue, Function ) )
+    if ( instance.getReactiveValue && ( instance.getReactiveValue.constructor === Function ) )
       return ReactiveConstructorCmsPlugin.editPageGet( instance );
     
     instance = ReactiveConstructorCmsPlugin.getInstanceByTypeAndId( instance.constructorName, instance._id );

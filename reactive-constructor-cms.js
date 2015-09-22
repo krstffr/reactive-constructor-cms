@@ -39,7 +39,7 @@ ReactiveConstructorCmsPlugin = new ReactiveConstructorPlugin({
 				return item.name;
 
 			// Is it an array?
-			if ( Match.test( item, Array ) ) {
+			if ( item && ( item.constructor ===  Array ) ) {
 				
 				// Does it have any items?
 				if (item.length < 1)
@@ -119,7 +119,8 @@ ReactiveConstructorCmsPlugin = new ReactiveConstructorPlugin({
 		passedClass.prototype.arrayitemRemove = function ( listKey, indexToRemove ) {
 			// Get the array…
 			var arr = this.getReactiveValue( listKey );
-			check( arr, Array );
+			if (arr && arr.constructor !== Array)
+				throw new Meteor.Error('reactive-constructor-cms', arr + ' is not an array. (arrayitemRemove)' );
 			// …remove the item…
 			arr.splice( indexToRemove, 1 );
 			// …and update the array.
@@ -139,7 +140,8 @@ ReactiveConstructorCmsPlugin = new ReactiveConstructorPlugin({
 			
 			// Get the array…
 			var arr = instance.getReactiveValue( listKey );
-			check( arr, Array );
+			if (arr && arr.constructor !== Array)
+				throw new Meteor.Error('reactive-constructor-cms', arr + ' is not an array. (arrayitemMove)' );
 			
 			// Is the move within the size of the array?
 			// If not: return true!
@@ -165,11 +167,13 @@ ReactiveConstructorCmsPlugin = new ReactiveConstructorPlugin({
 		passedClass.prototype.arrayitemDuplicate = function ( listKey, indexToDuplicate ) {
 			// Get the array…
 			var arr = this.getReactiveValue( listKey );
-			check( arr, Array );
+			if (arr && arr.constructor !== Array)
+				throw new Meteor.Error('reactive-constructor-cms', arr + ' is not an array. (arrayitemDuplicate)' );
+			
 			// Get the item we want to duplicate
 			var item = arr[indexToDuplicate];
 			// Is it an "ordinary" new instance? Or a link to an exisiting DB doc
-			if ( Match.test( item.getType, Function) ) {
+			if ( item.getType && ( item.getType.constructor === Function) ) {
 				// Use the .getDataAsObject() method to get this items data, and also add this instances type
 				var newItemData = _.assign({ rcType: item.getType() }, item.getDataAsObject() );
 				// Is the item creatable? Assign a new _id
@@ -192,7 +196,7 @@ ReactiveConstructorCmsPlugin = new ReactiveConstructorPlugin({
 		// Method for getting the value of passed key for this instances cmsOptions
 		// Has test: 
 		passedClass.prototype.getCmsOption = function( key ) {
-			check( key, String );
+			// check( key, String );
 			return this.getAllCmsOptions()[key] || false;
 		};
 
@@ -212,10 +216,10 @@ ReactiveConstructorCmsPlugin = new ReactiveConstructorPlugin({
 		// Has test: ✔
 		passedClass.prototype.save = function( saveOptions, callback ) {
 
-			check( saveOptions, Object );
+			// check( saveOptions, Object );
 
-			if (callback)
-				check( callback, Function );
+			// if (callback)
+			// 	check( callback, Function );
 
 			if ( !Meteor.userId() )
 				throw new Meteor.Error('reactive-constructor-cms', 'You need to be logged in.' );
@@ -273,7 +277,7 @@ ReactiveConstructorCmsPlugin = new ReactiveConstructorPlugin({
 			var firstMessage = Msgs.addMessage('Removing published doc…', 'rc-cms__message--info');
 
 			var mainId = instance.getReactiveValue('mainId');
-			check( mainId, String );
+			// check( mainId, String );
 
 			return Meteor.call('reactive-constructor-cms/unpublish', mainId, passedClass.constructorName, function( err, res ) {
 				if (err)
@@ -315,7 +319,7 @@ ReactiveConstructorCmsPlugin = new ReactiveConstructorPlugin({
 
 			var id = this.getDataAsObject()._id;
 
-			check( id, String );
+			// check( id, String );
 
 			Msgs.addMessage('Removing doc…', 'rc-cms__message--info');
 
@@ -345,7 +349,7 @@ ReactiveConstructorCmsPlugin = new ReactiveConstructorPlugin({
 
 			var mainId = this.getReactiveValue('mainId');
 
-			check( mainId, String );
+			// check( mainId, String );
 
 			return Meteor.call('reactive-constructor-cms/get-published-doc', mainId, passedClass.constructorName, function( err, res ) {
 				if ( err ){
@@ -368,20 +372,20 @@ ReactiveConstructorCmsPlugin = new ReactiveConstructorPlugin({
 			if ( !this.getCollection() )
 				throw new Meteor.Error('reactive-constructor-cms', 'No collection defined for: ' + passedClass.constructorName );
 
-			if (callback)
-				check( callback, Function );
+			// if (callback)
+			// 	check( callback, Function );
 
 			// What version of the backup to get.
 			// Default is the last one (1)
 			version = version || 0;
 
-			check( version, Number );
+			// check( version, Number );
 
 			var mainId = this.getReactiveValue('mainId');
 			var updateTime = this.getReactiveValue('updateTime') || new Date();
 
-			check( mainId, String );
-			check( updateTime, Date );
+			// check( mainId, String );
+			// check( updateTime, Date );
 
 			var firstMessage = Msgs.addMessage('Fetching last backup…', 'rc-cms__message--info');
 
@@ -451,7 +455,7 @@ ReactiveConstructorCmsPlugin = new ReactiveConstructorPlugin({
 		// Has test: ✔
 		passedClass.prototype.getLinkableInstances = function( key ) {
 
-			check( key, String );
+			// check( key, String );
 
 			var instance = this;
 			var constructorName = instance.getConstructorNameOfKey( key );
@@ -485,7 +489,7 @@ ReactiveConstructorCmsPlugin = new ReactiveConstructorPlugin({
 		passedClass.prototype.filterCreatableTypes = function( key, typeNames, typeNameKey ) {
 
 			// Make sure typeNames are passed
-			check( typeNames, Array );
+			// check( typeNames, Array );
 
 			var instance = this;
 
@@ -569,17 +573,17 @@ ReactiveConstructorCmsPlugin.checkReactiveValueType = function( key, passedValue
 	if (passedValue === undefined)
 		throw new Meteor.Error('reactive-constructor-cms', 'No passedValue passed to ReactiveConstructorCmsPlugin.checkReactiveValueType()');
 
-	check( key, String );
-	check( ordinaryCheckReactiveValueType, Function );
+	// check( key, String );
+	// check( ordinaryCheckReactiveValueType, Function );
 
 	// It could be a linked object! If so: accept it!
 	if (passedValue.type && passedValue.type === 'reactive-constructor-cms-linked-item'){
-		check( passedValue, {type: String, constructorName: String, _id: String });
+		// check( passedValue, {type: String, constructorName: String, _id: String });
 		return true;
 	}
 
 	// If an array is passed: remove all items in the array which are of type reactive-constructor-cms-linked-item
-	if ( Match.test(passedValue, Array ) ){
+	if ( passedValue && (passedValue.constructor === Array ) ){
 		passedValue = _.reject(passedValue, function( item ){
 			return item && item.type && item.type === 'reactive-constructor-cms-linked-item';
 		});
@@ -588,7 +592,7 @@ ReactiveConstructorCmsPlugin.checkReactiveValueType = function( key, passedValue
 	// Is it a key specific to this plugins added fields?
 	// If so: check it against this structure
 	if ( reactiveConstructorCmsExtraInstanceFields[ key ] ){
-		check( passedValue, reactiveConstructorCmsExtraInstanceFields[ key ] );
+		// check( passedValue, reactiveConstructorCmsExtraInstanceFields[ key ] );
 		return true;
 	}
 
@@ -606,13 +610,13 @@ ReactiveConstructorCmsPlugin.checkReactiveValues = function( dataToCheck, curren
 	if (!dataToCheck || !currentTypeStructure)
 		throw new Meteor.Error('reactive-constructor-cms', 'Missing arguments in ReactiveConstructorCmsPlugin.checkReactiveValues()');
 
-	check( ordinaryCheckReactiveValues, Function );
+	// check( ordinaryCheckReactiveValues, Function );
 
 	// Exlude all items which have a type of reactive-constructor-cms-linked-item
 	dataToCheck = _(dataToCheck).mapValues(function( item ){
 
 		// If an array is passed: remove all items in the array which are linked items
-		if ( Match.test(item, Array ) ){
+		if ( item && (item.constructor === Array ) ){
 			item = _.reject(item, function( arrayItem ){
 				return arrayItem && arrayItem.type && arrayItem.type === 'reactive-constructor-cms-linked-item';
 			});
@@ -642,14 +646,14 @@ ReactiveConstructorCmsPlugin.setValueToCorrectType = function( instance, value, 
 	if (!instance)
 		throw new Meteor.Error('reactive-constructor-cms', 'Missing "instance" argument in ReactiveConstructorCmsPlugin.setValueToCorrectType()');
 
-	check( ordinarySetValueToCorrectType, Function );
+	// check( ordinarySetValueToCorrectType, Function );
 
 	// Is it an linked instance? Just return it!
 	if (value && value.type === 'reactive-constructor-cms-linked-item')
 		return value;
 
 	// Is it an array with elements?
-	if ( Match.test(value, Array ) && value.length > 0 ){
+	if ( value && (value.constructor === Array ) && value.length > 0 ){
 
 		return _.map( value, function ( arrayVal ) {
 
@@ -660,7 +664,7 @@ ReactiveConstructorCmsPlugin.setValueToCorrectType = function( instance, value, 
 			// Does the array item have a reactive constructor defined?
 			// If so: create a new instance from the constructor.
 			var constructorName = instance.getCurrentTypeStructure()[key];
-			if ( Match.test( arrayVal, Object ) && ReactiveConstructors[ constructorName[ 0 ].constructorName ] )
+			if ( arrayVal && ( arrayVal.constructor === Object ) && ReactiveConstructors[ constructorName[ 0 ].constructorName ] )
 				return new ReactiveConstructors[ constructorName[ 0 ].constructorName ]( arrayVal );
 			
 			return arrayVal;
@@ -740,8 +744,8 @@ ReactiveConstructorCmsPlugin.getSelectListOverview = function( listItems, constr
 // Has test: ✔
 ReactiveConstructorCmsPlugin.getInstanceByTypeAndId = function( constructorName, _id ) {
 	
-	check( constructorName, String );
-	check( _id, String );
+	// check( constructorName, String );
+	// check( _id, String );
 
 	var items = _.findWhere(ReactiveConstructorCmsPlugin.getGlobalInstanceStore(), { constructorName: constructorName }).items;
 
@@ -786,8 +790,8 @@ ReactiveConstructorCmsPlugin.updateGlobalInstanceStore = function() {
 // Very "side-effecty"
 ReactiveConstructorCmsPlugin.editPageRemove = function( instance, callback ) {
 
-	if (callback)
-		check( callback, Function );
+	// if (callback)
+		// check( callback, Function );
 
 	// Is there a current view? Then hide it!
 	if ( renderedCMSView ) {
@@ -826,7 +830,7 @@ ReactiveConstructorCmsPlugin.editPageGet = function( instance ) {
 	if (!Meteor.userId())
 		throw new Meteor.Error('reactive-constructor-cms', 'You need to be logged in.' );
 
-	check( instance, ReactiveConstructors[ instance.constructor.constructorName ] );
+	// check( instance, ReactiveConstructors[ instance.constructor.constructorName ] );
 
 	// Remove all currently visible messages
 	Msgs.removeAllMessages();

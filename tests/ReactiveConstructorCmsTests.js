@@ -697,15 +697,7 @@ Tinytest.add('ReactiveConstructorCmsPlugin instance methods - instance.getCmsOpt
 
 	// AND for exclude as well.
 	test.equal(      person.getCmsOption('exclude').pets, ['dog', 'cat'] );
-	test.equal( thirdPerson.getCmsOption('exclude').pets, ['dog'] );	
-
-	test.throws(function() {
-		person.getCmsOption( 123 );
-	});
-
-	test.throws(function() {
-		person.getCmsOption(function() {});
-	});
+	test.equal( thirdPerson.getCmsOption('exclude').pets, ['dog'] );
 
 });
 

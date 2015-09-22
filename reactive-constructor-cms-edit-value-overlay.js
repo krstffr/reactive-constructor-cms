@@ -64,10 +64,12 @@ Template.getReactiveValueEditable.events({
       return ;
 
     // Make sure the right types are set
-    check( this.instance.rcType, String );
-    check( this.key, String );
+    if (!this.instance.rcType || !this.key)
+      throw new Meteor.Error('reactive-constructor-cms', '!this.instance.rcType || !this.key'); 
+
     if (this.toMarkdown)
-      check( this.toMarkdown, Boolean );
+      if (this.toMarkdown.toMarkdown !== Boolean)
+        throw new Meteor.Error('reactive-constructor-cms', 'this.toMarkdown.toMarkdown !== Boolean'); 
 
     // Remove the current template
     removereactiveValueEditTemplate();

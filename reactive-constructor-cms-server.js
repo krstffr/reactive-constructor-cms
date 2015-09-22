@@ -2,8 +2,10 @@ reactiveConstructorCmsBackupsToKeep = 15;
 
 var getCollectionFromConstructorName = function( constructorName ) {
 	
-	check( constructorName, String );
-	check( ReactiveConstructors[ constructorName ], Function );
+	// check( constructorName, String );
+	// check( ReactiveConstructors[ constructorName ], Function );
+	if (!ReactiveConstructors[ constructorName ])
+		throw new Meteor.Error('reactive-constructor-cms', '!ReactiveConstructors[ '+constructorName+' ]' );
 
 	if (!ReactiveConstructors[ constructorName ].constructorDefaults)
 		return false;
@@ -64,7 +66,7 @@ Meteor.methods({
 				return  _( _.keys( doc ) ).map(function( key ) {
 
 					// Is it an array?
-					if (Match.test( doc[key], Array )){
+					if ( doc[key] && ( doc[key].constructor === Array )){
 						return _.map(doc[key], function( nestedValue ) {
 							if (nestedValue.type && nestedValue.type === 'reactive-constructor-cms-linked-item')
 								return nestedValue;
@@ -75,7 +77,7 @@ Meteor.methods({
 					if (doc[key].type && doc[key].type === 'reactive-constructor-cms-linked-item')
 						return doc[key];
 
-					if (Match.test( doc[key], Object ))
+					if ( doc[key] && ( doc[key].constructor === Object ))
 						return extractFields( doc[key] );
 
 					return false;
@@ -297,8 +299,8 @@ var getAllLinkedDocsIds = function( doc, memo ) {
 
 	memo = memo || {};
 
-	check( doc, Object );
-	check( memo, Object );
+	// check( doc, Object );
+	// check( memo, Object );
 
 	// Is the passed "doc" actually a link itself? Then just add it to the
 	// memo and return the memo
@@ -314,14 +316,14 @@ var getAllLinkedDocsIds = function( doc, memo ) {
 
 		// Is it an array?
 		// Recurse on every item in the array
-		if (Match.test( value, Array )){
+		if ( value && ( value.constructor === Array )){
 			return _.reduce( value, function( memo, nestedDoc ){
 				return getAllLinkedDocsIds( nestedDoc, memo );
 			}, memo );
 		}
 
 		// Is it not a linked object? Just return the memo
-		if (!Match.test( value, Object ) || value.type !== 'reactive-constructor-cms-linked-item')
+		if ( ( value.constructor !== Object ) || value.type !== 'reactive-constructor-cms-linked-item')
 			return memo;
 		
 		// Make sure we have a contructor for holding the _id…
@@ -349,9 +351,9 @@ var getDocAndLinks = function( mainId, constructorName, fetchedDocs ) {
 	if (!fetchedDocs[ constructorName ])
 		fetchedDocs[ constructorName ] = [];
 
-	check( mainId, String );
-	check( constructorName, String );
-	check( fetchedDocs, Object );
+	// check( mainId, String );
+	// check( constructorName, String );
+	// check( fetchedDocs, Object );
 
 	// Get the current doc
 	var doc = getCollectionFromConstructorName( constructorName ).findOne({ reactiveConstructorCmsStatus: 'published', mainId: mainId });
@@ -377,8 +379,8 @@ var getDocAndLinks = function( mainId, constructorName, fetchedDocs ) {
 
 reactiveConstructorCmsGetPublishCursorFromDoc = function( initDocument, constructorName ) {
 
-	check( initDocument.mainId, String );
-	check( constructorName, String );
+	// check( initDocument.mainId, String );
+	// check( constructorName, String );
 
 	var docAndLinks = getDocAndLinks( initDocument.mainId, constructorName );
 
