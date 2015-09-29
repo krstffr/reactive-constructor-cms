@@ -7,9 +7,6 @@ renderedCMSView = false;
 // This is the var which will hold the select overview template
 renderedCMSSelectOverview = false;
 
-// Fetched instances, use this source to update/get a doc "globally"!
-tempCMSInstances = new ReactiveVar([]);
-
 var reactiveConstructorCmsExtraInstanceFields = {
 	_id: String,
 	reactiveConstructorCmsName: String,
@@ -32,7 +29,7 @@ ReactiveConstructorCmsPlugin = new ReactiveConstructorPlugin({
 			// Return the constructor name!
 			if (item.constructorName)
 				return item.constructorName;
-			
+
 			// Does the item actaully have a name?
 			// Then it's probably a String or a Number or a Boolean, return it
 			if (item.name)
@@ -40,7 +37,7 @@ ReactiveConstructorCmsPlugin = new ReactiveConstructorPlugin({
 
 			// Is it an array?
 			if ( item && ( item.constructor ===  Array ) ) {
-				
+
 				// Does it have any items?
 				if (item.length < 1)
 					return 'Array';
@@ -87,7 +84,7 @@ ReactiveConstructorCmsPlugin = new ReactiveConstructorPlugin({
 			return true;
 
 		};
-		
+
 		// Method for returning the data for the CMS frontend basically
 		// Will not return the fields in reactiveConstructorCmsExtraInstanceFields
 		// EXCEPT the reactiveConstructorCmsName
@@ -131,18 +128,18 @@ ReactiveConstructorCmsPlugin = new ReactiveConstructorPlugin({
 		// (an array in the reactive object, found from the passed key)
 		// Has test: ✔
 		passedClass.prototype.arrayitemMove = function ( listKey, newIndex, oldIndex ) {
-			
+
 			// If new and old index are the same, just return true
 			if (newIndex === oldIndex)
 				return true;
-			
+
 			var instance = this;
-			
+
 			// Get the array…
 			var arr = instance.getReactiveValue( listKey );
 			if (arr && arr.constructor !== Array)
 				throw new Meteor.Error('reactive-constructor-cms', arr + ' is not an array. (arrayitemMove)' );
-			
+
 			// Is the move within the size of the array?
 			// If not: return true!
 			if (newIndex < 0 || newIndex > (arr.length-1))
@@ -150,9 +147,9 @@ ReactiveConstructorCmsPlugin = new ReactiveConstructorPlugin({
 
 			// …move the item…
 			arr.splice( newIndex, 0, arr.splice( oldIndex, 1 )[0] );
-			
+
 			// …and update the array.
-			// This extra "reset" to an empty array is because the DOM would not 
+			// This extra "reset" to an empty array is because the DOM would not
 			// update correctly sometimes with complex nested instances.
 			// instance.setReactiveValue( listKey, [] );
 			// return _.defer(function(){
@@ -169,7 +166,7 @@ ReactiveConstructorCmsPlugin = new ReactiveConstructorPlugin({
 			var arr = this.getReactiveValue( listKey );
 			if (arr && arr.constructor !== Array)
 				throw new Meteor.Error('reactive-constructor-cms', arr + ' is not an array. (arrayitemDuplicate)' );
-			
+
 			// Get the item we want to duplicate
 			var item = arr[indexToDuplicate];
 			// Is it an "ordinary" new instance? Or a link to an exisiting DB doc
@@ -194,7 +191,7 @@ ReactiveConstructorCmsPlugin = new ReactiveConstructorPlugin({
 		};
 
 		// Method for getting the value of passed key for this instances cmsOptions
-		// Has test: 
+		// Has test:
 		passedClass.prototype.getCmsOption = function( key ) {
 			// check( key, String );
 			return this.getAllCmsOptions()[key] || false;
@@ -209,9 +206,10 @@ ReactiveConstructorCmsPlugin = new ReactiveConstructorPlugin({
 
 		// Method for returnin the collection which this instance will be saved to.
 		// Has test: ✔
-		passedClass.prototype.getCollection = function() {
+		passedClass.getCollection = function() {
 			return this.getAllCmsOptions().collection || false;
 		};
+		passedClass.prototype.getCollection = passedClass.getCollection;
 
 		// Has test: ✔
 		passedClass.prototype.save = function( saveOptions, callback ) {
@@ -225,7 +223,7 @@ ReactiveConstructorCmsPlugin = new ReactiveConstructorPlugin({
 				throw new Meteor.Error('reactive-constructor-cms', 'You need to be logged in.' );
 
 			var instance = this;
-			
+
 			if ( !instance.getCollection() )
 				throw new Meteor.Error('reactive-constructor-cms', 'No collection defined for: ' + passedClass.constructorName );
 
@@ -242,18 +240,16 @@ ReactiveConstructorCmsPlugin = new ReactiveConstructorPlugin({
 						Msgs.addMessage('Saved and published!', 'rc-cms__message--success');
 					else
 						Msgs.addMessage('Saved!', 'rc-cms__message--success');
-					ReactiveConstructorCmsPlugin.updateGlobalInstanceStore();
 				}
 
 				// If there is a callback, execute it
 				if ( callback )
 					return callback( err, res );
-				
+
 				// If the edit page open? Reload it with the new doc.
-				if (ReactiveConstructorCmsPlugin.editPageIsOpen()){
+				if (ReactiveConstructorCmsPlugin.editPageIsOpen()) {
 					// If this item is saved for the first time, re-open this doc on save
-					var createdInstance = ReactiveConstructorCmsPlugin.getInstanceByTypeAndId( instance.constructor.constructorName, instance.getReactiveValue('mainId') );
-					return ReactiveConstructorCmsPlugin.editPageGet( createdInstance );
+					return ReactiveConstructorCmsPlugin.editPageGet({ id: res.edit.id, constructorName: instance.constructor.constructorName });
 				}
 
 				return true;
@@ -270,7 +266,7 @@ ReactiveConstructorCmsPlugin = new ReactiveConstructorPlugin({
 				throw new Meteor.Error('reactive-constructor-cms', 'You need to be logged in.' );
 
 			var instance = this;
-			
+
 			if ( !instance.getCollection() )
 				throw new Meteor.Error('reactive-constructor-cms', 'No collection defined for: ' + passedClass.constructorName );
 
@@ -291,14 +287,11 @@ ReactiveConstructorCmsPlugin = new ReactiveConstructorPlugin({
 					Msgs.addMessage('There was nothing to unpublish.', 'rc-cms__message--info');
 				}
 
-				ReactiveConstructorCmsPlugin.updateGlobalInstanceStore();
-				
 				if ( callback )
 					return callback( err, res );
 
 				if (ReactiveConstructorCmsPlugin.editPageIsOpen()){
-					var createdInstance = ReactiveConstructorCmsPlugin.getInstanceByTypeAndId( instance.constructor.constructorName, instance._id );
-					return ReactiveConstructorCmsPlugin.editPageGet( createdInstance );
+					return ReactiveConstructorCmsPlugin.editPageGet({ id: instance._id, constructorName: instance.constructor.constructorName });
 				}
 
 				return true;
@@ -313,7 +306,7 @@ ReactiveConstructorCmsPlugin = new ReactiveConstructorPlugin({
 
 			if ( !Meteor.userId() )
 				throw new Meteor.Error('reactive-constructor-cms', 'You need to be logged in.' );
-			
+
 			if ( !this.getCollection() )
 				throw new Meteor.Error('reactive-constructor-cms', 'No collection defined for: ' + passedClass.constructorName );
 
@@ -328,8 +321,6 @@ ReactiveConstructorCmsPlugin = new ReactiveConstructorPlugin({
 					Msgs.addMessage( err.reason, 'rc-cms__message--error');
 				if ( res < 1)
 					Msgs.addMessage( 'Error: no docs removed.', 'rc-cms__message--error');
-				if ( res )
-					ReactiveConstructorCmsPlugin.updateGlobalInstanceStore();
 				if ( callback )
 					return callback( err, res );
 				return true;
@@ -343,7 +334,7 @@ ReactiveConstructorCmsPlugin = new ReactiveConstructorPlugin({
 
 			// Should this method be protected behind login?
 			// Probably not since "published" should mean "open to everyone"?
-			
+
 			if ( !this.getCollection() )
 				throw new Meteor.Error('reactive-constructor-cms', 'No collection defined for: ' + passedClass.constructorName );
 
@@ -354,7 +345,7 @@ ReactiveConstructorCmsPlugin = new ReactiveConstructorPlugin({
 			return Meteor.call('reactive-constructor-cms/get-published-doc', mainId, passedClass.constructorName, function( err, res ) {
 				if ( err ){
 					Msgs.addMessage('Error while getting published doc: ' + err.reason, 'rc-cms__message--error');
-				}	
+				}
 				if ( callback )
 					return callback( err, res );
 				return true;
@@ -365,7 +356,7 @@ ReactiveConstructorCmsPlugin = new ReactiveConstructorPlugin({
 		// Method for getting a backup of a doc
 		// Has test: ✔
 		passedClass.prototype.getBackupDoc = function( version, callback ) {
-			
+
 			if ( !Meteor.userId() )
 				throw new Meteor.Error('reactive-constructor-cms', 'You need to be logged in.' );
 
@@ -405,21 +396,27 @@ ReactiveConstructorCmsPlugin = new ReactiveConstructorPlugin({
 
 		// Method for returning the instance's cmsOptions
 		// Has test: ✔
-		passedClass.prototype.getInstanceCmsOptions = function() {
+		passedClass.getInstanceCmsOptions = function() {
+			// If it's the constrcutor rather than an instance calling this method,
+			// just return an empty object.
+			if (!this.getType || !this.getType())
+				return {};
 			return _.findWhere( passedClass.constructorDefaults().typeStructure, {
 				type: this.getType()
 			}).cmsOptions || {};
 		};
+		passedClass.prototype.getInstanceCmsOptions = passedClass.getInstanceCmsOptions;
 
 		// Method for returning the constructor's cmsOptions
 		// Has test: ✔
-		passedClass.prototype.getConstructorCmsOptions = function() {
+		passedClass.getConstructorCmsOptions = function() {
 			return passedClass.constructorDefaults().cmsOptions || {};
 		};
+		passedClass.prototype.getConstructorCmsOptions = passedClass.getConstructorCmsOptions;
 
 		// Method for getting both instance AND constructor cms options
 		// Has test: ✔
-		passedClass.prototype.getAllCmsOptions = function() {
+		passedClass.getAllCmsOptions = function() {
 
 			var cmsOptions = this.getConstructorCmsOptions();
 			var instanceTypeCmsOptions = this.getInstanceCmsOptions();
@@ -435,10 +432,11 @@ ReactiveConstructorCmsPlugin = new ReactiveConstructorPlugin({
 
 			if (instanceTypeCmsOptions.imgPreviewKey)
 				cmsOptions.imgPreviewKey  = instanceTypeCmsOptions.imgPreviewKey;
-			
+
 			return cmsOptions;
-			
+
 		};
+		passedClass.prototype.getAllCmsOptions = passedClass.getAllCmsOptions;
 
 		// Method to check if an instance can be saved
 		// Has test: ✔
@@ -459,26 +457,20 @@ ReactiveConstructorCmsPlugin = new ReactiveConstructorPlugin({
 
 			var instance = this;
 			var constructorName = instance.getConstructorNameOfKey( key );
+			var collection = ReactiveConstructorCmsPlugin.getCollectionFromConstructorName( constructorName );
 
-			// Get the object which holds all instances (in the items fields)
-			// If there is no object, or no items-field, there are no items and return false
-			var instanceHolder = _.findWhere( ReactiveConstructorCmsPlugin.getGlobalInstanceStore(), { constructorName: constructorName });
-			if (!instanceHolder || !instanceHolder.items)
+			// If there is no collection, just return an empty array.
+			if (!collection)
 				return [];
 
-			var items = instanceHolder.items;
-
-			// MAYBE: We want to use the mainId instead of the _id for _id?
-			// It SHOULD be safer?
-			// items = _.map(items, function(item){
-			// 	item._id = item.getReactiveValue('mainId');
-			// 	return item;
-			// });
+			var items = collection.find({
+				reactiveConstructorCmsStatus: 'edit'
+			}, {
+				transform: doc => new ReactiveConstructors[ constructorName ]( doc )
+			}).fetch();
 
 			// We do not want to return this object, so filter away items with this _id
-			items = _.reject(items, function(item){
-				return item._id === instance.getReactiveValue('_id');
-			});
+			items = _.reject( items, item => item.getReactiveValue('_id') === instance.getReactiveValue('_id') );
 
 			return instance.filterCreatableTypes( key, items, 'rcType' );
 
@@ -526,7 +518,7 @@ ReactiveConstructorCmsPlugin = new ReactiveConstructorPlugin({
 	    // If no instance is passed, just return all the type names
 	    if (instance)
 	    	return instance.filterCreatableTypes( key, typeNames, 'value' );
-	    
+
 	    return typeNames;
 
 		};
@@ -541,7 +533,7 @@ ReactiveConstructorCmsPlugin = new ReactiveConstructorPlugin({
 
 		if (!cmsOptionsInputs)
 			return instance;
-			
+
 		_.each( cmsOptionsInputs, function ( input, key ) {
 			if (input.initMethod)
 				return instance.setReactiveValue( key, input.initMethod( instance.getReactiveValue( key ) ) );
@@ -621,18 +613,18 @@ ReactiveConstructorCmsPlugin.checkReactiveValues = function( dataToCheck, curren
 				return arrayItem && arrayItem.type && arrayItem.type === 'reactive-constructor-cms-linked-item';
 			});
 		}
-		
+
 		// Is the item a linked instance?
 		if (item && item.type && item.type === 'reactive-constructor-cms-linked-item')
 			return false;
-		
+
 		// Else return the item
 		return item;
 
 	}).pick( _.identity ).value();
 
 
-	
+
 	return ordinaryCheckReactiveValues( dataToCheck, _.assign( currentTypeStructure, reactiveConstructorCmsExtraInstanceFields ) );
 
 };
@@ -666,7 +658,7 @@ ReactiveConstructorCmsPlugin.setValueToCorrectType = function( instance, value, 
 			var constructorName = instance.getCurrentTypeStructure()[key];
 			if ( arrayVal && ( arrayVal.constructor === Object ) && ReactiveConstructors[ constructorName[ 0 ].constructorName ] )
 				return new ReactiveConstructors[ constructorName[ 0 ].constructorName ]( arrayVal );
-			
+
 			return arrayVal;
 
 		});
@@ -692,7 +684,7 @@ ReactiveConstructorCmsPlugin.getSelectListOverview = function( listItems, constr
     // field, which is used to create a new instance. OR the selectedItem IS the new actual
     // object to be added/linked to the current instance.
     callback: function( selectedItem ) {
-        	
+
     	// Is it a string? Then just return it!
     	if ( constructorName === 'String' ){
     		setCallback( selectedItem.value, instance, key );
@@ -717,7 +709,7 @@ ReactiveConstructorCmsPlugin.getSelectListOverview = function( listItems, constr
 	      setCallback( newItem, instance, key );
 	      return overviewSelectData.removeTemplateCallback();
 	    }
-      
+
     },
     removeTemplateCallback: function() {
       if (renderedCMSSelectOverview){
@@ -734,57 +726,17 @@ ReactiveConstructorCmsPlugin.getSelectListOverview = function( listItems, constr
   // If there is only on selectable item, just create an instance from that!
   if ( listItems.length === 1 )
     return overviewSelectData.callback( listItems[0] );
-  
+
   // Render the view and store it in the var
   renderedCMSSelectOverview = Blaze.renderWithData( Template.editTemplate__selectOverview, overviewSelectData, document.body );
   return renderedCMSSelectOverview;
 
 };
 
-// Has test: ✔
-ReactiveConstructorCmsPlugin.getInstanceByTypeAndId = function( constructorName, _id ) {
-	
-	// check( constructorName, String );
-	// check( _id, String );
-
-	var items = _.findWhere(ReactiveConstructorCmsPlugin.getGlobalInstanceStore(), { constructorName: constructorName }).items;
-
-	return _.findWhere(items, { _id: _id });
-
-};
-
-// Has test: ✔
-ReactiveConstructorCmsPlugin.getGlobalInstanceStore = function() {
-	return tempCMSInstances.get();
-};
-
-// Has test: ✔
-ReactiveConstructorCmsPlugin.updateGlobalInstanceStore = function() {
-
-	// console.log( 'ReactiveConstructorCmsPlugin.updateGlobalInstanceStore()' );
-
-  // Setup the "global store" of cool reactive instances!
-  var globalData =_.chain(ReactiveConstructors)
-  .filter(function( constructor ){
-    return constructor.constructorDefaults().cmsOptions && constructor.constructorDefaults().cmsOptions.collection;
-  })
-  .map(function( constructor ){
-    return {
-      constructorName: constructor.constructorName,
-      items: _.map( constructor.constructorDefaults().cmsOptions.collection.find({ reactiveConstructorCmsStatus: 'edit' }).fetch(), function( instanceData ) {
-        var instance = new ReactiveConstructors[ constructor.constructorName ]( instanceData );
-        instance.setupCmsFields();
-        return instance;
-      })
-    };
-  })
-  .value();
-
-  tempCMSInstances.set( globalData );
-
-  return ReactiveConstructorCmsPlugin.getGlobalInstanceStore();
-
-};
+// TODO: Remove these two methods when it feels safe to do so!
+ReactiveConstructorCmsPlugin.getInstanceByTypeAndId = () => console.log('DEPRECATED!');
+ReactiveConstructorCmsPlugin.getGlobalInstanceStore = () => console.log('DEPRECATED!');
+ReactiveConstructorCmsPlugin.updateGlobalInstanceStore = () => console.log('DEPRECATED!');
 
 // How to write tests for this?
 // Very "side-effecty"
@@ -825,24 +777,36 @@ ReactiveConstructorCmsPlugin.editPageRemove = function( instance, callback ) {
 
 // How to write tests for this?
 // Very "side-effecty"
-ReactiveConstructorCmsPlugin.editPageGet = function( instance ) {
+ReactiveConstructorCmsPlugin.editPageGet = function( arguments ) {
 
 	if (!Meteor.userId())
 		throw new Meteor.Error('reactive-constructor-cms', 'You need to be logged in.' );
-
-	// check( instance, ReactiveConstructors[ instance.constructor.constructorName ] );
 
 	// Remove all currently visible messages
 	Msgs.removeAllMessages();
 
 	// Remove any currently visible edit templates
-	return ReactiveConstructorCmsPlugin.editPageRemove( instance, function( instance ) {
+	return ReactiveConstructorCmsPlugin.editPageRemove( arguments.instance, () => {
 
-		// Make sure the instance has all the required fields
-		instance.setupCmsFields();
+		if (!arguments.instance && (!arguments.constructorName || !arguments.id))
+			throw new Meteor.Error('reactive-constructor-cms', 'editPageGet() is called with wrong arguments: ', arguments );
+
+		var templateData = {};
+
+		if ( arguments.instance ) {
+			templateData.instance = arguments.instance;
+			// Make sure the instance has all the required fields
+			templateData.instance.setupCmsFields();
+		}
+		else {
+			templateData = {
+				constructorName: arguments.constructorName,
+				id: arguments.id
+			};
+		}
 
 		// Render the edit template
-		renderedCMSView = Blaze.renderWithData( Template.editTemplate__wrapper, instance, document.body );
+		renderedCMSView = Blaze.renderWithData( Template.editTemplate__wrapper, templateData, document.body );
 
 		// TODO: Make better, use proper classes etc.
 		Meteor.setTimeout(function () {
@@ -869,11 +833,3 @@ ReactiveConstructorCmsPlugin.setReactiveValue = function( instance, key, value, 
 	return ordinarySetReactiveValueFunction( instance, key, value );
 
 };
-
-
-
-
-
-
-
-

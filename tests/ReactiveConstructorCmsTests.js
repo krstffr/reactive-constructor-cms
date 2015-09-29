@@ -173,7 +173,7 @@ Meteor.startup(function() {
 					}
 				}
 			}]
-		}; 
+		};
 	});
 
 	Animal = new ReactiveConstructor('Animal', function() {
@@ -243,7 +243,7 @@ if (Meteor.isServer){
 
 	// Remove default rate limit!
 	Accounts.removeDefaultRateLimit();
-	
+
 	Meteor.methods({
 		'reactive-constructor-cms/cleanup-test-db': function() {
 			console.log('removing all persons AND animals from DB…');
@@ -316,7 +316,7 @@ if (Meteor.isServer){
 
 var accountCreated = false;
 var loginOrCreateAccount = function( cb ) {
-	
+
 	var username = 'test-user';
 	var password = 'test-pass';
 
@@ -359,9 +359,6 @@ Tinytest.add('ReactiveConstructorCmsPlugin - init: main object and all methods e
 	test.isTrue( Match.test( ReactiveConstructorCmsPlugin.checkReactiveValues, Function ) );
 	test.isTrue( Match.test( ReactiveConstructorCmsPlugin.setValueToCorrectType, Function ) );
 	test.isTrue( Match.test( ReactiveConstructorCmsPlugin.getSelectListOverview, Function ) );
-	test.isTrue( Match.test( ReactiveConstructorCmsPlugin.getInstanceByTypeAndId, Function ) );
-	test.isTrue( Match.test( ReactiveConstructorCmsPlugin.getGlobalInstanceStore, Function ) );
-	test.isTrue( Match.test( ReactiveConstructorCmsPlugin.updateGlobalInstanceStore, Function ) );
 	test.isTrue( Match.test( ReactiveConstructorCmsPlugin.editPageRemove, Function ) );
 	test.isTrue( Match.test( ReactiveConstructorCmsPlugin.editPageGet, Function ) );
 
@@ -539,7 +536,7 @@ Tinytest.add('ReactiveConstructorCmsPlugin instance methods - instance.deleteIns
 });
 
 Tinytest.add('ReactiveConstructorCmsPlugin instance methods - instance.arrayitemDuplicate()', function(test) {
-	
+
 	var person = new Person({ rcType: 'husband', buddies: [{}, { name: 'john' }, {}]});
 	var buddies = person.getReactiveValue('buddies');
 
@@ -564,7 +561,7 @@ Tinytest.add('ReactiveConstructorCmsPlugin instance methods - instance.arrayitem
 });
 
 Tinytest.add('ReactiveConstructorCmsPlugin instance methods - instance.arrayitemRemove()', function(test) {
-	
+
 	var person = new Person({ rcType: 'husband', buddies: [{}, { name: 'john' }, {}]});
 	var buddies = person.getReactiveValue('buddies');
 
@@ -588,7 +585,7 @@ Tinytest.add('ReactiveConstructorCmsPlugin instance methods - instance.arrayitem
 });
 
 Tinytest.add('ReactiveConstructorCmsPlugin instance methods - instance.getReactiveValuesAsArray()', function(test) {
-	
+
 	var person = new Person({
 		rcType: 'husband',
 		buddies: [{}, { name: 'john' }, {}],
@@ -605,7 +602,7 @@ Tinytest.add('ReactiveConstructorCmsPlugin instance methods - instance.getReacti
 });
 
 Tinytest.add('ReactiveConstructorCmsPlugin instance methods - instance.getInstanceCmsOptions()', function(test) {
-	
+
 	var person = new Person({
 		rcType: 'husband',
 		buddies: [{}, { name: 'john' }, {}],
@@ -626,7 +623,7 @@ Tinytest.add('ReactiveConstructorCmsPlugin instance methods - instance.getInstan
 });
 
 Tinytest.add('ReactiveConstructorCmsPlugin instance methods - instance.getConstructorCmsOptions()', function(test) {
-	
+
 	var person1 = new Person({ rcType: 'husband' });
 	var person2 = new Person({ rcType: 'worker' });
 
@@ -643,7 +640,7 @@ Tinytest.add('ReactiveConstructorCmsPlugin instance methods - instance.getConstr
 });
 
 Tinytest.add('ReactiveConstructorCmsPlugin instance methods - instance.getAllCmsOptions()', function(test) {
-	
+
 	var person1 = new Person({ rcType: 'husband' });
 	var person2 = new Person({ rcType: 'worker' });
 
@@ -668,7 +665,7 @@ Tinytest.add('ReactiveConstructorCmsPlugin instance methods - instance.getAllCms
 });
 
 Tinytest.add('ReactiveConstructorCmsPlugin instance methods - instance.getInputType()', function(test) {
-	
+
 	var person = new Person({ rcType: 'worker' });
 
 	test.equal( person.getInputType('title'), false );
@@ -693,7 +690,7 @@ Tinytest.add('ReactiveConstructorCmsPlugin instance methods - instance.getCmsOpt
 
 	// Also the filter property should be overwritable with the instance type being the overwriter
 	test.equal(      person.getCmsOption('filter').children, ['worker', 'child'] );
-	test.equal( thirdPerson.getCmsOption('filter').children, ['worker', 'child', 'husband'] );	
+	test.equal( thirdPerson.getCmsOption('filter').children, ['worker', 'child', 'husband'] );
 
 	// AND for exclude as well.
 	test.equal(      person.getCmsOption('exclude').pets, ['dog', 'cat'] );
@@ -702,7 +699,7 @@ Tinytest.add('ReactiveConstructorCmsPlugin instance methods - instance.getCmsOpt
 });
 
 Tinytest.add('ReactiveConstructorCmsPlugin instance methods - instance.getImagePreview()', function(test) {
-	
+
 	var person = new Person({ rcType: 'worker' });
 
 	test.equal( person.getImagePreview(), 'http://portra.wpshower.com/wp-content/uploads/2014/03/martin-schoeller-barack-obama-portrait-up-close-and-personal.jpg' );
@@ -717,7 +714,7 @@ Tinytest.add('ReactiveConstructorCmsPlugin instance methods - instance.canBeSave
 
 	var person = new Person();
 	var nonSaveableInstance = new NonSaveableConstructor();
-	
+
 	test.isTrue( person.canBeSaved() );
 	test.isFalse( nonSaveableInstance.canBeSaved() );
 
@@ -820,7 +817,7 @@ Tinytest.addAsync('ReactiveConstructorCmsPlugin async - not logged in method cal
 
 Tinytest.addAsync('ReactiveConstructorCmsPlugin async - not logged in method call: reactive-constructor-cms/delete', function(test, next) {
 
-	Meteor.logout(function() {	
+	Meteor.logout(function() {
 		Meteor.call('reactive-constructor-cms/delete', function( err, res ) {
 			test.isUndefined( res );
 			test.isTrue( Match.test( err.reason, String ) );
@@ -846,7 +843,7 @@ Tinytest.addAsync('ReactiveConstructorCmsPlugin async - check subscription witho
 });
 
 Tinytest.addAsync('ReactiveConstructorCmsPlugin async - check subscription with user', function(test, next) {
-	
+
 	loginOrCreateAccount(function() {
 		return startSubscription(function() {
 			next();
@@ -881,7 +878,7 @@ Tinytest.addAsync('ReactiveConstructorCmsPlugin async - instance.save(), logged 
 });
 
 Tinytest.addAsync('ReactiveConstructorCmsPlugin async - check subscription and publish filter', function(test, next) {
-	
+
 	loginOrCreateAccount(function() {
 		return startSubscription(function() {
 
@@ -925,9 +922,9 @@ Tinytest.addAsync('ReactiveConstructorCmsPlugin async - instance.save({ publish:
 	docToSave.save({ publish: true }, function( err, res ){
 
 		test.equal( res.backupsRemoved, 0 );
-		
+
 		test.isTrue( Match.test( res.backup, String ) );
-		
+
 		test.equal( res.published.numberAffected, 1 );
 
 		test.isTrue( Match.test( res.published, {
@@ -990,7 +987,7 @@ Tinytest.addAsync('ReactiveConstructorCmsPlugin async - instance.save(), remove 
 });
 
 Tinytest.addAsync('ReactiveConstructorCmsPlugin async - instance.arrayitemMove()', function(test, next) {
-	
+
 	var person = new Person({ rcType: 'husband', buddies: [{ name: 'mr. first' }, { name: 'john' }, {}]});
 	var buddies = person.getReactiveValue('buddies');
 
@@ -1010,7 +1007,7 @@ Tinytest.addAsync('ReactiveConstructorCmsPlugin async - instance.arrayitemMove()
 		test.equal( buddies[0].getReactiveValue('name'), 'mr. first');
 
 		Meteor.setTimeout(function() {
-			
+
 			person.arrayitemMove( 'buddies', 0, 1 );
 
 			buddies = person.getReactiveValue('buddies');
@@ -1033,7 +1030,7 @@ Tinytest.addAsync('ReactiveConstructorCmsPlugin async - instance.arrayitemMove()
 			test.notEqual( buddy.getReactiveValue('children')[1].getReactiveValue('name'), 'johns daughter');
 			test.equal( buddy.getReactiveValue('children')[1].getReactiveValue('name'), 'johs son');
 			test.equal( buddy.getReactiveValue('children').length, 2 );
-			
+
 			buddy.arrayitemMove('children', 0, 1);
 
 			Meteor.setTimeout(function() {
@@ -1046,7 +1043,7 @@ Tinytest.addAsync('ReactiveConstructorCmsPlugin async - instance.arrayitemMove()
 
 				}, 5);
 			}, 5);
-	}, 5);	
+	}, 5);
 
 });
 
@@ -1099,7 +1096,7 @@ Tinytest.addAsync('ReactiveConstructorCmsPlugin async - instance.getPublishedDoc
 });
 
 Tinytest.addAsync('ReactiveConstructorCmsPlugin async - instance.getPublishedDoc() and instance.unpublish()', function(test, next) {
-	
+
 	var docToSave = new Person();
 
 	loginOrCreateAccount(function() {
@@ -1232,28 +1229,13 @@ Tinytest.addAsync('ReactiveConstructorCmsPlugin async - instance.getLinkableInst
 				testPerson.getLinkableInstances();
 			});
 
-			ReactiveConstructorCmsPlugin.updateGlobalInstanceStore();
-
-			var getGlobalPersons = function() {
-				return _.findWhere(ReactiveConstructorCmsPlugin.getGlobalInstanceStore(), { constructorName: 'Person' }).items;
-			};
-
-			test.notEqual( getGlobalPersons().length, 0 );
-
 			Meteor.call('reactive-constructor-cms/cleanup-test-db', function( err ) {
+
 				if (err)
 					throw new Error('something went wrong?' + err );
 
-				// Update the "globale instance store"
-				ReactiveConstructorCmsPlugin.updateGlobalInstanceStore();
-				// Check that there are now 0 persons
-				test.equal( getGlobalPersons().length, 0 );
-
 				// Let's create a person
 				var testPerson = new Person({ rcType: 'husband' });
-
-				// There should be no "wives" available
-				test.equal( testPerson.getLinkableInstances( 'wife' ).length, 0 );
 
 				// Now: let's add one wife, one worker and one husband
 				var wife = new Person({ rcType: 'wife' });
@@ -1267,8 +1249,6 @@ Tinytest.addAsync('ReactiveConstructorCmsPlugin async - instance.getLinkableInst
 					wife.save({}, function() {
 						worker.save({}, function() {
 							husband.save({}, function() {
-								// Now there should be 2 persons
-								test.equal( getGlobalPersons().length, 3 );
 								// And there should be one wife available
 								test.equal( testPerson.getLinkableInstances( 'wife' ).length, 1 );
 								// And one buddy
@@ -1281,28 +1261,6 @@ Tinytest.addAsync('ReactiveConstructorCmsPlugin async - instance.getLinkableInst
 			});
 });
 });
-
-});
-
-Tinytest.addAsync('ReactiveConstructorCmsPlugin async - ReactiveConstructorCmsPlugin.getGlobalInstanceStore() / ReactiveConstructorCmsPlugin.updateGlobalInstanceStore()', function(test, next) {
-	var resultOfUpdate = ReactiveConstructorCmsPlugin.updateGlobalInstanceStore();
-	test.equal( resultOfUpdate, ReactiveConstructorCmsPlugin.getGlobalInstanceStore() );
-	next();
-});
-
-Tinytest.addAsync('ReactiveConstructorCmsPlugin async - ReactiveConstructorCmsPlugin.getInstanceByTypeAndId()', function(test, next) {
-
-	// Let's create a person to later look for
-	var person = new Person({ rcType: 'child' });
-
-	person.save({}, function( err, res ) {
-		console.log( res );
-		test.equal(
-			ReactiveConstructorCmsPlugin.getInstanceByTypeAndId( 'Person', res.edit )._id,
-			person.getReactiveValue('_id')
-			);
-		next();
-	});
 
 });
 
@@ -1439,7 +1397,3 @@ Tinytest.addAsync('ReactiveConstructorCmsPlugin server methods - reactive-constr
 	});
 
 });
-
-
-
-

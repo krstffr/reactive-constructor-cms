@@ -30,11 +30,14 @@ Package.onUse(function (api) {
 		], "client");
 
 	api.addFiles([
+		"reactive-constructor-cms-both.js",
+	], ["client", "server"]);
+
+	api.addFiles([
 		"reactive-constructor-cms-server.js"
 		], "server");
 
 	api.export([
-		"tempCMSInstances",
 		"ReactiveConstructorCmsPlugin"
 		], "client");
 
