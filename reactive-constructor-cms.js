@@ -776,6 +776,11 @@ ReactiveConstructorCmsPlugin.editPageRemove = function( instance, callback ) {
 // Very "side-effecty"
 ReactiveConstructorCmsPlugin.editPageGet = function( arguments ) {
 
+	// If the user has passed an instance directly to this
+	// method, set up the correct structure instead.
+	if ( arguments && arguments.getReactiveValue )
+		arguments = { instance: arguments };
+
 	if (!Meteor.userId())
 		throw new Meteor.Error('reactive-constructor-cms', 'You need to be logged in.' );
 
