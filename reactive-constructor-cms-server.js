@@ -265,7 +265,8 @@ Meteor.publish('reactive-constructor-cms__editable-docs', function() {
 				reactiveConstructorCmsName:     1,
 				reactiveConstructorIsPublished: 1,
 				mainId:                         1,
-				updateTime:                     1
+				updateTime:                     1,
+				rcType:                         1
 			}
 		});
 	}).value();
