@@ -339,6 +339,8 @@ Template.editTemplate__wrapper.events({
 Template.editTemplate__wrapper.onRendered( () => $('.reactive-constructor-cms__main-wrapper').draggable() );
 Template.editTemplate__wrapper.onCreated(function () {
   this.autorun( () => {
+    if (!this.data.constructorName || !this.data.id)
+      return false;
     return this.subscribe('reactive-constructor-cms__editable-doc-from-id-and-constructorname', this.data.constructorName, this.data.id );
   });
 });
