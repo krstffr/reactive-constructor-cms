@@ -249,7 +249,10 @@ ReactiveConstructorCmsPlugin = new ReactiveConstructorPlugin({
 				// If the edit page open? Reload it with the new doc.
 				if (ReactiveConstructorCmsPlugin.editPageIsOpen()) {
 					// If this item is saved for the first time, re-open this doc on save
-					return ReactiveConstructorCmsPlugin.editPageGet({ id: res.edit.id, constructorName: instance.constructor.constructorName });
+					return ReactiveConstructorCmsPlugin.editPageGet({
+						id: res.edit.id || res.edit,
+						constructorName: instance.constructor.constructorName
+					});
 				}
 
 				return true;
@@ -742,26 +745,20 @@ ReactiveConstructorCmsPlugin.updateGlobalInstanceStore = () => console.log('DEPR
 // Very "side-effecty"
 ReactiveConstructorCmsPlugin.editPageRemove = function( instance, callback ) {
 
-	// if (callback)
-		// check( callback, Function );
-
 	// Is there a current view? Then hide it!
 	if ( renderedCMSView ) {
 
-		// Hide the container by adding the hidden class
-		// TODO: Use a more proper class
-		$('.reactive-constructor-cms__main-wrapper').addClass('reactive-constructor-cms__main-wrapper--hidden');
+		Blaze.remove( renderedCMSView );
 
-		// Return a time out which actually remove the view
-		return Meteor.setTimeout(function () {
-			Blaze.remove( renderedCMSView );
-			// Now we don't have a view, set the var to false.
-			renderedCMSView = false;
-			// Is a callback provided? Execute it!
-			if (callback)
-				return callback( instance );
+		// Now we don't have a view, set the var to false.
+		renderedCMSView = false;
 
-		}, 200 );
+		// Is a callback provided? Execute it!
+		if (callback)
+			return callback( instance );
+
+		return true;
+
 	}
 
 	// Is a callback provided? Execute it!

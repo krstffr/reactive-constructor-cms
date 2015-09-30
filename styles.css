@@ -44,7 +44,7 @@
 	opacity: 1;
 	transform: translate(0,0);
 
-	transition: 0.3s transform ease, 0.1s opacity ease;
+	transition: 0.1s transform ease, 0.05s opacity ease;
 
 	box-shadow: 0 3px 30px rgba( 0, 0, 0, 0.2 );
 
@@ -53,7 +53,7 @@
 .reactive-constructor-cms__main-wrapper.reactive-constructor-cms__main-wrapper--hidden {
 
 	opacity: 0;
-	transform: translate(0,20px);
+	transform: translate(0,10px);
 
 }
 
@@ -110,9 +110,9 @@
 	padding: 0.3em;
 }
 
-.reactive-constructor-cms__main-wrapper > 
-.reactive-constructor-cms__main-wrapper__editable-fields > 
-.reactive-constructor-cms__instance-wrapper > 
+.reactive-constructor-cms__main-wrapper >
+.reactive-constructor-cms__main-wrapper__editable-fields >
+.reactive-constructor-cms__instance-wrapper >
 .reactive-constructor-cms__instance-wrapper__header .reactive-constructor-cms__instance-wrapper__instance-buttons {
 	display: none !important;
 }
@@ -430,8 +430,8 @@
 .reactive-constructor-cms__msgs .msgs__message--rc-cms__message--error{
 	color: #D88EB6;
 }
-				
-				
+
+
 
 /* Some edit overlay styles */
 .reactive-constructor-cms__live-edit-overlay{

@@ -164,7 +164,7 @@
 
 	<label class="reactive-constructor-cms-ACTION--open-child-instance" title="{{ getType }}">
 		<span>
-			Links to: {{ logThis }}
+			Links to:
 		</span>
 		<input type="text" value="{{ getType }}" disabled>
 	</label>
@@ -386,9 +386,9 @@
 
 						<li>
 							<a class="reactive-constructor-cms-ACTION--open-instance">
-								{{ ../constructorName }} {{ getType }}:
-								<strong>{{ getReactiveValue 'reactiveConstructorCmsName' }}</strong>
-								{{#if getReactiveValue 'reactiveConstructorIsPublished' }}
+								{{ ../constructorName }} {{ rcType }}:
+								<strong>{{ reactiveConstructorCmsName }}</strong>
+								{{#if reactiveConstructorIsPublished }}
 									(published version)
 								{{/if}}
 							</a>

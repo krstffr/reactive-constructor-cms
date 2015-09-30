@@ -151,6 +151,8 @@ var getType = function() {
     // Did we find a saved instance? And does it have a cms-name? If yes: return it!
     if (savedInstance)
       return savedInstance.getReactiveValue('reactiveConstructorCmsName');
+    // If we did not find it, it is probably removed?
+    return 'Removed?';
   }
 
   var type = '';
@@ -280,7 +282,7 @@ Template.editTemplate__wrapper.events({
 
     // Open the parent instance!
     return ReactiveConstructorCmsPlugin.editPageGet({
-      id: this.parentInstance.id,
+      id: this.parentInstance._id,
       constructorName: this.parentInstance.constructor.constructorName
     });
 
@@ -582,16 +584,20 @@ Template.reactiveConstructorCms__loadSavedDoc.helpers({
       reactiveConstructorCmsStatus: 'edit'
     }, {
       sort: {
-        reactiveConstructorCmsName: 1
+        reactiveConstructorCmsName: 1,
+        updateTime:                -1
       },
-      transform: doc => new ReactiveConstructors[ this.constructorName ]( doc )
+      transform: doc => {
+        doc.constructorName = this.constructorName;
+        return doc;
+      }
     });
   }
 });
 
 Template.reactiveConstructorCms__loadSavedDoc.events({
   'click .reactive-constructor-cms-ACTION--open-instance': function() {
-    return ReactiveConstructorCmsPlugin.editPageGet({ id: this._id, constructorName: this.constructor.constructorName });
+    return ReactiveConstructorCmsPlugin.editPageGet({ id: this._id, constructorName: this.constructorName });
   },
   'click .reactive-constructor-cms-ACTION--create-new-instance': function() {
 
