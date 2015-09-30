@@ -38,11 +38,10 @@ Template.editTemplate__selectOverview.helpers({
     return this.listView.get() === viewName;
   },
   buttonValue: function() {
-    if (this.reactiveConstructorCmsName){
-      return 'Link to: <strong>' + this.reactiveConstructorCmsName + '</strong> ('+ this.getType() +')';
-    }
-    if (this.value)
+    if ( this.value )
       return 'Create new: <strong>' + this.value + '</strong>';
+    if ( this.getReactiveValue('reactiveConstructorCmsName') )
+      return 'Link to: <strong>' + this.getReactiveValue('reactiveConstructorCmsName') + '</strong> ('+ this.getType() +')';
     throw new Error('reactive-constructor-cms', 'No button text?');
   }
 });
@@ -55,7 +54,7 @@ Handlebars.registerHelper('getTemplateFromType', function () {
   // Is it a string? Return the basic template
   if (this.type === 'String' || this.type === 'Number' || this.type === 'Date'){
     var instance = Template.parentData(1).value || Template.parentData(1);
-    
+
     // If the instance (probably a linked instance) do not have a getInputType
     // method, just return the String method.
     if (!instance.getInputType)
@@ -143,13 +142,17 @@ var getType = function() {
   // Then get the name of the linnked instance (as well as the type!)
   if (instance.type === 'reactive-constructor-cms-linked-item'){
     var constructorName = instance.constructorName || this.type;
-    var savedInstances = _.findWhere(ReactiveConstructorCmsPlugin.getGlobalInstanceStore(), {
-      constructorName: constructorName
-    }).items;
-    var savedInstance = _.findWhere(savedInstances, { _id: instance._id });
+    var collection = ReactiveConstructors[ constructorName ].getCollection();
+    if (!collection)
+      throw new Error('reactive-constructor-cms', 'Could not find collection for linked instance?');
+    var savedInstance = collection.findOne( instance._id, {
+      transform: doc => new ReactiveConstructors[ constructorName ]( doc )
+    });
     // Did we find a saved instance? And does it have a cms-name? If yes: return it!
-    if (savedInstance && savedInstance.reactiveConstructorCmsName)
-      return savedInstance.reactiveConstructorCmsName;
+    if (savedInstance)
+      return savedInstance.getReactiveValue('reactiveConstructorCmsName');
+    // If we did not find it, it is probably removed?
+    return 'Removed?';
   }
 
   var type = '';
@@ -197,13 +200,6 @@ Template.editTemplate.helpers({
   isSingleInstance: function() {
     return this.key && this.value && this.type;
   },
-  // TODO: Is this OK to remove?
-  // data: function () {
-
-  //   // TODO: This should be refactored away!
-  //   return this;
-
-  // },
   getReactiveValuesAsArray: function() {
     var instance = this.value || this;
     if ( instance.getReactiveValuesAsArray && ( instance.getReactiveValuesAsArray.constructor === Function ))
@@ -256,9 +252,19 @@ var toggleInstanceHeader = _.debounce( function ( menuEl ) {
   .removeClass('reactive-constructor-cms__instance-wrapper__header--visible');
 }, 80 );
 
+Template.editTemplate__wrapper.helpers({
+  instance() {
+    return this.instance || ReactiveConstructorCmsPlugin
+    .getCollectionFromConstructorName( this.constructorName )
+    .findOne( this.id, {
+      transform: doc => new ReactiveConstructors[ this.constructorName ]( doc )
+    });
+  }
+});
+
 Template.editTemplate__wrapper.events({
   'click .reactive-constructor-cms-ACTION--goto-parent-instance': function() {
-    
+
     // Make sure we have a parentInstance (else we would never get to this place!)
     if (!this.parentInstance)
       return false;
@@ -268,21 +274,24 @@ Template.editTemplate__wrapper.events({
       throw new Error('reactive-constructor-cms', 'No getReactiveValue method on parent?');
 
     // Open the parent instance!
-    return ReactiveConstructorCmsPlugin.editPageGet( this.parentInstance );
+    return ReactiveConstructorCmsPlugin.editPageGet({
+      id: this.parentInstance._id,
+      constructorName: this.parentInstance.constructor.constructorName
+    });
 
   },
   'click .reactive-constructor-cms-ACTION--load-next-backup-of-instance': function() {
     var instance = this;
     return instance.getBackupDoc(0, function(err, res) {
       if (res)
-        return ReactiveConstructorCmsPlugin.editPageGet( new instance.constructor( res ) );
+        return ReactiveConstructorCmsPlugin.editPageGet({ instance: new instance.constructor( res ) });
     });
   },
   'click .reactive-constructor-cms-ACTION--close-main-wrapper': function () {
-    return ReactiveConstructorCmsPlugin.editPageRemove( this );
+    return ReactiveConstructorCmsPlugin.editPageRemove();
   },
   'click .reactive-constructor-cms-ACTION--unpublish-instance': function() {
-    
+
     if (!confirm('Are you sure you want to unpublish this ' + this.getType() + '?'))
       return false;
 
@@ -290,7 +299,7 @@ Template.editTemplate__wrapper.events({
 
   },
   'click .reactive-constructor-cms-ACTION--remove-instance': function() {
-    
+
     if (!confirm('Are you sure you want to remove this ' + this.getType() + '?'))
       return false;
 
@@ -309,10 +318,8 @@ Template.editTemplate__wrapper.events({
   'click .reactive-constructor-cms-ACTION--save-duplicate-of-instance': function() {
     var instance = this;
     return instance.save({ duplicate: true }, function( err, res ) {
-      if ( res.edit ){
-        var createdInstance = ReactiveConstructorCmsPlugin.getInstanceByTypeAndId( instance.constructor.constructorName, res.edit.insertedId );
-        return ReactiveConstructorCmsPlugin.editPageGet( createdInstance );
-      }
+      if ( res.edit )
+        return ReactiveConstructorCmsPlugin.editPageGet({ id: res.edit, constructorName: instance.constructor.constructorName });
     });
   },
   'mouseenter .reactive-constructor-cms__instance-wrapper': function( e ) {
@@ -329,8 +336,13 @@ Template.editTemplate__wrapper.events({
   }
 });
 
-Template.editTemplate__wrapper.onRendered(function() {
-  $('.reactive-constructor-cms__main-wrapper').draggable();
+Template.editTemplate__wrapper.onRendered( () => $('.reactive-constructor-cms__main-wrapper').draggable() );
+Template.editTemplate__wrapper.onCreated(function () {
+  this.autorun( () => {
+    if (!this.data.constructorName || !this.data.id)
+      return false;
+    return this.subscribe('reactive-constructor-cms__editable-doc-from-id-and-constructorname', this.data.constructorName, this.data.id );
+  });
 });
 
 Template.editTemplate.events({
@@ -359,7 +371,7 @@ Template.editTemplate.events({
 
     if (!confirm('Are you sure you want to switch this item for a new one?'))
       return false;
-    
+
     e.stopImmediatePropagation();
 
     var constructorName;
@@ -392,14 +404,14 @@ Template.editTemplate.events({
 
       // This is the current list item
       var listItem = $(e.currentTarget).closest('.reactive-constructor-cms__instance-wrapper');
-      
+
       // This is the current list item's position in the list.
       // This is used later when setting the new position of the substituted instance
       var listItemPosition = listItem.index();
-      
+
       // This is the key for the list. Used for updating the list (selecting the list)
       contextKey = Blaze.getData( listItem.closest('.reactive-constructor-cms__list-of-instances__instances')[0] ).key;
-      
+
       // This is the parent, which is what get's updated
       parentInstance = Blaze.getData( listItem.closest('.reactive-constructor-cms__list-of-instances').closest('.reactive-constructor-cms__instance-wrapper')[0] );
 
@@ -415,7 +427,7 @@ Template.editTemplate.events({
       listItems = listItems.concat( parentInstance.getLinkableInstances( contextKey ) );
 
       return ReactiveConstructorCmsPlugin.getSelectListOverview( listItems, constructorName, contextKey, function( newItem, instance, key ) {
-        
+
         // First remove the current item
         instance.arrayitemRemove( key, listItemPosition );
 
@@ -438,10 +450,9 @@ Template.editTemplate.events({
 
     // This is not a "linked" object, but a directly nested one
     if ( instance.getReactiveValue && ( instance.getReactiveValue.constructor === Function ) )
-      return ReactiveConstructorCmsPlugin.editPageGet( instance );
-    
-    instance = ReactiveConstructorCmsPlugin.getInstanceByTypeAndId( instance.constructorName, instance._id );
-    return ReactiveConstructorCmsPlugin.editPageGet( instance );
+      return ReactiveConstructorCmsPlugin.editPageGet({ instance: instance });
+
+    return ReactiveConstructorCmsPlugin.editPageGet({ constructorName: instance.constructorName, id: instance._id });
 
   },
   'click .reactive-constructor-cms-ACTION--duplicate-instance-in-list': function ( e ) {
@@ -536,41 +547,59 @@ Template.editTemplate.events({
   'change .reactive-constructor-cms-ACTION--select-input': function ( e ) {
 
     e.stopImmediatePropagation();
-    
+
     var value = $(e.currentTarget).val();
     var instance = Template.currentData().value || Template.currentData();
 
     if (this.type === 'Boolean')
       value = value === 'true';
-    
+
     instance.setReactiveValue( this.key, value );
 
   }
 });
 
 Template.reactiveConstructorCms__loadSavedDoc.onCreated(function() {
-  this.subscribe('reactive-constructor-cms__editable-docs', ReactiveConstructorCmsPlugin.updateGlobalInstanceStore );
+  this.autorun( () => this.subscribe('reactive-constructor-cms__editable-docs') );
 });
 
 Template.reactiveConstructorCms__loadSavedDoc.helpers({
-  reactiveConstructorCms__constructors: function() {
-    return _.sortBy( ReactiveConstructorCmsPlugin.getGlobalInstanceStore(), 'constructorName' );
+  // Method for returning all saveable constructors
+  saveableConstructors() {
+    return _.chain( ReactiveConstructors )
+    .filter( constructor => constructor.getCollection() !== false )
+    .map( constructor => {
+      return { constructorName: constructor.constructorName };
+    }).value().sort();
   },
-  items: function() {
-    return _.sortByAll( this.items, 'rcType', 'reactiveConstructorCmsName');
+  // Method for returning all editable items in a constructor
+  items() {
+    return ReactiveConstructorCmsPlugin.getCollectionFromConstructorName( this.constructorName )
+    .find({
+      reactiveConstructorCmsStatus: 'edit'
+    }, {
+      sort: {
+        reactiveConstructorCmsName: 1,
+        updateTime:                -1
+      },
+      transform: doc => {
+        doc.constructorName = this.constructorName;
+        return doc;
+      }
+    });
   }
 });
 
 Template.reactiveConstructorCms__loadSavedDoc.events({
   'click .reactive-constructor-cms-ACTION--open-instance': function() {
-    return ReactiveConstructorCmsPlugin.editPageGet( this );
+    return ReactiveConstructorCmsPlugin.editPageGet({ id: this._id, constructorName: this.constructorName });
   },
   'click .reactive-constructor-cms-ACTION--create-new-instance': function() {
 
     var listItems = ReactiveConstructors[ this.constructorName ].getCreatableTypes();
 
     return ReactiveConstructorCmsPlugin.getSelectListOverview( listItems, this.constructorName, false, function( newItem ) {
-      return ReactiveConstructorCmsPlugin.editPageGet( newItem );
+      return ReactiveConstructorCmsPlugin.editPageGet({ instance: newItem });
     });
 
   }

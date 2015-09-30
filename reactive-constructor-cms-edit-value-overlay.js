@@ -10,7 +10,7 @@ Template.editTemplate__elementTextareaOverlay.onRendered(function(){
 
   // Make sure there is one of each, else throw error
   if ( originalElement.length !== 1 || editElement.length !== 1)
-    throw new Meteor.Error('reactive-constructor-cms', 'DOM error'); 
+    throw new Meteor.Error('reactive-constructor-cms', 'DOM error');
 
   // Set the size of the edit element to match the original element.
   return editElement.css({
@@ -65,11 +65,11 @@ Template.getReactiveValueEditable.events({
 
     // Make sure the right types are set
     if (!this.instance.rcType || !this.key)
-      throw new Meteor.Error('reactive-constructor-cms', '!this.instance.rcType || !this.key'); 
+      throw new Meteor.Error('reactive-constructor-cms', '!this.instance.rcType || !this.key');
 
     if (this.toMarkdown)
-      if (this.toMarkdown.toMarkdown !== Boolean)
-        throw new Meteor.Error('reactive-constructor-cms', 'this.toMarkdown.toMarkdown !== Boolean'); 
+      if (this.toMarkdown.constructor !== Boolean)
+        throw new Meteor.Error('reactive-constructor-cms', 'this.toMarkdown.toMarkdown !== Boolean');
 
     // Remove the current template
     removereactiveValueEditTemplate();

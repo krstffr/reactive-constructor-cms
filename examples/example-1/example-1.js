@@ -162,7 +162,7 @@ Person = new ReactiveConstructor('Person', function () {
         }
       }
     }]
-  }; 
+  };
 });
 
 Pet = new ReactiveConstructor('Pet', function() {
@@ -318,30 +318,6 @@ ComplexTestConstructor = new ReactiveConstructor('ComplexTestConstructor', funct
 
 if (Meteor.isServer){
 
-  var getCollectionFromConstructorName = function( constructorName ) {
-  
-    check( constructorName, String );
-    check( ReactiveConstructors[ constructorName ], Function );
-
-    if (!ReactiveConstructors[ constructorName ].constructorDefaults)
-      return false;
-
-    // Get the defaults defined by the user
-    var defaults = ReactiveConstructors[ constructorName ].constructorDefaults();
-
-    // Get the collection to store the doc(s) in
-    if (!defaults.cmsOptions || !defaults.cmsOptions.collection)
-      return false;
-
-    var collection = defaults.cmsOptions.collection;
-
-    // Make sure we have a collection
-    check( collection, Meteor.Collection );
-
-    return collection;
-
-  };
-
   Invoices._ensureIndex({ reactiveConstructorCmsStatus: 1 });
   Clients._ensureIndex({ reactiveConstructorCmsStatus: 1 });
   Persons._ensureIndex({ reactiveConstructorCmsStatus: 1 });
@@ -379,10 +355,9 @@ Template.invoiceTestTemplate.helpers({
     return person;
   },
   invoices: function () {
-    var constructorType = _.findWhere( tempCMSInstances.get(), { constructorName: 'Invoice' });
-    if (!constructorType)
-      return false;
-    return constructorType.items;
+    return Invoices.find({}, {
+      transform: function( doc ) { return new Invoice( doc ); }
+    });
   }
 });
 
@@ -391,7 +366,7 @@ Template.invoiceTestTemplate.events({
 
     e.stopImmediatePropagation();
 
-    ReactiveConstructorCmsPlugin.editPageGet( this );
+    ReactiveConstructorCmsPlugin.editPageGet({ instance: this });
 
   }
 });

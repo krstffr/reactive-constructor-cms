@@ -3,9 +3,9 @@
 	<div class="reactive-constructor-cms__select-overview__fader"></div>
 
 	<div class="reactive-constructor-cms__select-overview reactive-constructor-cms__select-overview--hidden">
-	
+
 	<h2>
-		
+
 		{{ headline }}
 
 		<div class="reactive-constructor-cms__select-overview__header-buttons">
@@ -13,7 +13,7 @@
 			<a class="reactive-constructor-cms__select-overview__toggle-view">
 				Toggle view
 			</a>
-			
+
 			<a class="reactive-constructor-cms__select-overview__close">
 				Close
 			</a>
@@ -23,7 +23,7 @@
 	</h2>
 
 	{{#if listViewIs 'list' }}
-	
+
 		<ul>
 			{{#each selectableItems }}
 
@@ -79,7 +79,7 @@
 </template>
 
 <template name="editTemplate__String">
-	
+
 	<label title="{{ key }}" class="{{#if fieldCmsOptions.selectOverview }}reactive-constructor-cms__label--no-hover{{/if}}">
 		{{> editTemplate__labelString }}
 		<input type="text" value="{{ value }}" disabled="{{ fieldCmsOptions.disabled }}" />
@@ -91,16 +91,16 @@
 			</div>
 		{{/if}}
 	</label>
-	
+
 </template>
 
 <template name="editTemplate__Textarea">
-	
+
 	<label title="{{ key }}">
 		{{> editTemplate__labelString }}
 		<textarea>{{ value }}</textarea>
 	</label>
-	
+
 </template>
 
 <template name="editTemplate__Select">
@@ -117,7 +117,7 @@
 			</select>
 		</div>
 	</label>
-	
+
 </template>
 
 <template name="editTemplate__Boolean">
@@ -172,7 +172,7 @@
 </template>
 
 <template name="editTemplate">
-	
+
 	{{#if isSingleInstance }}
 
 		{{#if isNestedInstance }}
@@ -216,7 +216,7 @@
 						<span>
 							<span class="reactive-constructor-cms__instance-wrapper__header__text--light">
 								{{ constructorName }}
-							</span> 
+							</span>
 							{{ getType }}
 						</span>
 					{{/if}}
@@ -224,7 +224,7 @@
 			{{/if}}
 
 			<div class="reactive-constructor-cms__instance-wrapper__instance-buttons">
-			
+
 				<a class="reactive-constructor-cms-ACTION--open-child-instance">
 					Open
 				</a>
@@ -289,77 +289,81 @@
 		style="background-image: url('{{ value }}');"
 		>
 		</div>
-	
+
 </template>
 
 <template name="editTemplate__wrapper">
 
-	<div class="reactive-constructor-cms__main-wrapper reactive-constructor-cms__main-wrapper--hidden">
+	{{#with instance }}
 
-		<div class="reactive-constructor-cms__main-wrapper__editable-fields">
+		<div class="reactive-constructor-cms__main-wrapper reactive-constructor-cms__main-wrapper--hidden">
 
-			{{> editTemplate }}
+			<div class="reactive-constructor-cms__main-wrapper__editable-fields">
 
-		</div>
+				{{> editTemplate }}
 
-		<div class="reactive-constructor-cms__main-wrapper__buttons">
-
-			<div class="reactive-constructor-cms__msgs">
-				{{> msgs }}
 			</div>
 
-			{{#if parentInstance }}
+			<div class="reactive-constructor-cms__main-wrapper__buttons">
 
-				<button class="reactive-constructor-cms-ACTION--goto-parent-instance">
-					Back to <strong>{{ parentInstance.rcType }}</strong>
-				</button>
+				<div class="reactive-constructor-cms__msgs">
+					{{> msgs }}
+				</div>
 
-			{{/if}}
+				{{#if parentInstance }}
 
-			{{#if canBeSaved }}
-
-				{{#if isSaved }}
-
-					<button class="reactive-constructor-cms-ACTION--save-and-publish-instance">
-						Save & Publish
-					</button>
-					<button class="reactive-constructor-cms-ACTION--save-instance">
-						Save
+					<button class="reactive-constructor-cms-ACTION--goto-parent-instance">
+						Back to <strong>{{ parentInstance.rcType }}</strong>
 					</button>
 
-					<button class="reactive-constructor-cms-ACTION--save-duplicate-of-instance">
-						Duplicate
-					</button>
-					<button class="reactive-constructor-cms-ACTION--remove-instance">
-						Remove
-					</button>
-					{{#if getReactiveValue 'reactiveConstructorIsPublished' }}
-						<button class="reactive-constructor-cms-ACTION--unpublish-instance">
-							Unpublish
-						</button>
-					{{/if}}
-					<button class="reactive-constructor-cms-ACTION--load-next-backup-of-instance">
-						Back one version
-					</button>
-				{{else}}
-					<div class="reactive-constructor-cms__main-wrapper__buttons__new-item">
-						<button class="reactive-constructor-cms-ACTION--save-and-publish-instance">
-							Save & Publish <strong>NEW</strong>
-						</button>
-						<button class="reactive-constructor-cms-ACTION--save-instance">
-							Save <strong>NEW</strong>
-						</button>
-					</div>
 				{{/if}}
 
-			{{/if}}
-			<button class="reactive-constructor-cms-ACTION--close-main-wrapper">
-				Close
-			</button>
+				{{#if canBeSaved }}
+
+					{{#if isSaved }}
+
+						<button class="reactive-constructor-cms-ACTION--save-and-publish-instance">
+							Save &amp; Publish
+						</button>
+						<button class="reactive-constructor-cms-ACTION--save-instance">
+							Save
+						</button>
+
+						<button class="reactive-constructor-cms-ACTION--save-duplicate-of-instance">
+							Duplicate
+						</button>
+						<button class="reactive-constructor-cms-ACTION--remove-instance">
+							Remove
+						</button>
+						{{#if getReactiveValue 'reactiveConstructorIsPublished' }}
+							<button class="reactive-constructor-cms-ACTION--unpublish-instance">
+								Unpublish
+							</button>
+						{{/if}}
+						<button class="reactive-constructor-cms-ACTION--load-next-backup-of-instance">
+							Back one version
+						</button>
+					{{else}}
+						<div class="reactive-constructor-cms__main-wrapper__buttons__new-item">
+							<button class="reactive-constructor-cms-ACTION--save-and-publish-instance">
+								Save &amp; Publish <strong>NEW</strong>
+							</button>
+							<button class="reactive-constructor-cms-ACTION--save-instance">
+								Save <strong>NEW</strong>
+							</button>
+						</div>
+					{{/if}}
+
+				{{/if}}
+				<button class="reactive-constructor-cms-ACTION--close-main-wrapper">
+					Close
+				</button>
+
+			</div>
 
 		</div>
 
-	</div>
+	{{/with}}
 
 </template>
 
@@ -370,21 +374,21 @@
 	{{#if currentUser }}
 
 		{{#if Template.subscriptionsReady }}
-						
-			{{#each reactiveConstructorCms__constructors }}
+
+			{{#each saveableConstructors }}
 
 				<h3>{{ constructorName }}</h3>
 
 				<ul>
-				
+
 					{{! These items gets sorted in a helper function}}
 					{{#each items }}
 
 						<li>
 							<a class="reactive-constructor-cms-ACTION--open-instance">
-								{{ ../constructorName }} {{ getType }}: 
+								{{ ../constructorName }} {{ rcType }}:
 								<strong>{{ reactiveConstructorCmsName }}</strong>
-								{{#if getReactiveValue 'reactiveConstructorIsPublished' }}
+								{{#if reactiveConstructorIsPublished }}
 									(published version)
 								{{/if}}
 							</a>
@@ -398,7 +402,7 @@
 					</li>
 
 				</ul>
-			
+
 			{{/each}}
 
 	  {{else}}
@@ -410,7 +414,7 @@
   	<p>You need to login.</p>
 
   {{/if}}
-	
+
 </template>
 
 <template name="editTemplate__elementTextareaOverlay">
@@ -423,7 +427,7 @@
     <button class="reactive-constructor-cms__live-edit-overlay__button reactive-constructor-cms__live-edit-overlay__button--cancel">Cancel</button>
 
   </div>
-	
+
 </template>
 
 <template name="getReactiveValueEditable">
@@ -435,5 +439,5 @@
       {{ instance.getReactiveValue key }}
     {{/if}}
   </div>
-	
+
 </template>

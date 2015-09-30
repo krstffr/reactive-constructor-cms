@@ -1,31 +1,5 @@
 reactiveConstructorCmsBackupsToKeep = 15;
 
-var getCollectionFromConstructorName = function( constructorName ) {
-	
-	// check( constructorName, String );
-	// check( ReactiveConstructors[ constructorName ], Function );
-	if (!ReactiveConstructors[ constructorName ])
-		throw new Meteor.Error('reactive-constructor-cms', '!ReactiveConstructors[ '+constructorName+' ]' );
-
-	if (!ReactiveConstructors[ constructorName ].constructorDefaults)
-		return false;
-
-	// Get the defaults defined by the user
-	var defaults = ReactiveConstructors[ constructorName ].constructorDefaults();
-
-	// Get the collection to store the doc(s) in
-	if (!defaults.cmsOptions || !defaults.cmsOptions.collection)
-		return false;
-
-	var collection = defaults.cmsOptions.collection;
-
-	// Make sure we have a collection
-	check( collection, Meteor.Collection );
-
-	return collection;
-
-};
-
 Meteor.methods({
 	// TODO: This needs to fetch ALL linked docs from a collection at the same time (not one doc at a time!) instead.
 	// Method for getting a published doc AND all the docs which are linked to that object.
@@ -34,7 +8,7 @@ Meteor.methods({
 		// Make sure user has passed the correct input types
 		check( mainId, String );
 		check( constructorName, String );
-		
+
 		if (!publishedDocs)
 			publishedDocs = {};
 		check( publishedDocs, Object );
@@ -103,7 +77,7 @@ Meteor.methods({
 		check( updateTime, Date );
 		check( version, Number );
 
-		var collection = getCollectionFromConstructorName( constructorName );
+		var collection = ReactiveConstructorCmsPlugin.getCollectionFromConstructorName( constructorName );
 
 		// Return the "version" latest version of the backups which are older
 		// than the passed updateTime
@@ -124,7 +98,7 @@ Meteor.methods({
 		check( mainId, String );
 		check( constructorName, String );
 
-		var collection = getCollectionFromConstructorName( constructorName );
+		var collection = ReactiveConstructorCmsPlugin.getCollectionFromConstructorName( constructorName );
 
 		return collection.findOne({ mainId: mainId, reactiveConstructorCmsStatus: 'published' });
 
@@ -137,7 +111,7 @@ Meteor.methods({
 		check( mainId, String );
 		check( constructorName, String );
 
-		var collection = getCollectionFromConstructorName( constructorName );
+		var collection = ReactiveConstructorCmsPlugin.getCollectionFromConstructorName( constructorName );
 
 		return {
 			removePublished: collection.remove({
@@ -161,9 +135,9 @@ Meteor.methods({
 			throw new Meteor.Error('reactive-constructor-cms', 'You need to be logged in.' );
 
 		check( constructorName, String );
-			
+
 		// Get the collection to store the doc(s) in
-		var collection = getCollectionFromConstructorName( constructorName );
+		var collection = ReactiveConstructorCmsPlugin.getCollectionFromConstructorName( constructorName );
 
 		saveOptions = saveOptions || {};
 
@@ -226,6 +200,8 @@ Meteor.methods({
 		else
 			updateResult.edit = collection.upsert( item._id, _.omit( item, '_id'));
 
+		updateResult.edit.id = item._id;
+
 		return updateResult;
 
 	},
@@ -236,7 +212,7 @@ Meteor.methods({
 			throw new Meteor.Error('reactive-constructor-cms', 'You need to be logged in.' );
 
 		// Get the collection
-		var collection = getCollectionFromConstructorName( constructorName );
+		var collection = ReactiveConstructorCmsPlugin.getCollectionFromConstructorName( constructorName );
 		// Get the numToKeep latest backup (-1 since we're only removing docs AFTER this one)
 		var oldestDoc = collection.findOne({ mainId: mainId, reactiveConstructorCmsStatus: 'backup'}, { sort: { updateTime: -1 }, skip: (numToKeep-1) });
 		// If there is not 15, then don't do nothing
@@ -249,11 +225,11 @@ Meteor.methods({
 
 		if (!this.userId)
 			throw new Meteor.Error('reactive-constructor-cms', 'You need to be logged in.' );
-			
+
 		check( id, String );
 		check( constructorName, String );
 
-		var collection = getCollectionFromConstructorName( constructorName );
+		var collection = ReactiveConstructorCmsPlugin.getCollectionFromConstructorName( constructorName );
 
 		return collection.remove({ $or: [{ mainId: id }, { _id: id }] });
 
@@ -269,7 +245,7 @@ Meteor.publish('reactive-constructor-cms__editable-docs', function() {
 
 	// Used in the publishFilter, to be able to use the meteor server context inside the method
 	var meteorServerContext = this;
-	
+
 	// Get all the publications
 	return _.chain(ReactiveConstructors)
 	.map(function( constructor ){
@@ -283,24 +259,40 @@ Meteor.publish('reactive-constructor-cms__editable-docs', function() {
 		// If there is a publishFilter, "assign" it to the query!
 		if ( publishFilter )
 			query = _.assign( query, publishFilter.call( meteorServerContext ) );
-		return collectionAndConstructor.collection.find( query );
+		return collectionAndConstructor.collection.find( query, {
+			fields: {
+				reactiveConstructorCmsStatus:   1,
+				reactiveConstructorCmsName:     1,
+				reactiveConstructorIsPublished: 1,
+				mainId:                         1,
+				updateTime:                     1,
+				rcType:                         1
+			}
+		});
 	}).value();
 
 });
 
+Meteor.publish('reactive-constructor-cms__editable-doc-from-id-and-constructorname', function( constructorName, _id ) {
 
-// 
-// 
+	// These should only be available to logged in users
+	if (!this.userId)
+		return this.error( new Meteor.Error('reactive-constructor-cms', 'You need to login to subscribe to reactive-constructor-cms__editable-docs' ) );
+
+	var collection = ReactiveConstructorCmsPlugin.getCollectionFromConstructorName( constructorName );
+	return collection.find( _id );
+
+});
+
+//
+//
 // HELPERS FOR GETTING ALL PUBLISHED DOCS IN A PUBLISH/CURSOR-FORMAT
 // REFACTOR ALL OF THIS PLEASE!
-// 
-// 
+//
+//
 var getAllLinkedDocsIds = function( doc, memo ) {
 
 	memo = memo || {};
-
-	// check( doc, Object );
-	// check( memo, Object );
 
 	// Is the passed "doc" actually a link itself? Then just add it to the
 	// memo and return the memo
@@ -325,7 +317,7 @@ var getAllLinkedDocsIds = function( doc, memo ) {
 		// Is it not a linked object? Just return the memo
 		if ( ( value.constructor !== Object ) || value.type !== 'reactive-constructor-cms-linked-item')
 			return memo;
-		
+
 		// Make sure we have a contructor for holding the _id…
 		if (!memo[value.constructorName])
 			memo[value.constructorName] = [];
@@ -333,7 +325,7 @@ var getAllLinkedDocsIds = function( doc, memo ) {
 		// Add the _id (which is in fact a link to the mainId ) to the holder
 		// and return the memo!
 		memo[value.constructorName].push( value._id );
-		
+
 		return memo;
 
 	}, memo );
@@ -356,7 +348,7 @@ var getDocAndLinks = function( mainId, constructorName, fetchedDocs ) {
 	// check( fetchedDocs, Object );
 
 	// Get the current doc
-	var doc = getCollectionFromConstructorName( constructorName ).findOne({ reactiveConstructorCmsStatus: 'published', mainId: mainId });
+	var doc = ReactiveConstructorCmsPlugin.getCollectionFromConstructorName( constructorName ).findOne({ reactiveConstructorCmsStatus: 'published', mainId: mainId });
 
 	// Get all the ids of all the linked docs
 	var linkedIds = getAllLinkedDocsIds( doc );
@@ -373,7 +365,7 @@ var getDocAndLinks = function( mainId, constructorName, fetchedDocs ) {
 				return getDocAndLinks( linkedId, constructorName, fetchedDocs );
 			return fetchedDocs;
 		}, fetchedDocs );
-	}, fetchedDocs ); 
+	}, fetchedDocs );
 
 };
 
@@ -385,6 +377,6 @@ reactiveConstructorCmsGetPublishCursorFromDoc = function( initDocument, construc
 	var docAndLinks = getDocAndLinks( initDocument.mainId, constructorName );
 
 	return _.map(docAndLinks, function( value, constructorName ){
-		return getCollectionFromConstructorName( constructorName ).find({reactiveConstructorCmsStatus: 'published',mainId: { $in: value }});
+		return ReactiveConstructorCmsPlugin.getCollectionFromConstructorName( constructorName ).find({reactiveConstructorCmsStatus: 'published',mainId: { $in: value }});
 	});
 };
