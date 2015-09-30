@@ -200,13 +200,6 @@ Template.editTemplate.helpers({
   isSingleInstance: function() {
     return this.key && this.value && this.type;
   },
-  // TODO: Is this OK to remove?
-  // data: function () {
-
-  //   // TODO: This should be refactored away!
-  //   return this;
-
-  // },
   getReactiveValuesAsArray: function() {
     var instance = this.value || this;
     if ( instance.getReactiveValuesAsArray && ( instance.getReactiveValuesAsArray.constructor === Function ))
