@@ -1,7 +1,7 @@
 Package.describe({
 	name: "krstffr:reactive-constructor-cms",
 	summary: "CMS for krstffr:reactive-constructor instances.",
-	version: "0.5.0"
+	version: "0.5.1"
 });
 
 Package.onUse(function (api) {
@@ -17,6 +17,7 @@ Package.onUse(function (api) {
 		], "client");
 
 	api.use([
+		"ecmascript",
 		"stevezhu:lodash@3.10.1",
 		"check@1.0.5"
 		], ["client", "server"]);
