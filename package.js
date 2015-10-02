@@ -17,7 +17,7 @@ Package.onUse(function (api) {
 		], "client");
 
 	api.use([
-		"ecmascript",
+		"ecmascript@0.1.5",
 		"stevezhu:lodash@3.10.1",
 		"check@1.0.5"
 		], ["client", "server"]);
