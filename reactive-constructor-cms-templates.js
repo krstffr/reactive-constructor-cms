@@ -612,3 +612,9 @@ Template.editTemplate__Select.onRendered(function() {
   var currentValue = parentInstance.getReactiveValue( this.data.key );
   $( this.find('select') ).val( currentValue );
 });
+
+Template.editTemplate__Select.helpers({
+  valueOrDisplayValue() {
+    return ( this.displayValue ) ? this.displayValue : this.value;
+  }
+});
