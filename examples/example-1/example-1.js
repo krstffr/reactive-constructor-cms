@@ -64,11 +64,13 @@ Person = new ReactiveConstructor('Person', function () {
             type: 'select',
             selectValues: function() {
               return [{
-                value: 'Designer'
+                value: 'Designer(THE_VALUE)',
+                displayValue: 'Designer (only for display)'
               }, {
                 value: 'Developer'
               }, {
-                value: 'President'
+                value: 'President',
+                displayValue: 'President DISPLAY'
               }, {
                 value: 'Tsar'
               }];
