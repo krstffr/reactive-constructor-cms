@@ -306,13 +306,20 @@ Invoice = new ReactiveConstructor('Invoice', function() {
 ComplexTestConstructor = new ReactiveConstructor('ComplexTestConstructor', function() {
   return {
     cmsOptions: {
-      collection: ComplexTestConstructors
+      collection: ComplexTestConstructors,
+      filter: {
+        manChild: ['worker']
+      }
     },
     typeStructure: [{
       type: 'Complex instance',
       fields: {
         name: String,
-        children: [ ComplexTestConstructor ]
+        children: [ ComplexTestConstructor ],
+        manChild: Person
+      },
+      cmsOptions: {
+
       }
     }]
   };

@@ -489,7 +489,7 @@ ReactiveConstructorCmsPlugin = new ReactiveConstructorPlugin({
 			var instance = this;
 
 			// Check if this instance type has any filter
-	    var instanceCmsOptions = instance.getInstanceCmsOptions();
+	    var instanceCmsOptions = instance.getAllCmsOptions();
 
 	    if (instanceCmsOptions.exclude && instanceCmsOptions.exclude[key] )
 	    	typeNames = _.reject(typeNames, function( type ){
