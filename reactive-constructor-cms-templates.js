@@ -349,6 +349,7 @@ Template.editTemplate.events({
   'click .reactive-constructor-cms-ACTION--change-value-using-overview': function( e ) {
     var parentInstance = Blaze.getData( $( e.currentTarget ).closest('.reactive-constructor-cms__instance-wrapper')[0] );
     return ReactiveConstructorCmsPlugin.getSelectListOverview( this.fieldCmsOptions.selectValues(), 'String', this.key, function( newValue, instance, key ) {
+      instance = instance.value || instance;
       return instance.setReactiveValue( key, newValue );
     }, parentInstance );
   },

@@ -29,8 +29,8 @@ id-map@1.0.4
 jquery@1.11.4
 krstffr:msgs@0.0.8
 krstffr:reactive-constructor@1.2.5
-krstffr:reactive-constructor-cms@0.5.2
-local-test:krstffr:reactive-constructor-cms@0.5.2
+krstffr:reactive-constructor-cms@0.5.3
+local-test:krstffr:reactive-constructor-cms@0.5.3
 localstorage@1.0.5
 logging@1.0.8
 meteor@1.1.10
